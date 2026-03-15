@@ -2,202 +2,87 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BeeHunter Bari - Live App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeeHunter Bari</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         .page { display: none; }
-        .page.active { display: block; }
-        #map-container { height: 100%; width: 100%; }
-        .player-pin { background-color: #F5C518; border: 3px solid white; border-radius: 50%; width: 20px; height: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .active { display: block !important; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans pb-24 overflow-x-hidden text-slate-800">
+<body class="bg-gray-50 pb-24 text-slate-900">
 
-    <header class="bg-white p-5 shadow-sm sticky top-0 z-50 flex justify-between items-center border-b border-gray-100">
-        <h1 class="text-xl font-black text-yellow-500 tracking-tighter">BEEHUNTER 🐝</h1>
-        <div class="bg-yellow-100 px-4 py-1 rounded-full border border-yellow-200">
-            <span id="user-points" class="font-bold text-yellow-700 uppercase text-xs">Punti: 150 🍯</span>
-        </div>
+    <header class="bg-white p-5 shadow-sm sticky top-0 z-50 flex justify-between items-center">
+        <h1 class="text-xl font-black text-yellow-500">BEEHUNTER 🐝</h1>
+        <div class="bg-yellow-400 text-white px-4 py-1 rounded-full font-bold">150 pt</div>
     </header>
 
-    <main id="home" class="page active p-5 space-y-4">
-        <h2 class="text-2xl font-black italic">Sfide Disponibili</h2>
-        <div onclick="showDetails('barca')" class="bg-white p-5 rounded-3xl shadow-sm border-b-4 border-blue-500 cursor-pointer active:scale-95 transition-transform">
-            <div class="flex justify-between mb-2">
-                <span class="text-[10px] font-black bg-blue-100 text-blue-600 px-2 py-1 rounded">MARE</span>
-                <span class="text-green-500 font-bold">+50pt</span>
-            </div>
-            <h3 class="text-lg font-black uppercase">Tour in Barca Levante</h3>
-            <p class="text-xs text-gray-400 mt-1">Trova il QR Code al porto storico.</p>
-        </div>
-        <div onclick="showDetails('orecchietta')" class="bg-white p-5 rounded-3xl shadow-sm border-b-4 border-yellow-500 cursor-pointer active:scale-95 transition-transform">
-            <div class="flex justify-between mb-2">
-                <span class="text-[10px] font-black bg-yellow-100 text-yellow-600 px-2 py-1 rounded">CIBO</span>
-                <span class="text-green-500 font-bold">+60pt</span>
-            </div>
-            <h3 class="text-lg font-black uppercase">Mani in Pasta</h3>
-            <p class="text-xs text-gray-400 mt-1">Lezione di orecchiette a Bari Vecchia.</p>
-        </div>
-    </main>
-
-    <main id="map" class="page h-[calc(100vh-140px)]">
-        <div id="map-container"></div>
-    </main>
-
-    <main id="camera" class="page p-5 text-center">
-        <h2 class="text-2xl font-black mb-4 uppercase">Scanner QR 📸</h2>
-        <div class="relative w-full h-80 bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-white max-w-sm mx-auto">
-            <video id="webcam" autoplay playsinline class="w-full h-full object-cover"></video>
-            <div class="absolute inset-0 border-4 border-dashed border-yellow-400 rounded-3xl m-10 opacity-40"></div>
-        </div>
-        <button onclick="startCamera()" id="cam-btn" class="mt-8 bg-yellow-400 text-white px-8 py-4 rounded-full font-black shadow-lg">ATTIVA CAMERA</button>
-    </main>
-
-    <main id="rewards" class="page p-5">
-        <h2 class="text-2xl font-black italic mb-2 uppercase">Spendi Punti 🎁</h2>
-        <p class="text-gray-400 text-sm mb-6 font-bold">Usa il tuo miele per riscattare sconti reali.</p>
+    <div id="home" class="page active p-5 space-y-4">
+        <h2 class="text-2xl font-black italic mb-4">Sfide Vicine</h2>
         
+        <div onclick="openPop('barca')" class="bg-white p-5 rounded-3xl shadow-md border-b-4 border-blue-500 active:scale-95 transition-transform cursor-pointer">
+            <span class="text-[10px] font-bold bg-blue-100 text-blue-600 px-2 py-1 rounded">MARE</span>
+            <h3 class="text-lg font-black mt-2 uppercase">Tour in Barca</h3>
+            <p class="text-xs text-gray-400">Clicca per i dettagli e premi</p>
+        </div>
+
+        <div onclick="openPop('pasta')" class="bg-white p-5 rounded-3xl shadow-md border-b-4 border-yellow-500 active:scale-95 transition-transform cursor-pointer">
+            <span class="text-[10px] font-bold bg-yellow-100 text-yellow-600 px-2 py-1 rounded">CIBO</span>
+            <h3 class="text-lg font-black mt-2 uppercase">Mani in Pasta</h3>
+            <p class="text-xs text-gray-400">Clicca per i dettagli e premi</p>
+        </div>
+    </div>
+
+    <div id="shop" class="page p-5">
+        <h2 class="text-2xl font-black mb-4 italic">Negozio Premi 🎁</h2>
         <div class="space-y-4">
-            <div class="bg-white p-4 rounded-3xl shadow-sm flex items-center border border-gray-100">
-                <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-3xl mr-4">🍕</div>
-                <div class="flex-1">
-                    <h4 class="font-black text-sm uppercase">Pizzeria di Bari</h4>
-                    <p class="text-[10px] font-bold text-red-500 uppercase">Sconto 10% sul totale</p>
-                </div>
-                <button onclick="redeem(50, 'Sconto Pizzeria')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-black">50 pt</button>
+            <div onclick="alert('Hai ottenuto lo Sconto Pizzeria! Mostra il codice: BEE10')" class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border-l-4 border-red-500 cursor-pointer">
+                <div><p class="font-bold uppercase text-sm">Sconto 10% Pizzeria</p><p class="text-[10px] text-gray-400 italic font-bold">COSTO: 50 PUNTI</p></div>
+                <span class="text-xl">🍕</span>
             </div>
-
-            <div class="bg-white p-4 rounded-3xl shadow-sm flex items-center border border-gray-100">
-                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mr-4">🍦</div>
-                <div class="flex-1">
-                    <h4 class="font-black text-sm uppercase">Gelateria Gentile</h4>
-                    <p class="text-[10px] font-bold text-blue-500 uppercase">Cono Omaggio</p>
-                </div>
-                <button onclick="redeem(80, 'Cono Omaggio')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-black">80 pt</button>
-            </div>
-
-            <div class="bg-white p-4 rounded-3xl shadow-sm flex items-center border border-gray-100">
-                <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mr-4">🍷</div>
-                <div class="flex-1">
-                    <h4 class="font-black text-sm uppercase">Enoteca del Borgo</h4>
-                    <p class="text-[10px] font-bold text-green-600 uppercase">Calice Benvenuto</p>
-                </div>
-                <button onclick="redeem(100, 'Calice Omaggio')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-black">100 pt</button>
+            <div onclick="alert('Hai ottenuto il Gelato Omaggio! Mostra il codice: GELO-BEE')" class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border-l-4 border-blue-400 cursor-pointer">
+                <div><p class="font-bold uppercase text-sm">Gelato Omaggio</p><p class="text-[10px] text-gray-400 italic font-bold">COSTO: 80 PUNTI</p></div>
+                <span class="text-xl">🍦</span>
             </div>
         </div>
-    </main>
+    </div>
 
-    <main id="details" class="page p-5">
-        <button onclick="showPage('home')" class="text-xs font-black text-slate-400 mb-6 uppercase">⬅ Torna indietro</button>
-        <div id="details-content"></div>
-    </main>
+    <div id="details" class="page p-5">
+        <button onclick="nav('home')" class="text-gray-400 font-bold mb-4 uppercase text-xs">← Torna alle sfide</button>
+        <div class="bg-white p-8 rounded-[40px] shadow-2xl border border-gray-100 text-center">
+            <div id="det-icon" class="text-6xl mb-4 text-center">🚢</div>
+            <h3 id="det-title" class="text-2xl font-black mb-4 italic uppercase">TITOLO</h3>
+            <p id="det-desc" class="text-gray-500 mb-8 text-sm leading-relaxed text-center italic">Descrizione</p>
+            <button onclick="alert('Scanner Fotocamera Attivato!')" class="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-xs">Apri Scanner</button>
+        </div>
+    </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-3 flex justify-around items-center z-50 shadow-2xl">
-        <button onclick="showPage('home')" class="nav-icon text-yellow-500 flex flex-col items-center" id="nav-home">
-            <span class="text-xl">🏠</span>
-            <span class="text-[8px] font-black uppercase">Home</span>
-        </button>
-        <button onclick="showPage('map')" class="nav-icon text-gray-300 flex flex-col items-center" id="nav-map">
-            <span class="text-xl">📍</span>
-            <span class="text-[8px] font-black uppercase">Mappa</span>
-        </button>
-        <button onclick="showPage('camera')" class="bg-yellow-400 p-4 rounded-full -mt-12 border-8 border-gray-50 shadow-xl text-white">
-            <span class="text-xl">📸</span>
-        </button>
-        <button onclick="showPage('rewards')" class="nav-icon text-gray-300 flex flex-col items-center" id="nav-rewards">
-            <span class="text-xl">🎁</span>
-            <span class="text-[8px] font-black uppercase">Shop</span>
-        </button>
-        <button onclick="alert('Classifica in arrivo!')" class="nav-icon text-gray-300 flex flex-col items-center">
-            <span class="text-xl">🏆</span>
-            <span class="text-[8px] font-black uppercase">Rank</span>
-        </button>
+    <nav class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-around items-center z-50 shadow-xl">
+        <button onclick="nav('home')" class="flex flex-col items-center text-yellow-500 font-black">🏠<span class="text-[9px]">HOME</span></button>
+        <button onclick="alert('Mappa in caricamento...')" class="flex flex-col items-center text-gray-300 font-black">📍<span class="text-[9px]">MAPPA</span></button>
+        <button onclick="nav('shop')" class="flex flex-col items-center text-gray-300 font-black">🎁<span class="text-[9px]">PREMI</span></button>
     </nav>
 
     <script>
-        let currentPoints = 150;
-
-        function showPage(pageId) {
+        // Funzione per cambiare pagina
+        function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            // Gestione icone menu
-            document.querySelectorAll('.nav-icon').forEach(i => i.classList.replace('text-yellow-500', 'text-gray-300'));
-            const activeIcon = document.getElementById('nav-' + pageId);
-            if(activeIcon) activeIcon.classList.replace('text-gray-300', 'text-yellow-500');
-
-            if (pageId === 'map') initMap();
-            if (pageId !== 'camera') stopCamera();
+            document.getElementById(id).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        // Sistema Riscatto Premi
-        function redeem(cost, prize) {
-            if (currentPoints >= cost) {
-                currentPoints -= cost;
-                document.getElementById('user-points').innerText = Punti: ${currentPoints} 🍯;
-                alert(CONGRATULAZIONI! 🎉\nHai riscattato: ${prize}.\nMostra questo codice al locale: BEE-${Math.floor(Math.random()*9999)});
+        // Funzione per aprire i dettagli della sfida
+        function openPop(tipo) {
+            if(tipo === 'barca') {
+                document.getElementById('det-title').innerText = "Tour in Barca";
+                document.getElementById('det-icon').innerText = "🚢";
+                document.getElementById('det-desc').innerText = "Trova il QR Code blu al molo di San Nicola per vincere il badge Capitano!";
             } else {
-                alert("Punti insufficienti! 🐝\nContinua a esplorare Bari per guadagnare più miele.");
+                document.getElementById('det-title').innerText = "Mani in Pasta";
+                document.getElementById('det-icon').innerText = "🍝";
+                document.getElementById('det-desc').innerText = "Fai le orecchiette a Bari Vecchia e scansiona il codice della nonna!";
             }
-        }
-
-        // Dettagli Sfide
-        function showDetails(id) {
-            const data = {
-                'barca': { t: 'Tour in Barca', p: '50', c: 'blue', desc: 'Trova il capitano al Molo San Nicola e scansiona il suo codice.' },
-                'orecchietta': { t: 'Mani in Pasta', p: '60', c: 'yellow', desc: 'Prepara le orecchiette a Bari Vecchia per ricevere il punto.' }
-            }[id];
-            document.getElementById('details-content').innerHTML = `
-                <div class="bg-white p-8 rounded-[40px] shadow-xl border border-gray-100">
-                    <span class="bg-${data.c}-100 text-${data.c}-600 font-black px-3 py-1 rounded-full text-[10px] tracking-widest uppercase">Sfida Attiva</span>
-                    <h3 class="text-3xl font-black mt-4 uppercase italic leading-none">${data.t}</h3>
-                    <p class="text-green-500 font-black mt-2">+${data.p} Punti</p>
-                    <p class="text-gray-500 mt-6 text-sm leading-relaxed">${data.desc}</p>
-                    <button onclick="showPage('camera')" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black mt-10 shadow-2xl uppercase tracking-widest text-xs">Apri Scanner QR</button>
-                </div>
-            `;
-            showPage('details');
-        }
-
-        // Mappa Reale
-        let map;
-        function initMap() {
-            if (map) return;
-            map = L.map('map-container').setView([41.1259, 16.8661], 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(p => {
-                    const lat = p.coords.latitude;
-                    const lon = p.coords.longitude;
-                    map.setView([lat, lon], 16);
-                    L.marker([lat, lon], {icon: L.divIcon({className: 'player-pin'})}).addTo(map).bindPopup("Tu sei qui!").openPopup();
-                });
-            }
-            L.marker([41.1305, 16.8745]).addTo(map).bindPopup("⚓ Tour in Barca");
-            L.marker([41.1275, 16.8690]).addTo(map).bindPopup("🍝 Mani in Pasta");
-        }
-
-        // Camera
-        let stream;
-        async function startCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                document.getElementById('webcam').srcObject = stream;
-                document.getElementById('cam-btn').innerText = "CAMERA ATTIVA";
-                document.getElementById('cam-btn').classList.replace('bg-yellow-400', 'bg-green-500');
-            } catch (e) { alert("Attiva i permessi per la fotocamera!"); }
-        }
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(t => t.stop());
-                document.getElementById('cam-btn').innerText = "ATTIVA CAMERA";
-                document.getElementById('cam-btn').classList.replace('bg-green-500', 'bg-yellow-400');
-            }
+            nav('details');
         }
     </script>
 </body>
