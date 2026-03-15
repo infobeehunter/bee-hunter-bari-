@@ -8,89 +8,115 @@
     <style>
         .page { display: none; }
         .page.active { display: block !important; }
-        /* Rende i tasti cliccabili anche su Safari/iPhone */
-        button, div { -webkit-tap-highlight-color: transparent; cursor: pointer; }
-        .nav-active { color: #EAB308 !important; }
+        button, div { -webkit-tap-highlight-color: transparent; }
+        .nav-active { color: #EAB308 !important; font-weight: 800; }
+        .progress-fill { transition: width 0.5s ease-out; }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-900 pb-32">
 
-    <header class="bg-white p-5 sticky top-0 z-50 flex justify-between items-center shadow-sm">
-        <div>
-            <p class="text-[10px] font-bold text-gray-400 uppercase leading-none">Punti Totali</p>
-            <button onclick="nav('history')" class="text-3xl font-black text-yellow-400 leading-none">150</button>
+    <header class="bg-white p-5 sticky top-0 z-50 shadow-sm">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase leading-none">Punti Totali</p>
+                <button onclick="nav('history')" class="text-3xl font-black text-yellow-400 leading-none">150</button>
+            </div>
+            <div class="text-right">
+                <h1 class="text-xl font-black flex items-center justify-end">BeeHunter <span class="ml-1">🐝</span></h1>
+                <span class="bg-green-100 text-green-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Cacciatore Novizio</span>
+            </div>
         </div>
-        <div class="text-right">
-            <h1 class="text-xl font-black flex items-center justify-end">BeeHunter <span class="ml-1">🐝</span></h1>
-            <span class="bg-green-100 text-green-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Cacciatore Novizio</span>
+        <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div class="progress-fill h-full bg-yellow-400" style="width: 45%;"></div>
         </div>
     </header>
 
     <main id="home" class="page active p-5 space-y-6">
-        <h2 class="text-2xl font-black italic uppercase">Sfide Attive</h2>
+        <h2 class="text-xl font-black italic uppercase">Esperienze</h2>
         
-        <div onclick="openPop('barca')" class="bg-white p-6 rounded-[32px] shadow-lg border-b-4 border-blue-500 flex justify-between items-center">
-            <div>
-                <span class="text-[10px] font-bold bg-blue-100 text-blue-600 px-2 py-1 rounded mb-2 inline-block">MARE</span>
-                <h3 class="text-xl font-black uppercase italic">Tour in Barca</h3>
-                <p class="text-xs text-gray-400">Trova il QR al Molo San Nicola</p>
-            </div>
-            <div class="text-green-500 font-black text-xl">+50</div>
-        </div>
-
-        <div onclick="openPop('pasta')" class="bg-white p-6 rounded-[32px] shadow-lg border-b-4 border-yellow-500 flex justify-between items-center">
-            <div>
-                <span class="text-[10px] font-bold bg-yellow-100 text-yellow-600 px-2 py-1 rounded mb-2 inline-block">CIBO</span>
-                <h3 class="text-xl font-black uppercase italic">Mani in Pasta</h3>
-                <p class="text-xs text-gray-400">Lezione orecchiette a Bari Vecchia</p>
-            </div>
-            <div class="text-green-500 font-black text-xl">+60</div>
-        </div>
-
-        <div class="mt-8">
-            <h2 class="text-xl font-black italic uppercase mb-4">Partner Locali</h2>
-            <div class="bg-white p-4 rounded-3xl shadow-md border-l-4 border-red-400 flex justify-between items-center">
+        <div onclick="openPop('barca')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-50">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner">🚢</div>
                 <div>
-                    <h4 class="font-black text-sm uppercase">Ristorante Murat</h4>
-                    <p class="text-[10px] text-gray-400">⭐ 4.8 - 45 riscatti</p>
+                    <h3 class="font-black text-sm uppercase">Tour in Barca</h3>
+                    <p class="text-[10px] text-gray-400 uppercase font-bold">Badge: Capitano del Levante</p>
                 </div>
-                <span class="bg-red-50 text-red-500 font-black text-[10px] px-3 py-2 rounded-xl uppercase">Sconto 10%</span>
             </div>
+            <div class="text-green-500 font-black text-sm">+50pt</div>
+        </div>
+
+        <div onclick="openPop('bici')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-50">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-xl">🚲</div>
+                <div>
+                    <h3 class="font-black text-sm uppercase">Tour in Bici</h3>
+                    <p class="text-[10px] text-gray-400 uppercase font-bold">Badge: Pedalatore Seriale</p>
+                </div>
+            </div>
+            <div class="text-green-500 font-black text-sm">+40pt</div>
+        </div>
+
+        <h2 class="text-xl font-black italic uppercase mt-8">Partner Locali</h2>
+        <div onclick="nav('partners')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border-l-4 border-red-400">
+            <div>
+                <h4 class="font-black text-sm uppercase">Ristorante Murat</h4>
+                <p class="text-[10px] text-gray-400 font-bold italic">⭐ 4.8 - 45 riscatti</p>
+            </div>
+            <span class="bg-red-50 text-red-500 font-black text-[10px] px-3 py-2 rounded-xl">SCONTO 10%</span>
         </div>
     </main>
 
     <main id="map" class="page p-5">
         <h2 class="text-2xl font-black italic uppercase mb-4 text-center">Mappa</h2>
-        <div class="w-full h-96 bg-slate-200 rounded-[40px] border-8 border-white shadow-2xl relative flex items-center justify-center overflow-hidden">
-            <div class="text-4xl animate-bounce">📍</div>
-            <div onclick="openPop('barca')" class="absolute top-10 right-10 text-3xl">⚓</div>
-            <div onclick="openPop('pasta')" class="absolute bottom-20 left-10 text-3xl">🍝</div>
+        <div class="w-full h-96 bg-slate-200 rounded-[40px] border-8 border-white shadow-xl relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center opacity-20 text-xs font-bold uppercase">Mappa Radar Attiva</div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-bounce">📍</div>
         </div>
     </main>
 
     <main id="camera" class="page p-5 text-center">
         <h2 class="text-2xl font-black italic uppercase mb-4">Scanner QR</h2>
-        <div class="w-full h-80 bg-black rounded-[40px] border-4 border-white shadow-2xl overflow-hidden relative mb-6">
+        <div class="w-full h-80 bg-black rounded-[40px] border-4 border-white shadow-2xl overflow-hidden mb-6">
             <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
         </div>
-        <button onclick="startCamera()" id="camBtn" class="bg-yellow-400 text-white px-10 py-4 rounded-full font-black uppercase text-sm shadow-xl">Attiva Fotocamera</button>
+        <button onclick="startCamera()" id="camBtn" class="bg-yellow-400 text-white px-10 py-4 rounded-full font-black uppercase text-sm">Attiva Camera</button>
     </main>
 
-    <main id="shop" class="page p-5 space-y-4 text-center">
-        <h2 class="text-2xl font-black italic uppercase mb-6 text-yellow-500">Shop Premi</h2>
-        <div onclick="alert('Premio riscattato!')" class="bg-white p-6 rounded-3xl shadow-md flex justify-between items-center">
-            <span class="text-2xl">🍕</span>
-            <span class="font-black text-sm uppercase leading-none text-left flex-1 ml-4">Pizza Omaggio</span>
-            <span class="text-red-500 font-black text-xs">80 PT</span>
+    <main id="partners" class="page p-5 space-y-4">
+        <h2 class="text-2xl font-black italic uppercase text-yellow-500">I Nostri Partner 🤝</h2>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
+            <div class="text-3xl">🍕</div>
+            <div class="flex-1">
+                <h4 class="font-black uppercase">Ristorante Murat</h4>
+                <p class="text-xs text-gray-400">Via Sparano, 10</p>
+            </div>
+            <button class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">CHIAMA</button>
+        </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
+            <div class="text-3xl">☕</div>
+            <div class="flex-1">
+                <h4 class="font-black uppercase">Caffè degli Amici</h4>
+                <p class="text-xs text-gray-400">Bari Vecchia</p>
+            </div>
+            <button class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">MAPPA</button>
+        </div>
+    </main>
+
+    <main id="shop" class="page p-5 space-y-4">
+        <h2 class="text-2xl font-black italic uppercase text-center text-yellow-500">Premi</h2>
+        <div class="bg-white p-5 rounded-3xl shadow-sm flex justify-between items-center border border-gray-50">
+            <span class="text-2xl">🍦</span>
+            <div class="flex-1 ml-4"><h4 class="font-black uppercase text-sm">Gelato Omaggio</h4><p class="text-[10px] text-blue-500 font-bold uppercase">80 pt</p></div>
+            <button onclick="alert('Riscatto effettuato!')" class="bg-yellow-400 text-white px-4 py-2 rounded-xl text-xs font-black">USA</button>
         </div>
     </main>
 
     <main id="history" class="page p-5">
-        <button onclick="nav('home')" class="text-[10px] font-black uppercase text-gray-400 mb-6">← Indietro</button>
-        <h2 class="text-2xl font-black italic mb-6 uppercase">Storico Punti</h2>
-        <div class="space-y-3">
+        <button onclick="nav('home')" class="text-[10px] font-black uppercase text-gray-400 mb-6">← Torna alla Home</button>
+        <h2 class="text-2xl font-black italic mb-6 uppercase">Storico Punti 🍯</h2>
+        <div class="space-y-4">
             <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border-l-4 border-green-500">
-                <span class="font-bold text-xs uppercase">Benvenuto</span>
+                <div><p class="font-bold text-xs uppercase">Benvenuto</p><p class="text-[8px] text-gray-400">16 Mar 2026</p></div>
                 <span class="text-green-500 font-black">+150</span>
             </div>
         </div>
@@ -101,34 +127,28 @@
         <div class="bg-white p-10 rounded-[40px] shadow-2xl text-center">
             <div id="det-icon" class="text-7xl mb-4 text-center">🚢</div>
             <h3 id="det-title" class="text-2xl font-black uppercase mb-4 italic text-center">TITOLO</h3>
-            <p id="det-desc" class="text-gray-400 text-sm mb-10 leading-relaxed text-center"></p>
-            <button onclick="nav('camera')" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black uppercase text-xs shadow-xl">Inizia Scanner</button>
+            <p id="det-desc" class="text-gray-400 text-sm mb-10 text-center leading-relaxed"></p>
+            <button onclick="nav('camera')" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black uppercase text-xs">Inizia Scanner</button>
         </div>
     </main>
 
     <nav class="fixed bottom-0 w-full bg-white border-t p-3 flex justify-around items-center z-50 shadow-2xl">
-        <button onclick="nav('home')" id="n-home" class="nav-active flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[8px] font-bold uppercase mt-1">Home</span></button>
-        <button onclick="nav('map')" id="n-map" class="text-gray-300 flex flex-col items-center"><span class="text-xl">📍</span><span class="text-[8px] font-bold uppercase mt-1">Mappa</span></button>
+        <button onclick="nav('home')" id="n-home" class="nav-active flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[8px] font-black uppercase mt-1">Home</span></button>
+        <button onclick="nav('map')" id="n-map" class="text-gray-300 flex flex-col items-center"><span class="text-xl">📍</span><span class="text-[8px] font-black uppercase mt-1">Mappa</span></button>
         <button onclick="nav('camera')" class="bg-yellow-400 p-4 rounded-full -mt-12 text-white shadow-xl"><span class="text-xl">📸</span></button>
-        <button onclick="nav('history')" class="text-gray-300 flex flex-col items-center"><span class="text-lg">🤝</span><span class="text-[8px] font-bold uppercase mt-1">Partner</span></button>
-        <button onclick="nav('shop')" id="n-shop" class="text-gray-300 flex flex-col items-center"><span class="text-xl">🎁</span><span class="text-[8px] font-bold uppercase mt-1">Premi</span></button>
+        <button onclick="nav('partners')" id="n-partners" class="text-gray-300 flex flex-col items-center"><span class="text-xl">🤝</span><span class="text-[8px] font-black uppercase mt-1">Partner</span></button>
+        <button onclick="nav('shop')" id="n-shop" class="text-gray-300 flex flex-col items-center"><span class="text-xl">🎁</span><span class="text-[8px] font-black uppercase mt-1">Premi</span></button>
     </nav>
 
     <script>
-        // Funzione Navigazione Universale
         function nav(id) {
-            console.log('Navigazione a:', id);
-            // Nasconde tutte le pagine
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Mostra la pagina corretta
-            const targetPage = document.getElementById(id);
-            if(targetPage) targetPage.classList.add('active');
-
-            // Reset icone navbar
+            document.getElementById(id).classList.add('active');
+            
+            // Gestione icone navbar
             document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active', 'text-yellow-500'));
             document.querySelectorAll('nav button').forEach(btn => btn.classList.add('text-gray-300'));
             
-            // Icona attiva
             const activeBtn = document.getElementById('n-' + id);
             if(activeBtn) {
                 activeBtn.classList.add('nav-active');
@@ -139,11 +159,10 @@
             window.scrollTo(0,0);
         }
 
-        // Dettagli Sfida
         function openPop(tipo) {
             const data = {
                 'barca': {t:'Tour in Barca', i:'🚢', d:'Raggiungi il Molo San Nicola e scansiona il QR Code del Capitano.'},
-                'pasta': {t:'Mani in Pasta', i:'🍝', d:'Cucina le orecchiette a Bari Vecchia e ricevi il codice.'}
+                'bici': {t:'Tour in Bici', i:'🚲', d:'Esplora il lungomare e scansiona il punto presso il faro.'}
             }[tipo];
             document.getElementById('det-title').innerText = data.t;
             document.getElementById('det-icon').innerText = data.i;
@@ -151,14 +170,12 @@
             nav('details');
         }
 
-        // Camera
         let stream = null;
         async function startCamera() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 document.getElementById('video').srcObject = stream;
                 document.getElementById('camBtn').innerText = "CAMERA ATTIVA";
-                document.getElementById('camBtn').classList.replace('bg-yellow-400', 'bg-green-500');
             } catch (err) {
                 alert("Attiva i permessi della fotocamera!");
             }
@@ -169,7 +186,6 @@
                 stream.getTracks().forEach(t => t.stop());
                 stream = null;
                 document.getElementById('camBtn').innerText = "Attiva Fotocamera";
-                document.getElementById('camBtn').classList.replace('bg-green-500', 'bg-yellow-400');
             }
         }
     </script>
