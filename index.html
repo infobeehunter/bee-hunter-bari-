@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BeeHunter Bari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="body" class="bg-gray-50 text-slate-900 pb-24">
+
+    <header class="bg-white p-5 shadow-sm sticky top-0 z-50 flex justify-between items-center border-b border-gray-100">
+        <h1 class="text-xl font-black text-yellow-500">BEEHUNTER 🐝</h1>
+        <div id="points-display" class="bg-yellow-400 text-white px-4 py-1 rounded-full font-black shadow-md">150 pt</div>
+    </header>
+
+    <main id="home" class="page active p-5 space-y-4">
+        <h2 class="text-2xl font-black italic">Sfide Attive</h2>
+        <div onclick="openPop('barca')" class="card bg-white p-5 rounded-3xl shadow-md border-b-4 border-blue-500 cursor-pointer">
+            <h3 class="text-lg font-black">Tour in Barca Levante</h3>
+            <p class="text-xs text-gray-400">Clicca per i dettagli</p>
+        </div>
+    </main>
+
+    <main id="map" class="page p-5 text-center">
+        <h2 class="text-2xl font-black mb-4 uppercase italic text-yellow-500">Mappa Attiva</h2>
+        <div class="map-box relative inline-block w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl border-8 border-white bg-slate-200 h-80">
+            <div class="absolute inset-0 flex items-center justify-center text-6xl">📍</div>
+        </div>
+    </main>
+
+    <main id="camera" class="page p-5 text-center">
+        <h2 class="text-2xl font-black mb-4">Scanner 📸</h2>
+        <video id="video" class="w-full h-80 bg-black rounded-3xl object-cover mb-4" autoplay playsinline></video>
+        <button onclick="startCamera()" id="camBtn" class="bg-yellow-400 text-white px-10 py-4 rounded-full font-black">Attiva Camera</button>
+    </main>
+
+    <main id="shop" class="page p-5">
+        <h2 class="text-2xl font-black mb-6 uppercase italic">Premi 🎁</h2>
+        <div onclick="buyReward(50)" class="card bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer">
+            <p class="font-black text-sm uppercase">Sconto 10% Pizzeria</p>
+            <span class="text-red-500 font-bold">50 pt</span>
+        </div>
+    </main>
+
+    <main id="details" class="page p-5 text-center">
+        <button onclick="nav('home')" class="text-gray-400 font-black text-[10px] mb-6 block uppercase tracking-widest">← Indietro</button>
+        <div id="details-content" class="bg-white p-10 rounded-[40px] shadow-2xl border border-gray-100"></div>
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-around items-center z-50">
+        <button onclick="nav('home')" class="nav-item text-yellow-500">🏠</button>
+        <button onclick="nav('map')" class="nav-item text-gray-300">📍</button>
+        <button onclick="nav('camera')" class="bg-yellow-400 p-4 rounded-full -mt-12 text-white shadow-xl">📸</button>
+        <button onclick="nav('shop')" class="nav-item text-gray-300">🎁</button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
