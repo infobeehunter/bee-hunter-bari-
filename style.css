@@ -1,0 +1,6 @@
+.page { display: none; }
+.page.active { display: block !important; }
+.card:active { transform: scale(0.95); transition: 0.2s; }
+.nav-item { font-size: 1.5rem; transition: 0.3s; }
+.dark-mode { background-color: #1a1a1a !important; color: white !important; }
+.dark-mode .bg-white { background-color: #2d2d2d !important; color: white !important; }
