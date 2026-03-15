@@ -11,6 +11,7 @@
         button, div { -webkit-tap-highlight-color: transparent; }
         .nav-active { color: #EAB308 !important; font-weight: 800; }
         .progress-fill { transition: width 0.5s ease-out; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-900 pb-32">
@@ -22,8 +23,8 @@
                 <button onclick="nav('history')" class="text-3xl font-black text-yellow-400 leading-none">150</button>
             </div>
             <div class="text-right">
-                <h1 class="text-xl font-black flex items-center justify-end">BeeHunter <span class="ml-1">🐝</span></h1>
-                <span class="bg-green-100 text-green-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Cacciatore Novizio</span>
+                <h1 class="text-xl font-black flex items-center justify-end uppercase italic text-slate-800">BeeHunter <span class="ml-1">🐝</span></h1>
+                <span class="bg-green-100 text-green-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase italic">Cacciatore Novizio</span>
             </div>
         </div>
         <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -32,142 +33,167 @@
     </header>
 
     <main id="home" class="page active p-5 space-y-6">
-        <h2 class="text-xl font-black italic uppercase">Esperienze</h2>
         
-        <div onclick="openPop('barca')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-50">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner">🚢</div>
-                <div>
-                    <h3 class="font-black text-sm uppercase">Tour in Barca</h3>
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Badge: Capitano del Levante</p>
-                </div>
-            </div>
-            <div class="text-green-500 font-black text-sm">+50pt</div>
+        <div class="bg-slate-900 rounded-[32px] p-6 text-white overflow-hidden relative shadow-xl">
+            <span class="bg-red-500 text-[8px] font-bold px-2 py-1 rounded-md uppercase">Live 2026</span>
+            <h2 class="text-xl font-black uppercase mt-2 italic">Gigi D'Alessio @ Palaflorio</h2>
+            <p class="text-[10px] text-gray-400 mb-4">15 Aprile 2026 • Scansiona il QR all'evento per +100pt</p>
+            <button onclick="nav('map')" class="bg-white text-slate-900 px-4 py-2 rounded-xl font-black text-[10px] uppercase">Scopri sulla Mappa</button>
         </div>
 
-        <div onclick="openPop('bici')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-50">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-xl">🚲</div>
-                <div>
-                    <h3 class="font-black text-sm uppercase">Tour in Bici</h3>
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Badge: Pedalatore Seriale</p>
+        <h2 class="text-xl font-black italic uppercase">Sfide Culturali</h2>
+        <div class="grid grid-cols-1 gap-4">
+            <div onclick="openPop('orecchiette')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-100">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center text-xl">🍝</div>
+                    <div>
+                        <h3 class="font-black text-sm uppercase leading-none">Via delle Orecchiette</h3>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase mt-1">Trova l'Arco Basso</p>
+                    </div>
                 </div>
+                <div class="text-green-500 font-black text-sm">+30pt</div>
             </div>
-            <div class="text-green-500 font-black text-sm">+40pt</div>
+            <div onclick="openPop('sotterranea')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border border-gray-100">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-xl shadow-lg text-white">🔦</div>
+                    <div>
+                        <h3 class="font-black text-sm uppercase leading-none">Bari Sotterranea</h3>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase mt-1">Tour notturno archeologico</p>
+                    </div>
+                </div>
+                <div class="text-green-500 font-black text-sm">+60pt</div>
+            </div>
         </div>
 
-        <h2 class="text-xl font-black italic uppercase mt-8">Partner Locali</h2>
-        <div onclick="nav('partners')" class="bg-white p-5 rounded-[28px] shadow-sm flex justify-between items-center border-l-4 border-red-400">
-            <div>
-                <h4 class="font-black text-sm uppercase">Ristorante Murat</h4>
-                <p class="text-[10px] text-gray-400 font-bold italic">⭐ 4.8 - 45 riscatti</p>
+        <h2 class="text-xl font-black italic uppercase mt-8 text-yellow-500 italic">Food & Partner</h2>
+        <div class="space-y-3">
+            <div onclick="openPartner('assassina')" class="bg-white p-5 rounded-[28px] shadow-md border-l-4 border-red-500 flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <img src="https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=100&h=100&fit=crop" class="w-12 h-12 rounded-2xl object-cover border-2 border-red-100">
+                    <div>
+                        <h4 class="font-black text-xs uppercase italic">Urban Assassineria</h4>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">Premio: Sconto 15%</p>
+                    </div>
+                </div>
+                <span class="text-yellow-400 font-bold text-xs italic">⭐ 4.9</span>
             </div>
-            <span class="bg-red-50 text-red-500 font-black text-[10px] px-3 py-2 rounded-xl">SCONTO 10%</span>
+
+            <div onclick="openPartner('pescobar')" class="bg-white p-5 rounded-[28px] shadow-md border-l-4 border-blue-400 flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <img src="https://images.unsplash.com/photo-1551731353-29a33467f920?w=100&h=100&fit=crop" class="w-12 h-12 rounded-2xl object-cover border-2 border-blue-100">
+                    <div>
+                        <h4 class="font-black text-xs uppercase italic">Pescobar Bari</h4>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">Street Food di Mare</p>
+                    </div>
+                </div>
+                <span class="text-yellow-400 font-bold text-xs italic">⭐ 4.7</span>
+            </div>
         </div>
     </main>
 
     <main id="map" class="page p-5">
-        <h2 class="text-2xl font-black italic uppercase mb-4 text-center">Mappa</h2>
+        <h2 class="text-2xl font-black italic uppercase mb-4 text-center">Radar Hunter</h2>
         <div class="w-full h-96 bg-slate-200 rounded-[40px] border-8 border-white shadow-xl relative overflow-hidden">
-            <div class="absolute inset-0 flex items-center justify-center opacity-20 text-xs font-bold uppercase">Mappa Radar Attiva</div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-bounce">📍</div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m12!1m3!1d12015.68817688169!2d16.865!3d41.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1347e8f3d6c141d3%3A0xc3f6050b10492a83!2sBari%20BA!5e0!3m2!1sit!2sit!4v1710500000000!5m2!1sit!2sit" class="w-full h-full border-none" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </main>
 
     <main id="camera" class="page p-5 text-center">
-        <h2 class="text-2xl font-black italic uppercase mb-4">Scanner QR</h2>
-        <div class="w-full h-80 bg-black rounded-[40px] border-4 border-white shadow-2xl overflow-hidden mb-6">
+        <h2 class="text-2xl font-black italic uppercase mb-4">Caccia al QR</h2>
+        <div class="w-full h-80 bg-black rounded-[40px] border-4 border-white shadow-2xl overflow-hidden mb-6 relative">
             <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
+            <div class="absolute inset-0 border-[40px] border-black/30 pointer-events-none"></div>
         </div>
-        <button onclick="startCamera()" id="camBtn" class="bg-yellow-400 text-white px-10 py-4 rounded-full font-black uppercase text-sm">Attiva Camera</button>
+        <button onclick="startCamera()" id="camBtn" class="bg-yellow-400 text-white px-10 py-4 rounded-full font-black uppercase text-sm shadow-xl">Inquadra QR</button>
     </main>
 
-    <main id="partners" class="page p-5 space-y-4">
-        <h2 class="text-2xl font-black italic uppercase text-yellow-500">I Nostri Partner 🤝</h2>
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
-            <div class="text-3xl">🍕</div>
-            <div class="flex-1">
-                <h4 class="font-black uppercase">Ristorante Murat</h4>
-                <p class="text-xs text-gray-400">Via Sparano, 10</p>
-            </div>
-            <button class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">CHIAMA</button>
-        </div>
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
-            <div class="text-3xl">☕</div>
-            <div class="flex-1">
-                <h4 class="font-black uppercase">Caffè degli Amici</h4>
-                <p class="text-xs text-gray-400">Bari Vecchia</p>
-            </div>
-            <button class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">MAPPA</button>
-        </div>
-    </main>
-
-    <main id="shop" class="page p-5 space-y-4">
-        <h2 class="text-2xl font-black italic uppercase text-center text-yellow-500">Premi</h2>
-        <div class="bg-white p-5 rounded-3xl shadow-sm flex justify-between items-center border border-gray-50">
-            <span class="text-2xl">🍦</span>
-            <div class="flex-1 ml-4"><h4 class="font-black uppercase text-sm">Gelato Omaggio</h4><p class="text-[10px] text-blue-500 font-bold uppercase">80 pt</p></div>
-            <button onclick="alert('Riscatto effettuato!')" class="bg-yellow-400 text-white px-4 py-2 rounded-xl text-xs font-black">USA</button>
-        </div>
-    </main>
-
-    <main id="history" class="page p-5">
-        <button onclick="nav('home')" class="text-[10px] font-black uppercase text-gray-400 mb-6">← Torna alla Home</button>
-        <h2 class="text-2xl font-black italic mb-6 uppercase">Storico Punti 🍯</h2>
-        <div class="space-y-4">
-            <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border-l-4 border-green-500">
-                <div><p class="font-bold text-xs uppercase">Benvenuto</p><p class="text-[8px] text-gray-400">16 Mar 2026</p></div>
-                <span class="text-green-500 font-black">+150</span>
+    <main id="partner-detail" class="page p-0">
+        <div class="relative h-72">
+            <img id="p-img" src="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <button onclick="nav('home')" class="absolute top-6 left-6 bg-white p-3 rounded-2xl text-slate-900 font-black text-[10px] shadow-xl uppercase">← Esci</button>
+            <div class="absolute bottom-10 left-6 text-white">
+                <h2 id="p-name" class="text-3xl font-black uppercase italic leading-none">NOME</h2>
+                <p id="p-address" class="text-[10px] font-bold uppercase text-gray-200 mt-2 italic tracking-widest">INDIRIZZO</p>
             </div>
         </div>
-    </main>
+        <div class="bg-gray-50 -mt-8 rounded-t-[40px] p-6 relative min-h-screen">
+            <div class="flex space-x-3 mb-8">
+                <a id="p-call" href="#" class="flex-1 bg-yellow-400 text-white py-4 rounded-2xl text-center font-black text-[10px] uppercase shadow-lg">Prenota 📞</a>
+                <a id="p-map" href="#" target="_blank" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl text-center font-black text-[10px] uppercase shadow-lg">Naviga 📍</a>
+            </div>
 
-    <main id="details" class="page p-5">
-        <button onclick="nav('home')" class="text-[10px] font-black uppercase text-gray-400 mb-6">← Indietro</button>
-        <div class="bg-white p-10 rounded-[40px] shadow-2xl text-center">
-            <div id="det-icon" class="text-7xl mb-4 text-center">🚢</div>
-            <h3 id="det-title" class="text-2xl font-black uppercase mb-4 italic text-center">TITOLO</h3>
-            <p id="det-desc" class="text-gray-400 text-sm mb-10 text-center leading-relaxed"></p>
-            <button onclick="nav('camera')" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black uppercase text-xs">Inizia Scanner</button>
+            <h3 class="font-black uppercase italic mb-4">Hunter Reviews 🐝</h3>
+            <div id="p-reviews" class="space-y-4 mb-8">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="font-black text-[9px] text-yellow-500 uppercase italic">Giusy_78 • ⭐ 5</p>
+                    <p class="text-xs text-slate-600 mt-1">"Posto top! L'assassina brucia al punto giusto 🔥"</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-[32px] shadow-sm border border-gray-100">
+                <p class="font-black uppercase text-[10px] mb-3 text-gray-400 italic">Hai catturato il gusto?</p>
+                <textarea id="rev-text" class="w-full bg-gray-50 rounded-xl p-4 text-xs border-none focus:ring-2 focus:ring-yellow-400 mb-4" placeholder="Scrivi la tua recensione qui..."></textarea>
+                <button onclick="addReview()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase italic">Invia al locale</button>
+            </div>
         </div>
     </main>
 
     <nav class="fixed bottom-0 w-full bg-white border-t p-3 flex justify-around items-center z-50 shadow-2xl">
-        <button onclick="nav('home')" id="n-home" class="nav-active flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[8px] font-black uppercase mt-1">Home</span></button>
-        <button onclick="nav('map')" id="n-map" class="text-gray-300 flex flex-col items-center"><span class="text-xl">📍</span><span class="text-[8px] font-black uppercase mt-1">Mappa</span></button>
-        <button onclick="nav('camera')" class="bg-yellow-400 p-4 rounded-full -mt-12 text-white shadow-xl"><span class="text-xl">📸</span></button>
+        <button onclick="nav('home')" id="n-home" class="nav-active flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[8px] font-black uppercase mt-1">Bari</span></button>
+        <button onclick="nav('map')" id="n-map" class="text-gray-300 flex flex-col items-center"><span class="text-xl">📍</span><span class="text-[8px] font-black uppercase mt-1">Radar</span></button>
+        <button onclick="nav('camera')" class="bg-yellow-400 p-4 rounded-full -mt-12 text-white shadow-xl border-4 border-white"><span class="text-xl">📸</span></button>
         <button onclick="nav('partners')" id="n-partners" class="text-gray-300 flex flex-col items-center"><span class="text-xl">🤝</span><span class="text-[8px] font-black uppercase mt-1">Partner</span></button>
         <button onclick="nav('shop')" id="n-shop" class="text-gray-300 flex flex-col items-center"><span class="text-xl">🎁</span><span class="text-[8px] font-black uppercase mt-1">Premi</span></button>
     </nav>
 
     <script>
+        // Funzione per mostrare i dettagli del partner
+        function openPartner(slug) {
+            const data = {
+                'assassina': {
+                    n: 'Urban L\'Assassineria',
+                    a: 'Via Domenico Nicolai, 10, Bari',
+                    img: 'https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800',
+                    tel: 'tel:+390801234567',
+                    map: 'https://www.google.com/maps/search/Urban+Assassineria+Urbana+Bari'
+                },
+                'pescobar': {
+                    n: 'Pescobar Bari',
+                    a: 'Largo Adua, 29, Bari',
+                    img: 'https://images.unsplash.com/photo-1551731353-29a33467f920?w=800',
+                    tel: 'tel:+390809876543',
+                    map: 'https://www.google.com/maps/search/Pescobar+Bari'
+                }
+            }[slug];
+            
+            document.getElementById('p-name').innerText = data.n;
+            document.getElementById('p-address').innerText = data.a;
+            document.getElementById('p-img').src = data.img;
+            document.getElementById('p-call').href = data.tel;
+            document.getElementById('p-map').href = data.map;
+            nav('partner-detail');
+        }
+
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // Gestione icone navbar
             document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active', 'text-yellow-500'));
             document.querySelectorAll('nav button').forEach(btn => btn.classList.add('text-gray-300'));
-            
             const activeBtn = document.getElementById('n-' + id);
-            if(activeBtn) {
-                activeBtn.classList.add('nav-active');
-                activeBtn.classList.remove('text-gray-300');
-            }
-
+            if(activeBtn) { activeBtn.classList.add('nav-active'); activeBtn.classList.remove('text-gray-300'); }
             if(id !== 'camera') stopCamera();
             window.scrollTo(0,0);
         }
 
-        function openPop(tipo) {
-            const data = {
-                'barca': {t:'Tour in Barca', i:'🚢', d:'Raggiungi il Molo San Nicola e scansiona il QR Code del Capitano.'},
-                'bici': {t:'Tour in Bici', i:'🚲', d:'Esplora il lungomare e scansiona il punto presso il faro.'}
-            }[tipo];
-            document.getElementById('det-title').innerText = data.t;
-            document.getElementById('det-icon').innerText = data.i;
-            document.getElementById('det-desc').innerText = data.d;
-            nav('details');
+        function addReview() {
+            const txt = document.getElementById('rev-text').value;
+            if(!txt) return;
+            const div = document.createElement('div');
+            div.className = "bg-white p-4 rounded-2xl shadow-sm border-l-4 border-yellow-400";
+            div.innerHTML = `<p class="font-black text-[9px] text-yellow-500 uppercase italic">Tu (Hunter) • ⭐ 5</p><p class="text-xs text-slate-600 mt-1">"${txt}"</p>`;
+            document.getElementById('p-reviews').prepend(div);
+            document.getElementById('rev-text').value = "";
         }
 
         let stream = null;
@@ -175,18 +201,11 @@
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 document.getElementById('video').srcObject = stream;
-                document.getElementById('camBtn').innerText = "CAMERA ATTIVA";
-            } catch (err) {
-                alert("Attiva i permessi della fotocamera!");
-            }
+            } catch (err) { alert("Attiva i permessi fotocamera!"); }
         }
 
         function stopCamera() {
-            if(stream) {
-                stream.getTracks().forEach(t => t.stop());
-                stream = null;
-                document.getElementById('camBtn').innerText = "Attiva Fotocamera";
-            }
+            if(stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
         }
     </script>
 </body>
