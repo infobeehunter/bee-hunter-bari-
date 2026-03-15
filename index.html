@@ -3,107 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeeHunter - Bari</title>
+    <title>BeeHunter Bari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --primary: #F5C518; --secondary: #1A4B8C; }
-        .bg-primary { background-color: var(--primary); }
-        .text-primary { color: var(--primary); }
-        .card:active { transform: scale(0.98); }
+        .sidebar { transition: transform 0.3s ease-in-out; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans pb-24">
-    <div class="bg-white p-6 shadow-sm flex justify-between items-center sticky top-0 z-10">
-        <div>
-            <p class="text-xs text-gray-400 uppercase">Punti Totali</p>
-            <p class="text-3xl font-bold text-primary">150</p>
-        </div>
-        <div class="text-right">
-            <h1 class="text-xl font-black">BeeHunter 🐝</h1>
-            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-full font-bold">CACCIATORE NOVIZIO</span>
-        </div>
-    </div>
 
-    <div class="p-5">
-        <h2 class="text-2xl font-bold">Scopri Bari</h2>
-        <p class="text-gray-500 text-sm mb-6">Completa le sfide e guadagna badge</p>
-
-        <div class="flex space-x-2 overflow-x-auto pb-4 no-scrollbar">
-            <button class="bg-primary text-white px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap shadow-md">🎯 Tutti</button>
-            <button class="bg-white border border-gray-200 px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap">🌊 Mare</button>
-            <button class="bg-white border border-gray-200 px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap">🚴 Bici</button>
-            <button class="bg-white border border-gray-200 px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap">🍕 Cibo</button>
-        </div>
-
-        <h3 class="text-lg font-bold mt-4 mb-4">Esperienze</h3>
-        <div class="space-y-4">
-            <div class="card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 rounded-full bg-[#1A4B8C] flex items-center justify-center text-white">🚢</div>
-                    <div>
-                        <h4 class="font-bold">Tour in Barca</h4>
-                        <p class="text-xs text-gray-400">Badge: Capitano del Levante</p>
-                    </div>
-                </div>
-                <span class="text-green-500 font-bold">+50pt</span>
-            </div>
-            <div class="card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 rounded-full bg-[#2ECC71] flex items-center justify-center text-white">🚲</div>
-                    <div>
-                        <h4 class="font-bold">Tour in Bici</h4>
-                        <p class="text-xs text-gray-400">Badge: Pedalatore Seriale</p>
-                    </div>
-                </div>
-                <span class="text-green-500 font-bold">+40pt</span>
-            </div>
-        </div>
-
-        <h3 class="text-lg font-bold mt-8 mb-4">Partner Locali</h3>
-        <div class="grid grid-cols-1 gap-4">
-            <div class="bg-white p-4 rounded-2xl border-l-4 border-red-400 shadow-sm flex justify-between items-center">
+    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl -translate-x-full border-r">
+        <div class="p-6 bg-yellow-400">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm">🐝</div>
                 <div>
-                    <h4 class="font-bold">Ristorante Murat</h4>
-                    <p class="text-xs text-gray-500 italic">⭐ 4.8 - 45 riscatti</p>
+                    <h3 class="font-bold text-lg">Cacciatore Bari</h3>
+                    <p class="text-xs font-bold opacity-70">Livello 5 • Esperto</p>
                 </div>
-                <span class="bg-red-50 text-red-600 px-3 py-1 rounded-lg font-black text-sm">SCONTO 10%</span>
             </div>
         </div>
-
-        <h3 class="text-lg font-bold mt-8 mb-4">I Tuoi Badge</h3>
-        <div class="flex space-x-4 overflow-x-auto pb-4">
-            <div class="flex-shrink-0 text-center">
-                <div class="w-16 h-16 rounded-full bg-[#1A4B8C] border-4 border-yellow-400 flex items-center justify-center text-2xl mb-1 shadow-lg">⚓</div>
-                <p class="text-[10px] font-bold w-16 leading-tight">Capitano</p>
-            </div>
-            <div class="flex-shrink-0 text-center">
-                <div class="w-16 h-16 rounded-full bg-[#2ECC71] border-4 border-yellow-400 flex items-center justify-center text-2xl mb-1 shadow-lg">🚴</div>
-                <p class="text-[10px] font-bold w-16 leading-tight">Pedalatore</p>
-            </div>
-            <div class="flex-shrink-0 text-center opacity-40 grayscale">
-                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl mb-1">🍝</div>
-                <p class="text-[10px] font-bold w-16 leading-tight">Orecchietta</p>
-            </div>
-        </div>
+        <nav class="p-4 space-y-2">
+            <button onclick="showPage('home')" class="w-full flex items-center p-4 text-gray-700 hover:bg-yellow-50 rounded-2xl font-bold">🏠 Home</button>
+            <button onclick="showPage('map')" class="w-full flex items-center p-4 text-gray-700 hover:bg-yellow-50 rounded-2xl font-bold">📍 Mappa Interattiva</button>
+            <button onclick="showPage('leaderboard')" class="w-full flex items-center p-4 text-gray-700 hover:bg-yellow-50 rounded-2xl font-bold">🏆 Classifica</button>
+            <button onclick="showPage('badges')" class="w-full flex items-center p-4 text-gray-700 hover:bg-yellow-50 rounded-2xl font-bold">🏅 I Miei Badge</button>
+            <hr class="my-4">
+            <button class="w-full flex items-center p-4 text-red-500 hover:bg-red-50 rounded-2xl font-bold">🚪 Esci</button>
+        </nav>
     </div>
+    <div id="overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/40 z-40 hidden"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-        <div class="flex flex-col items-center">
-            <span class="text-primary text-xl">🏠</span>
-            <span class="text-[10px] font-bold text-primary uppercase">Home</span>
+    <header class="bg-white p-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
+        <button onclick="toggleMenu()" class="text-2xl p-2">☰</button>
+        <h1 class="text-xl font-black text-yellow-500 tracking-tighter">BEEHUNTER 🐝</h1>
+        <div class="bg-yellow-100 px-4 py-1 rounded-full border border-yellow-200">
+            <span class="font-bold text-yellow-700">150 pt</span>
         </div>
-        <div class="flex flex-col items-center text-gray-300">
+    </header>
+
+    <main id="home" class="page active p-5">
+        <h2 class="text-2xl font-black mb-1">Ciao, Esploratore! 👋</h2>
+        <p class="text-gray-400 text-sm mb-6">Ci sono 3 nuove sfide vicino a te.</p>
+        
+        <div class="space-y-4">
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 border-b-4 border-blue-500">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="bg-blue-100 text-blue-600 text-[10px] font-black px-2 py-1 rounded">MARE</span>
+                    <span class="text-green-500 font-bold">+50pt</span>
+                </div>
+                <h3 class="text-lg font-black italic uppercase">Tour in Barca</h3>
+                <p class="text-gray-500 text-xs mt-1 leading-relaxed">Trova il QR Code al porto di Bari e sblocca il badge "Capitano".</p>
+                <button class="mt-4 w-full bg-blue-600 text-white py-3 rounded-2xl font-bold text-sm shadow-md">SCOPRI DI PIÙ</button>
+            </div>
+            
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 border-b-4 border-yellow-500">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="bg-yellow-100 text-yellow-600 text-[10px] font-black px-2 py-1 rounded">CIBO</span>
+                    <span class="text-green-500 font-bold">+60pt</span>
+                </div>
+                <h3 class="text-lg font-black italic uppercase">Mani in Pasta</h3>
+                <p class="text-gray-500 text-xs mt-1 leading-relaxed">Cucina le orecchiette con una nonna locale a Bari Vecchia.</p>
+                <button class="mt-4 w-full bg-yellow-500 text-white py-3 rounded-2xl font-bold text-sm shadow-md text-yellow-900">SCOPRI DI PIÙ</button>
+            </div>
+        </div>
+    </main>
+
+    <main id="map" class="page p-5">
+        <h2 class="text-2xl font-black mb-4">Mappa Sfide 📍</h2>
+        <div class="relative w-full h-[400px] bg-slate-200 rounded-[40px] border-8 border-white shadow-xl overflow-hidden">
+            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div class="absolute top-1/4 left-1/3 animate-bounce bg-red-500 text-white p-2 rounded-full shadow-lg">📍</div>
+            <div class="absolute top-1/2 right-1/4 animate-pulse bg-yellow-500 text-white p-2 rounded-full shadow-lg text-xs font-bold">🐝</div>
+            <div class="absolute bottom-1/4 left-1/2 bg-blue-500 text-white p-2 rounded-full shadow-lg">⚓</div>
+            <div class="absolute bottom-10 left-0 right-0 text-center">
+                <span class="bg-white px-4 py-2 rounded-full text-[10px] font-bold shadow-md uppercase">Mappa di Bari Centro</span>
+            </div>
+        </div>
+    </main>
+
+    <main id="leaderboard" class="page p-5 text-center">
+        <h2 class="text-2xl font-black mb-6 italic text-yellow-500 uppercase">Classifica Top 🐝</h2>
+        <div class="space-y-3">
+            <div class="bg-yellow-400 text-white p-4 rounded-2xl flex justify-between items-center font-black shadow-lg">
+                <span>1. Tu (Mario)</span> <span>2540 pt</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl flex justify-between items-center font-bold text-gray-400 border border-gray-100">
+                <span>2. Luca_Bari</span> <span>2100 pt</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl flex justify-between items-center font-bold text-gray-400 border border-gray-100">
+                <span>3. AnnaEsplora</span> <span>1850 pt</span>
+            </div>
+        </div>
+    </main>
+
+    <main id="badges" class="page p-5">
+        <h2 class="text-2xl font-black mb-6">I Tuoi Trofei 🏅</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-3xl text-center border-2 border-yellow-400">
+                <div class="text-4xl mb-2">⚓</div>
+                <p class="text-[10px] font-black uppercase">Capitano</p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl text-center border-2 border-green-400">
+                <div class="text-4xl mb-2">🚲</div>
+                <p class="text-[10px] font-black uppercase">Pedalatore</p>
+            </div>
+            <div class="bg-gray-100 p-6 rounded-3xl text-center opacity-30">
+                <div class="text-4xl mb-2 text-gray-400">🍝</div>
+                <p class="text-[10px] font-black uppercase">Orecchietta</p>
+            </div>
+        </div>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-40 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+        <button onclick="showPage('home')" class="flex flex-col items-center">
+            <span class="text-xl">🏠</span>
+            <span class="text-[9px] font-black mt-1">HOME</span>
+        </button>
+        <button onclick="showPage('map')" class="flex flex-col items-center">
             <span class="text-xl">📍</span>
-            <span class="text-[10px] font-bold uppercase">Mappa</span>
-        </div>
-        <div class="flex flex-col items-center text-gray-300">
-            <span class="text-xl">🎁</span>
-            <span class="text-[10px] font-bold uppercase">Premi</span>
-        </div>
-        <div class="flex flex-col items-center text-gray-300">
-            <span class="text-xl">👤</span>
-            <span class="text-[10px] font-bold uppercase">Profilo</span>
-        </div>
-    </div>
+            <span class="text-[9px] font-black mt-1">MAPPA</span>
+        </button>
+        <button class="bg-yellow-400 p-4 rounded-full -mt-12 border-8 border-gray-50 shadow-xl text-white">
+            📸
+        </button>
+        <button onclick="showPage('leaderboard')" class="flex flex-col items-center">
+            <span class="text-xl">🏆</span>
+            <span class="text-[9px] font-black mt-1">RANK</span>
+        </button>
+        <button onclick="showPage('badges')" class="flex flex-col items-center">
+            <span class="text-xl">🏅</span>
+            <span class="text-[9px] font-black mt-1">BADGE</span>
+        </button>
+    </nav>
+
+    <script>
+        function toggleMenu() {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('overlay');
+            sb.classList.toggle('-translate-x-full');
+            ov.classList.toggle('hidden');
+        }
+
+        function showPage(pageId) {
+            // Nasconde tutte le pagine
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Mostra quella selezionata
+            document.getElementById(pageId).classList.add('active');
+            // Chiude il menu se aperto
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('overlay').classList.add('hidden');
+            // Torna in alto
+            window.scrollTo(0,0);
+        }
+    </script>
 </body>
 </html>
