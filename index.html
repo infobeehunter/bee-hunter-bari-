@@ -247,33 +247,60 @@
             });
         }
 
-        const DB = {
-            points: allPoints,
-            tours: [
-                { id: 't1', xp: 150, img: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=200', it: { name: "Bari Express Tour", desc: "4 mete iconiche in città." }, en: { name: "Bari Express Tour", desc: "4 iconic city stops." }, badge: "City Explorer" },
-                { id: 't2', xp: 200, img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=200', it: { name: "Street Food Mania", desc: "Degustazione focaccia e panzerotti." }, en: { name: "Street Food Mania", desc: "Focaccia and panzerotti tasting." }, badge: "Foodie Hunter" },
-                { id: 't3', xp: 250, img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200', it: { name: "Nightlife Secret", desc: "Speakeasy e cocktail bar segreti." }, en: { name: "Nightlife Secret", desc: "Speakeasy and secret bars." }, badge: "Night Owl" },
-                { id: 't4', xp: 300, img: 'https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=200', it: { name: "Trulli & Valle d'Itria", desc: "Tour ad Alberobello con guida." }, en: { name: "Trulli & Itria Valley", desc: "Alberobello tour with guide." }, badge: "Heritage Seeker" },
-                { id: 't5', xp: 180, img: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=200', it: { name: "Coastal Adventure", desc: "Escursione a Polignano a mare." }, en: { name: "Coastal Adventure", desc: "Excursion to Polignano." }, badge: "Sea Hunter" }
-            ],
-            badges: [
-                { id: "City Explorer", tier: "badge-base", icon: "🏙️" },
-                { id: "Foodie Hunter", tier: "badge-base", icon: "🍕" },
-                { id: "Night Owl", tier: "badge-base", icon: "🍸" },
-                { id: "Heritage Seeker", tier: "badge-mid", icon: "🏛️" },
-                { id: "Sea Hunter", tier: "badge-mid", icon: "🌊" },
-                { id: "Event Collector", tier: "badge-mid", icon: "🎟️" },
-                { id: "Master Hunter", tier: "badge-adv", icon: "👑" },
-                { id: "Ultimate Explorer", tier: "badge-adv", icon: "💎" }
-            ],
-            coupons: [
-                { id: 'c1', partner: "Panificio Fiore", cost: 400, duration: "24h", it: { offer: "Focaccia + Birra" }, en: { offer: "Focaccia + Beer" } },
-                { id: 'c2', partner: "Speakeasy Bari", cost: 650, duration: "24h", it: { offer: "25% Sconto Cocktail" }, en: { offer: "25% Off Cocktail" } },
-                { id: 'c3', partner: "Mastro Ciccio", cost: 350, duration: "24h", it: { offer: "Dolce Omaggio" }, en: { offer: "Free Dessert" } },
-                { id: 'c4', partner: "Trattoria Al Pescatore", cost: 500, duration: "24h", it: { offer: "Menu Mare Scontato" }, en: { offer: "Discounted Sea Menu" } },
-                { id: 'c5', partner: "Grotta Palazzese", cost: 800, duration: "48h", it: { offer: "Ingresso VIP" }, en: { offer: "VIP Entrance" } }
-            ]
-        };
+       const DB = {
+    // 1. I TUOI PUNTI (Aggiungi qui i restanti 190+ punti seguendo questo schema esatto)
+    points: [
+        { id: 1, name: "Basilica San Nicola", type: "Monumento", coords: [41.1315, 16.8722], xp: 150, img: "URL_IMMAGINE_QUI", it: { name: "Basilica di San Nicola", desc: "La perla del romanico pugliese. Custodisce le reliquie di San Nicola." }, en: { name: "St. Nicholas Basilica", desc: "Romanesque jewel of Puglia. Houses St. Nicholas' relics." { 
+    id: 999, 
+    type: "Eventi", 
+    lat: 41.1315, 
+    lng: 16.8722, 
+    xp: 200, // I 200 PUNTI SPECIALI RICHIESTI
+    img: "URL_IMMAGINE_SAN_NICOLA", 
+    it: { name: "Speciale San Nicola", desc: "Partecipa alla processione / fuochi." }, 
+    en: { name: "St. Nicholas Special", desc: "Join the procession / fireworks." }, 
+    badge: "San Nicola Explorer" // BADGE SPECIALE RICHIESTO
+},
+        { id: 2, name: "Castello Svevo", type: "Monumento", coords: [41.1288, 16.8644], xp: 200, img: "URL_IMMAGINE_QUI", it: { name: "Castello Svevo", desc: "Fortezza millenaria con storia imperiale." }, en: { name: "Swabian Castle", desc: "Millenary fortress with imperial history." } },
+        { id: 3, name: "Teatro Petruzzelli", type: "Cultura", coords: [41.1235, 16.8732], xp: 180, img: "URL_IMMAGINE_QUI", it: { name: "Teatro Petruzzelli", desc: "Tempio della musica e della cultura barese." }, en: { name: "Petruzzelli Theatre", desc: "Temple of Bari music and culture." } },
+        { id: 4, name: "Lungomare Nazario Sauro", type: "Natura", coords: [41.1200, 16.8680], xp: 100, img: "URL_IMMAGINE_QUI", it: { name: "Lungomare Nazario Sauro", desc: "Passeggiata panoramica sul mare Adriatico." }, en: { name: "Nazario Sauro Seafront", desc: "Scenic walk along the Adriatic Sea." } },
+        { id: 5, name: "Lama Monachile", type: "Natura", coords: [41.1230, 17.2080], xp: 130, img: "URL_IMMAGINE_QUI", it: { name: "Polignano a Mare", desc: "Spiaggia iconica e scogliera mozzafiato." }, en: { name: "Polignano a Mare", desc: "Iconic beach and cliff with breathtaking views." } },
+        { id: 6, name: "Trulli Alberobello", type: "Cultura", coords: [40.7832, 17.2354], xp: 180, img: "URL_IMMAGINE_QUI", it: { name: "Alberobello - Trulli", desc: "Patrimonio UNESCO, i trulli storici." }, en: { name: "Alberobello - Trulli", desc: "UNESCO World Heritage site, historic trulli." } },
+        { id: 7, name: "Porto Antico", type: "Food", coords: [40.9450, 17.2900], xp: 120, img: "URL_IMMAGINE_QUI", it: { name: "Monopoli - Porto antico", desc: "Centro storico e mercato del pesce." }, en: { name: "Monopoli - Old Port", desc: "Historic center and fish market." } },
+        // ... INCOLLA QUI GLI ALTRI 193 PUNTI ...
+    ],
+    
+    // 2. TUTTE LE ESPERIENZE E I TOUR DEL TUO DOCUMENTO
+    tours: [
+        { id: 't1', xp: 150, img: 'URL', category: 'Tour città', it: { name: "Bari Express Tour", desc: "4 mete iconiche: Basilica, Castello, Lungomare, Cattedrale." }, en: { name: "Bari Express Tour", desc: "4 iconic stops: Basilica, Castle, Seafront, Cathedral." }, badge: "City Explorer", price: "Free" },
+        { id: 't2', xp: 200, img: 'URL', category: 'Food Experience', it: { name: "Street Food Mania", desc: "Degustazione focaccia, panzerotti, gelato artigianale." }, en: { name: "Street Food Mania", desc: "Tasting of focaccia, panzerotti, artisan ice cream." }, badge: "Foodie Hunter", price: "€10" },
+        { id: 't3', xp: 250, img: 'URL', category: 'Nightlife', it: { name: "Nightlife Secret", desc: "Accesso a speakeasy e cocktail bar segreti." }, en: { name: "Nightlife Secret", desc: "Access to speakeasy and secret cocktail bars." }, badge: "Night Owl", price: "Premium" },
+        { id: 't4', xp: 300, img: 'URL', category: 'Cultura', it: { name: "Trulli & Valle d'Itria", desc: "Tour ad Alberobello e Cisternino con guida digitale." }, en: { name: "Trulli & Itria Valley", desc: "Tour of Alberobello & Cisternino with digital guide." }, badge: "Heritage Seeker", price: "€25" },
+        { id: 't5', xp: 180, img: 'URL', category: 'Natura/Mare', it: { name: "Coastal Adventure", desc: "Escursione a Polignano e Grotta Palazzese." }, en: { name: "Coastal Adventure", desc: "Excursion to Polignano and Palazzese Cave." }, badge: "Sea Hunter", price: "€30" },
+        { id: 't6', xp: 200, img: 'URL', category: 'Eventi', it: { name: "Event Spotlight", desc: "Festival, sagre e concerti del mese." }, en: { name: "Event Spotlight", desc: "Festivals, fairs and concerts of the month." }, badge: "Event Collector", price: "Free" }
+    ],
+
+    // 3. I COUPON ESATTI DEI TUOI PARTNER
+    coupons: [
+        { id: 'c1', partner: "Panificio Fiore", cost: 400, duration: "24h", img: "URL", it: { offer: "Focaccia + Birra" }, en: { offer: "Focaccia + Beer" } },
+        { id: 'c2', partner: "Speakeasy Bari", cost: 650, duration: "24h", img: "URL", it: { offer: "25% off signature cocktail" }, en: { offer: "25% off signature cocktail" } },
+        { id: 'c3', partner: "Mastro Ciccio", cost: 350, duration: "24h", img: "URL", it: { offer: "Dolce artigianale omaggio" }, en: { offer: "Free artisan dessert" } },
+        { id: 'c4', partner: "Trattoria Al Pescatore", cost: 500, duration: "24h", img: "URL", it: { offer: "Menu degustazione mare" }, en: { offer: "Sea tasting menu" } },
+        { id: 'c5', partner: "Grotta Palazzese", cost: 800, duration: "48h", img: "URL", it: { offer: "Ingresso VIP grotta" }, en: { offer: "VIP cave entrance" } }
+    ],
+
+    // 4. SISTEMA BADGE CON TIER COLOURS
+    badges: [
+        { id: "City Explorer", tier: "badge-base", icon: "🏙️" },
+        { id: "Foodie Hunter", tier: "badge-base", icon: "🍕" },
+        { id: "Night Owl", tier: "badge-base", icon: "🦉" },
+        { id: "Heritage Seeker", tier: "badge-mid", icon: "🏛️" },
+        { id: "Sea Hunter", tier: "badge-mid", icon: "🌊" },
+        { id: "Event Collector", tier: "badge-mid", icon: "🎟️" },
+        { id: "Master Hunter", tier: "badge-adv", icon: "👑" },
+        { id: "Ultimate Explorer", tier: "badge-adv", icon: "💎" }
+    ]
+};
 
         /* --- STATE MANAGEMENT --- */
         let state = JSON.parse(localStorage.getItem('beehunter_ultimate')) || {
@@ -417,20 +444,30 @@
             }).join('');
         }
 
-        function renderHistory() {
-            const container = document.getElementById('history-container');
-            if(state.history.length === 0) {
-                container.innerHTML = '<p class="text-sm text-slate-400 italic">Nessun punto visitato.</p>';
-                return;
-            }
-            container.innerHTML = [...state.history].reverse().map(h => `
-                <div class="history-item">
-                    <p class="text-[10px] font-bold text-slate-400">${h.date}</p>
-                    <h4 class="font-black text-sm">${h.name}</h4>
-                    <p class="text-xs text-blue-600 font-bold">+${h.xp} XP</p>
-                </div>
-            `).join('');
-        }
+      function renderHistory() {
+    const container = document.getElementById('history-container');
+    if(state.history.length === 0) {
+        container.innerHTML = '<p class="text-sm text-slate-400 italic">Nessun punto visitato.</p>';
+        return;
+    }
+    container.innerHTML = [...state.history].reverse().map(h => {
+        // Recupero l'immagine dal database usando l'ID
+        const pointData = DB.points.find(p => p.id === h.id) || DB.tours.find(t => t.id === h.id);
+        const imgSrc = pointData ? pointData.img : 'https://via.placeholder.com/150';
+
+        return `
+        <div class="history-item flex gap-4 items-center bg-white p-3 rounded-xl shadow-sm border border-slate-100">
+            <img src="${imgSrc}" class="w-12 h-12 rounded-lg object-cover">
+            <div class="flex-1">
+                <p class="text-[9px] font-bold text-slate-400">${h.date}</p>
+                <h4 class="font-black text-sm">${h.name}</h4>
+                <p class="text-xs text-blue-600 font-bold">+${h.xp} XP</p>
+            </div>
+            <button onclick="shareSocialAndGetBonus('${h.name}')" class="text-blue-500 text-lg"><i class="fa-brands fa-instagram"></i></button>
+        </div>
+        `;
+    }).join('');
+}
 
         /* --- LOGICA DI GIOCO (AR, Validation, Achievements) --- */
         function openARScanner(id) {
@@ -447,23 +484,31 @@
             document.getElementById('ar-scanner').style.display = 'none';
         }
 
-        function validatePoint() {
-            if(!currentScanId || state.visited.includes(currentScanId)) return;
-            const p = DB.points.find(x => x.id === currentScanId);
-            
-            // Aggiorna Stato
-            state.xp += p.xp;
-            state.visited.push(p.id);
-            state.history.push({ id: p.id, name: p[state.lang].name, xp: p.xp, date: new Date().toLocaleString() });
+       function validatePoint() {
+    if(!currentScanId || state.visited.includes(currentScanId)) return;
+    
+    // Cambiamo il testo per simulare l'analisi dell'Intelligenza Artificiale
+    document.querySelector('.t-scan-msg').innerText = state.lang === 'it' ? "ANALISI FOTO/QR IN CORSO..." : "ANALYZING PHOTO/QR...";
+    
+    setTimeout(() => {
+        const p = DB.points.find(x => x.id === currentScanId);
+        
+        // Aggiorna Stato
+        state.xp += p.xp;
+        state.visited.push(p.id);
+        state.history.push({ id: p.id, name: p[state.lang].name, xp: p.xp, date: new Date().toLocaleString() });
 
-            // Check Advanced Badges
-            checkAchievements();
-            
-            saveState();
-            closeScanner();
-            renderAll();
-            showToast(`${t('msg-claimed')}${p.xp} XP`);
-        }
+        checkAchievements();
+        saveState();
+        closeScanner();
+        renderAll();
+        
+        // Ripristina il testo originale per la prossima volta
+        document.querySelector('.t-scan-msg').innerText = t('t-scan-msg');
+        
+        showToast(`✅ ${t('msg-claimed')} ${p.xp} XP`);
+    }, 1500); // 1.5 secondi di attesa simulata
+}
 
         function bookTour(tourId) {
             const tour = DB.tours.find(t => t.id === tourId);
@@ -497,19 +542,40 @@
             showToast(t('msg-purchased'));
         }
 
-        function checkAchievements() {
-            // Logica Badge Avanzati Multiple Conditions
-            if(state.xp >= 5000 && !state.badges.includes("Master Hunter")) state.badges.push("Master Hunter");
-            if(state.visited.length >= 200 && !state.badges.includes("Ultimate Explorer")) state.badges.push("Ultimate Explorer");
-            
-            // Check Completamento Categorie (es. 5 Food -> Foodie Hunter)
-            const foodVisits = state.visited.filter(vid => DB.points.find(p => p.id === vid && p.type === 'Food')).length;
-            if(foodVisits >= 5 && !state.badges.includes("Foodie Hunter")) state.badges.push("Foodie Hunter");
-            
-            const natureVisits = state.visited.filter(vid => DB.points.find(p => p.id === vid && p.type === 'Natura')).length;
-            if(natureVisits >= 5 && !state.badges.includes("Sea Hunter")) state.badges.push("Sea Hunter");
-        }
+      function checkAchievements() {
+    let newBadge = false;
 
+    // 1. Foodie Hunter: Degustando 5 esperienze di street food / food
+    const foodVisits = state.visited.filter(vid => {
+        const p = DB.points.find(x => x.id === vid);
+        return p && p.type === 'Food';
+    }).length;
+    if(foodVisits >= 5 && !state.badges.includes("Foodie Hunter")) { state.badges.push("Foodie Hunter"); newBadge = true; }
+
+    // 2. Sea Hunter: Convalidando 5 punti costieri/natura
+    const seaVisits = state.visited.filter(vid => {
+        const p = DB.points.find(x => x.id === vid);
+        return p && p.type === 'Natura';
+    }).length;
+    if(seaVisits >= 5 && !state.badges.includes("Sea Hunter")) { state.badges.push("Sea Hunter"); newBadge = true; }
+
+    // 3. Event Collector: Partecipando a 3 eventi
+    const eventVisits = state.visited.filter(vid => {
+        const p = DB.points.find(x => x.id === vid);
+        return p && p.type === 'Eventi';
+    }).length;
+    if(eventVisits >= 3 && !state.badges.includes("Event Collector")) { state.badges.push("Event Collector"); newBadge = true; }
+
+    // 4. Master Hunter: XP totale >= 5000
+    if(state.xp >= 5000 && !state.badges.includes("Master Hunter")) { state.badges.push("Master Hunter"); newBadge = true; }
+
+    // 5. Ultimate Explorer: Tutti i 200 punti visitati
+    if(state.visited.length >= 200 && !state.badges.includes("Ultimate Explorer")) { state.badges.push("Ultimate Explorer"); newBadge = true; }
+
+    if(newBadge) {
+        showToast(t('msg-badge') + " Controlla il Profilo!");
+    }
+}
         /* --- SOCIAL & LEADERBOARD (Simulata) --- */
         function generateFakeLeaderboard() {
             const names = ["Vittorio_BA", "SabinoKing", "LaBaresina", "Miki_UBiond", "AntoCrudo", "Ale_Hunter", "Fra_Puglia"];
@@ -558,7 +624,25 @@
                 el.innerText = el.getAttribute(`data-${state.lang}`);
             });
         }
+function shareSocialAndGetBonus(nomeLuogo) {
+    const testo = state.lang === 'it' 
+        ? `Ho appena esplorato ${nomeLuogo} su BeeHunter Bari! 🐝 Unisciti alla caccia! #BeeHunterBari` 
+        : `I just explored ${nomeLuogo} on BeeHunter Bari! 🐝 Join the hunt! #BeeHunterBari`;
 
+    if (navigator.share) {
+        navigator.share({ title: 'BeeHunter Bari', text: testo, url: window.location.href })
+        .then(() => { 
+            state.xp += 5; // Bonus
+            saveState(); 
+            updateHeader(); 
+            showToast(t('msg-badge') ? "+5 XP SOCIAL BONUS!" : "+5 XP SOCIAL BONUS!"); 
+        });
+    } else {
+        alert("Copia questo testo per le tue Storie: " + testo);
+        state.xp += 5; saveState(); updateHeader();
+    }
+}
+        
         function t(key) { return I18N[state.lang][key] || key; }
 
         function showToast(msg) {
@@ -580,7 +664,9 @@
             if(id === 'radar') setTimeout(() => map.invalidateSize(), 300);
             if(id === 'social') generateFakeLeaderboard();
         }
-
+        
+<div onclick="alert('Integrazione API AMTAB in arrivo!'); toggleMenu()"><i class="fa-solid fa-bus mr-3"></i> Orari Pullman</div>
+    
         function saveState() { localStorage.setItem('beehunter_ultimate', JSON.stringify(state)); }
 
         window.onload = init;
