@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BEEHUNTER | BARI 2026</title>
+    <title>BEEHUNTER BARI | OFFICIAL APP 2026</title>
 
-    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -13,350 +12,321 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;600;900&display=swap');
         
-        :root { --bee-y: #FACC15; --bee-d: #0F172A; --bee-w: #F8FAFC; --safe-top: env(safe-area-inset-top); }
-        
-        body { font-family: 'Outfit', sans-serif; background: var(--bee-w); color: var(--bee-d); margin: 0; overflow: hidden; height: 100vh; transition: 0.5s; }
+        :root { 
+            --bee-sun: #FFD700; 
+            --bee-orange: #FF8C00;
+            --bee-sea: #00BFFF;
+            --bee-dark: #1E293B; 
+            --bee-bg: #FFFDF0; 
+        }
+
+        body { font-family: 'Outfit', sans-serif; background: var(--bee-bg); color: var(--bee-dark); margin: 0; overflow: hidden; height: 100vh; }
         .font-black { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* SIDEBAR */
-        #sidebar { position: fixed; top: 0; left: -100%; width: 85%; height: 100%; background: var(--bee-d); z-index: 20000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); padding: 50px 25px; color: white; }
-        #sidebar.open { left: 0; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 19999; display: none; }
-        .overlay.active { display: block; }
+        /* HEADER ALLEGRO */
+        header { 
+            position: fixed; top: 0; width: 100%; height: 100px; 
+            background: var(--bee-sun); 
+            z-index: 1000; display: flex; align-items: center; justify-content: space-between; 
+            padding: 20px; border-bottom: 4px solid var(--bee-dark);
+            box-shadow: 0 4px 0 var(--bee-orange);
+        }
 
-        /* VIEWPORT */
-        .viewport { height: 100vh; overflow-y: auto; padding-top: 100px; padding-bottom: 140px; }
-        header { position: fixed; top: 0; width: 100%; height: 90px; background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); z-index: 9000; display: flex; align-items: center; justify-content: space-between; padding: var(--safe-top) 20px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        
-        .bottom-nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 80px; background: var(--bee-d); border-radius: 30px; z-index: 9000; display: flex; align-items: center; justify-content: space-around; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .nav-btn { color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
-        .nav-btn.active { color: var(--bee-y); transform: translateY(-5px); }
-        .nav-btn span { font-size: 0.6rem; font-weight: 800; margin-top: 4px; text-transform: uppercase; }
+        /* BOTTOM NAV STILE CARTOON */
+        .bottom-nav { 
+            position: fixed; bottom: 20px; left: 15px; right: 15px; height: 80px; 
+            background: var(--bee-dark); border-radius: 30px; z-index: 1000; 
+            display: flex; align-items: center; justify-content: space-around;
+            border: 4px solid var(--bee-sun);
+        }
+        .nav-btn { color: white; flex-direction: column; display: flex; align-items: center; transition: 0.2s; }
+        .nav-btn.active { color: var(--bee-sun); transform: scale(1.2) translateY(-5px); }
+        .nav-btn span { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; margin-top: 4px; }
 
-        /* UI ELEMENTS */
-        #map { height: 350px; width: 100%; border-radius: 40px; border: 6px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .card { background: white; border-radius: 35px; padding: 20px; border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; }
-        
+        /* PAGINE */
+        .page { height: 100vh; overflow-y: auto; padding: 120px 20px 140px; display: none; scroll-behavior: smooth; }
+        .page.active { display: block; animation: fadeIn 0.4s; }
+
+        /* MAPPA & CARDS */
+        #map { height: 350px; width: 100%; border-radius: 40px; border: 5px solid var(--bee-dark); box-shadow: 8px 8px 0 var(--bee-orange); margin-bottom: 25px; }
+        .card { 
+            background: white; border-radius: 30px; padding: 20px; margin-bottom: 20px; 
+            border: 3px solid var(--bee-dark); box-shadow: 5px 5px 0 var(--bee-orange);
+            transition: 0.3s;
+        }
+        .card:active { transform: translate(3px, 3px); box-shadow: 0 0 0; }
+
+        /* BADGE & TAGS */
+        .badge-tag { background: var(--bee-sea); color: white; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+        .xp-pill { background: var(--bee-dark); color: var(--bee-sun); padding: 5px 12px; border-radius: 15px; font-weight: 900; font-size: 12px; }
+
         /* SCANNER */
-        #scanner-layer { position: fixed; inset: 0; z-index: 30000; background: black; display: none; flex-direction: column; }
-        .scan-anim { width: 100%; height: 2px; background: var(--bee-y); box-shadow: 0 0 15px var(--bee-y); position: absolute; animation: scan 2s infinite; }
-        @keyframes scan { 0% { top: 20%; } 50% { top: 80%; } 100% { top: 20%; } }
+        #scanner-view { position: fixed; inset: 0; background: black; z-index: 5000; display: none; }
+        .scan-frame { position: absolute; inset: 50px; border: 5px solid var(--bee-sun); border-radius: 40px; }
 
-        /* BOTTOM SHEETS */
-        .sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 85%; background: white; z-index: 15000; border-radius: 45px 45px 0 0; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); padding: 30px; overflow-y: auto; }
+        /* MODALI / SHEETS */
+        .sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 80%; background: white; z-index: 2000; border-radius: 40px 40px 0 0; border-top: 5px solid var(--bee-dark); transition: 0.5s; padding: 30px; overflow-y: auto; }
         .sheet.open { bottom: 0; }
-
-        /* DARK MODE SUPPORT */
-        .dark-theme { --bee-w: #0F172A; --bee-d: #F8FAFC; }
-        .dark-theme header { background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .dark-theme .card { background: #1E293B; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <aside id="sidebar">
-        <div class="flex items-center gap-4 mb-12">
-            <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-slate-900 text-2xl font-black">B</div>
-            <div><h2 class="font-black text-xl leading-none">BEEHUNTER</h2><p class="text-[9px] opacity-50 uppercase mt-1">Bari Detective Edition</p></div>
+    <div id="toast" class="fixed top-28 left-4 right-4 bg-white border-4 border-bee-dark p-4 rounded-2xl z-[6000] transform -translate-y-[200%] transition-all shadow-[6px 6px 0 var(--bee-orange)]">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl">🐝</span>
+            <div><p id="toast-title" class="font-black text-[10px] text-orange-500 uppercase">BeeHunter Alert</p><p id="toast-msg" class="text-sm font-bold"></p></div>
         </div>
-        <nav class="space-y-6 text-lg font-bold">
-            <button onclick="showSOS()" class="flex items-center gap-4 text-red-400"><i class="fa-solid fa-phone-flip"></i> SOS & Emergenze</button>
-            <button onclick="toggleMenu()" class="flex items-center gap-4"><i class="fa-solid fa-bus"></i> Trasporti & Orari</button>
-            <button onclick="toggleMenu()" class="flex items-center gap-4 opacity-50"><i class="fa-solid fa-gear"></i> Impostazioni</button>
-            <hr class="border-white/10 my-6">
-            <button onclick="resetApp()" class="text-sm opacity-30 uppercase">Reset Sessione</button>
-        </nav>
-    </aside>
+    </div>
 
     <header>
-        <button onclick="toggleMenu()" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-lg"><i class="fa-solid fa-bars-staggered"></i></button>
+        <button onclick="toggleSheet('transport-sheet')" class="w-14 h-14 bg-white border-3 border-bee-dark rounded-2xl flex items-center justify-center text-xl shadow-[4px 4px 0 var(--bee-dark)]"><i class="fa-solid fa-bus"></i></button>
         <div class="text-center">
-            <h1 class="font-black italic text-2xl tracking-tighter">BEEHUNTER.</h1>
-            <p id="meteo-brief" class="text-[8px] font-black text-yellow-600 uppercase tracking-widest">Caricamento...</p>
+            <h1 class="font-black italic text-2xl tracking-tighter text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">BEEHUNTER!</h1>
+            <div class="flex items-center justify-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <p class="text-[9px] font-black uppercase text-bee-dark">Bari Live Experience</p>
+            </div>
         </div>
-        <button onclick="toggleChat()" class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-lg"><i class="fa-solid fa-headset"></i></button>
+        <div class="flex flex-col items-center">
+            <div class="xp-pill shadow-[3px 3px 0 var(--bee-orange)]" id="global-xp">0 XP</div>
+            <span class="text-[7px] font-black mt-1">RANK: NOVIZIO</span>
+        </div>
     </header>
 
-    <div id="hint-note" class="fixed top-24 left-6 right-6 bg-slate-900 text-white p-5 rounded-3xl z-[25000] shadow-2xl transform -translate-y-64 transition-transform duration-700 border-b-4 border-yellow-400">
-        <div class="flex items-start gap-4">
-            <div class="text-2xl animate-bounce">🕵️‍♂️</div>
-            <div class="flex-1">
-                <p class="text-[8px] font-black text-yellow-400 uppercase mb-1">Indizio Rilevato</p>
-                <p id="hint-text" class="text-xs font-medium leading-tight italic"></p>
-            </div>
-            <button onclick="closeHint()" class="opacity-30"><i class="fa-solid fa-times"></i></button>
-        </div>
-    </div>
-
-    <main class="viewport px-6" id="main-content">
-        
-        <section id="radar-page" class="page block">
-            <div id="meteo-widget" class="bg-gradient-to-br from-blue-500 to-indigo-600 p-5 rounded-[35px] text-white mb-6 shadow-xl flex justify-between items-center">
-                <div>
-                    <h3 id="m-temp" class="text-3xl font-black">21°C</h3>
-                    <p id="m-adv" class="text-[9px] font-bold uppercase opacity-80 mt-1">Maestrale: Perfetto per la Focaccia</p>
-                </div>
-                <div class="text-right">
-                    <span id="m-icon" class="text-4xl">☀️</span>
-                </div>
-            </div>
-            <div id="map"></div>
-            <div id="monument-list" class="space-y-4"></div>
-        </section>
-
-        <section id="profile-page" class="page hidden">
-            <div class="text-center mb-10">
-                <div class="w-28 h-28 bg-white rounded-[40px] mx-auto border-8 border-yellow-400 shadow-2xl overflow-hidden">
-                    <img id="u-avatar" src="" class="w-full h-full">
-                </div>
-                <h2 id="u-name" class="text-3xl font-black italic mt-4 uppercase">Hunter</h2>
-                <div class="flex justify-center gap-4 mt-4">
-                    <div class="bg-white px-6 py-2 rounded-2xl shadow-sm border border-slate-100"><p class="text-[8px] font-black opacity-40">PUNTI XP</p><p id="u-xp" class="font-black">0</p></div>
-                    <div class="bg-white px-6 py-2 rounded-2xl shadow-sm border border-slate-100"><p class="text-[8px] font-black opacity-40">RANK</p><p class="font-black text-yellow-500">PRO</p></div>
-                </div>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="font-black italic text-sm text-slate-400 mb-4 px-2">TACCUINO INDIZI</h3>
-                <div id="notebook-list" class="space-y-4"></div>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="font-black italic text-sm text-yellow-600 mb-4 px-2">PREMI SBLOCCATI</h3>
-                <div id="coupon-list" class="space-y-3"></div>
-            </div>
-        </section>
-    </main>
-
-    <div id="scanner-layer">
-        <video id="webcam" autoplay playsinline class="w-full h-full object-cover opacity-50"></video>
-        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div class="w-72 h-72 border-2 border-white/20 rounded-[50px] relative overflow-hidden">
-                <div class="scan-anim"></div>
-            </div>
-            <p id="scan-target-name" class="mt-10 text-yellow-400 font-black tracking-[0.2em] animate-pulse">ANALIZZANDO...</p>
-        </div>
-        <div class="absolute bottom-12 w-full px-10 flex justify-between items-center">
-            <button onclick="closeScanner()" class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full text-white"><i class="fa-solid fa-times"></i></button>
-            <button onclick="processScan()" class="w-24 h-24 bg-yellow-400 rounded-full shadow-[0_0_40px_rgba(250,204,21,0.5)] flex items-center justify-center text-3xl"><i class="fa-solid fa-expand"></i></button>
-            <div class="w-16"></div>
-        </div>
-    </div>
-
-    <div id="guide-sheet" class="sheet">
-        <div id="guide-body"></div>
-        <div id="voice-rec-area" class="mt-8 bg-slate-50 p-6 rounded-[35px] hidden">
-            <p class="text-[9px] font-black text-center text-slate-400 mb-4 uppercase">Lascia una recensione vocale</p>
-            <button id="rec-btn" onclick="handleVoiceRec()" class="w-16 h-16 bg-red-500 rounded-full mx-auto flex items-center justify-center text-white shadow-lg animate-pulse"><i class="fa-solid fa-microphone"></i></button>
-        </div>
-        <button onclick="closeGuide()" class="mt-8 w-full bg-slate-900 text-white py-5 rounded-3xl font-black uppercase italic">Chiudi Guida</button>
-    </div>
-
     <nav class="bottom-nav">
-        <button onclick="showPage('radar-page')" class="nav-btn active" id="btn-radar"><i class="fa-solid fa-compass"></i><span>Radar</span></button>
-        <button onclick="showPage('profile-page')" class="nav-btn" id="btn-profile"><i class="fa-solid fa-fingerprint"></i><span>Dossier</span></button>
-        <button onclick="toggleChat()" class="nav-btn"><i class="fa-solid fa-comment-dots"></i><span>Chat</span></button>
+        <button onclick="switchPage('radar')" id="nav-radar" class="nav-btn active"><i class="fa-solid fa-rocket"></i><span>Radar</span></button>
+        <button onclick="switchPage('notebook')" id="nav-notebook" class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i><span>Casi</span></button>
+        <button onclick="switchPage('bike')" id="nav-bike" class="nav-btn"><i class="fa-solid fa-bicycle"></i><span>Tour</span></button>
+        <button onclick="switchPage('profile')" id="nav-profile" class="nav-btn"><i class="fa-solid fa-face-smile"></i><span>Tu</span></button>
     </nav>
 
-    <script>
-        /* --- DATABASE COMPLETO --- */
-        const DB = {
-            monuments: [
-                { id: 'm1', name: 'Basilica San Nicola', coords: [41.1315, 16.8722], xp: 150, bio: 'Custodisce le reliquie del Santo che ha dato origine al mito di Babbo Natale. Architettura romanica pugliese pura.', img: 'https://images.unsplash.com/photo-1549893072-4bc678117f45?w=600' },
-                { id: 'm2', name: 'Castello Svevo', coords: [41.1288, 16.8644], xp: 150, bio: 'Fortezza federiciana imponente. Un tempo prigione e residenza reale, oggi cuore museale di Bari.', img: 'https://images.unsplash.com/photo-1569429532344-365287e0766b?w=600' }
-            ],
-            secrets: [
-                { id: 'egg_arco', name: 'Arco delle Meraviglie', coords: [41.1305, 16.8710], xp: 500, hint: 'Cerca un ponte sospeso che unisce due amanti tra i vicoli...' },
-                { id: 'egg_proiettile', name: 'Il Proiettile Storico', coords: [41.1316, 16.8720], xp: 550, hint: 'C’è un colpo di cannone incastrato in una facciata... guarda in alto!' }
-            ]
-        };
+    <main id="page-radar" class="page active">
+        <div class="flex overflow-x-auto gap-3 mb-6 no-scrollbar pb-2">
+            <button class="badge-tag bg-bee-orange shadow-[2px_2px_0_#000]">Tutto</button>
+            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Cultura</button>
+            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Food</button>
+            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Eventi</button>
+        </div>
+        <div id="map"></div>
+        <h3 class="font-black italic text-lg mb-4 text-orange-500">🔥 Obiettivi Vicini</h3>
+        <div id="radar-list"></div>
+    </main>
 
-        /* --- APP STATE --- */
-        let state = JSON.parse(localStorage.getItem('beehunter_v2026')) || {
-            name: "Hunter_" + Math.floor(Math.random()*999),
-            xp: 0,
-            visited: [],
-            hintsFound: [],
-            coupons: []
-        };
+    <main id="page-notebook" class="page">
+        <div class="bg-bee-orange p-6 rounded-[40px] border-4 border-bee-dark mb-8 text-white shadow-[6px_6px_0_var(--bee-dark)]">
+            <h2 class="text-3xl font-black italic uppercase leading-none">Detective Taccuino</h2>
+            <p class="text-xs font-bold mt-2 opacity-90 italic">Trova i segreti nascosti di Bari!</p>
+        </div>
+        <div id="notebook-list" class="space-y-4"></div>
+    </main>
+
+    <main id="page-bike" class="page text-center">
+        <img src="https://images.unsplash.com/photo-1485965123384-57aa0406e09a?w=800" class="w-full h-48 object-cover rounded-[40px] border-4 border-bee-dark shadow-[6px_6px_0_var(--bee-sea)]">
+        <h2 class="text-3xl font-black italic mt-6 uppercase">Bari in Bici</h2>
+        <p class="text-sm font-bold text-slate-500 px-4">Esplora la città su due ruote! Noleggia una bici partner per soli 3€ al giorno e sblocca itinerari esclusivi.</p>
+        <div class="grid grid-cols-2 gap-4 mt-8">
+            <div class="card bg-bee-sea text-white !border-white"><h4 class="font-black">TOUR LUNGOMARE</h4><p class="text-xs">3.5 KM • 15 PT</p></div>
+            <div class="card"><h4 class="font-black">TOUR MURAT</h4><p class="text-xs">2.0 KM • 10 PT</p></div>
+        </div>
+        <button class="w-full bg-bee-sun border-4 border-bee-dark py-5 rounded-3xl font-black text-xl mt-4 shadow-[6px_6px_0_#000]">PRENOTA ORA (3€)</button>
+    </main>
+
+    <main id="page-profile" class="page">
+        <div class="card text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-bee-sea"></div>
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=BariBee" class="w-24 h-24 mx-auto mb-4 border-4 border-bee-sun rounded-full">
+            <h2 class="text-2xl font-black italic" id="prof-name">HUNTER_01</h2>
+            <p class="text-[10px] font-black uppercase text-slate-400">Bari Food Master Level: 1</p>
+        </div>
+        <h3 class="font-black italic text-lg mb-4 text-bee-orange">🏆 Collezione Badge</h3>
+        <div id="badge-grid" class="grid grid-cols-3 gap-3"></div>
+        <h3 class="font-black italic text-lg mt-8 mb-4 text-bee-sea">🎟️ I tuoi Coupon</h3>
+        <div id="coupon-list" class="space-y-3"></div>
+    </main>
+
+    <div id="transport-sheet" class="sheet">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black italic">MUOVERSI A BARI</h2>
+            <button onclick="toggleSheet('transport-sheet')" class="text-2xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="space-y-4">
+            <div class="card flex items-center gap-4 bg-slate-50">
+                <i class="fa-solid fa-train text-2xl"></i>
+                <div><p class="font-black">Stazione Centrale</p><p class="text-xs">Treni per Polignano/Monopoli ogni 30'</p></div>
+            </div>
+            <div class="card flex items-center gap-4 bg-slate-50">
+                <i class="fa-solid fa-bus text-2xl"></i>
+                <div><p class="font-black">Linea 12/ (Lungomare)</p><p class="text-xs">In arrivo tra 4 minuti</p></div>
+            </div>
+            <input type="text" placeholder="Dove vuoi andare?" class="w-full p-5 border-4 border-bee-dark rounded-2xl font-bold shadow-[4px_4px_0_#000]">
+            <button class="w-full bg-bee-sea text-white py-4 rounded-2xl font-black shadow-[4px_4px_0_var(--bee-dark)]">CALCOLA PERCORSO MIGLIORE</button>
+        </div>
+    </div>
+
+    <div id="scanner-view">
+        <video id="webcam" class="w-full h-full object-cover" autoplay playsinline></video>
+        <div class="scan-frame"><div class="absolute top-0 left-0 w-full h-1 bg-bee-sun animate-bounce shadow-[0_0_15px_#FFD700]"></div></div>
+        <div class="absolute bottom-10 w-full flex justify-center gap-10 px-10">
+            <button onclick="stopScanner()" class="w-16 h-16 bg-white/20 rounded-full text-white"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="captureAction()" class="w-20 h-20 bg-bee-sun rounded-full text-bee-dark text-3xl shadow-2xl border-4 border-bee-dark"><i class="fa-solid fa-camera"></i></button>
+        </div>
+    </div>
+
+    <script>
+        /* --- DATABASE COMPLETO (Monumenti + Indizi) --- */
+        const DB = [
+            // Cultura & Monumenti (I 10 nuovi inseriti qui)
+            { id: 'm1', cat: 'culture', pt: 20, name: 'Basilica San Nicola', lat: 41.1315, lng: 16.8722, bio: 'Custodisce le reliquie di San Nicola. Architettura romanica pura.', badge: 'Culture Master' },
+            { id: 'm2', cat: 'culture', pt: 20, name: 'Castello Svevo', lat: 41.1288, lng: 16.8644, bio: 'Fortezza federiciana. Un tempo carcere, oggi cuore della cultura.' },
+            { id: 'm3', cat: 'culture', pt: 20, name: 'Teatro Petruzzelli', lat: 41.1250, lng: 16.8720, bio: 'Il quarto teatro più grande d’Italia. Simbolo del lusso barese.' },
+            { id: 'm4', cat: 'culture', pt: 20, name: 'Cattedrale San Sabino', lat: 41.1285, lng: 16.8690, bio: 'Celebre per il rosone che proietta la luce il 21 giugno.' },
+            { id: 'm5', cat: 'culture', pt: 20, name: 'Palazzo dell’Acquedotto', lat: 41.1220, lng: 16.8710, bio: 'Capolavoro di architettura celebrativa dell’acqua.' },
+            { id: 'm6', cat: 'culture', pt: 20, name: 'Teatro Margherita', lat: 41.1265, lng: 16.8730, bio: 'Unico teatro costruito su palafitte in mare.' },
+            { id: 'm7', cat: 'culture', pt: 20, name: 'Pinacoteca Corrado Giaquinto', lat: 41.1180, lng: 16.8850, bio: 'Tesori d’arte sul lungomare di Bari.' },
+            { id: 'm8', cat: 'culture', pt: 20, name: 'Colonna della Giustizia', lat: 41.1292, lng: 16.8732, bio: 'Piazza Mercantile: dove venivano legati i debitori.' },
+            { id: 'm9', cat: 'culture', pt: 20, name: 'Arco del Basso', lat: 41.1305, lng: 16.8700, bio: 'Uno dei passaggi più iconici e stretti di Bari Vecchia.' },
+            { id: 'm10', cat: 'culture', pt: 20, name: 'Faro di San Cataldo', lat: 41.1350, lng: 16.8400, bio: 'Uno dei fari più alti d’Italia sul porto Adriatico.' },
+            
+            // Food & Segreti
+            { id: 'f1', cat: 'food', pt: 20, name: 'Panificio Fiore', hint: 'Cerca la chiesa sconsacrata che profuma di focaccia...', bio: 'La focaccia barese più antica del mondo.' },
+            { id: 'f2', cat: 'food', pt: 10, name: 'Mercato Coperto Santa Scolastica', hint: 'Il regno del pesce crudo e dei frutti di mare.', badge: 'Fresh Catch' },
+            { id: 's1', cat: 'secret', pt: 50, name: 'Largo Albicocca', hint: 'Piazza degli innamorati: il cuore verde di Bari Vecchia.', badge: 'Explorer' }
+        ];
+
+        /* --- STATE --- */
+        let state = JSON.parse(localStorage.getItem('beehunter_final')) || { xp: 0, visited: [], badges: ['Explorer'], coupons: [] };
         let map, currentTarget = null;
 
-        /* --- CORE FUNCTIONS --- */
+        /* --- CORE --- */
         function init() {
+            renderMap();
             updateUI();
-            initMap();
-            initMeteo();
-            applyTheme();
-            checkHints();
+            checkProximity();
+            document.getElementById('global-xp').innerText = state.xp + " XP";
         }
 
-        function initMap() {
+        function renderMap() {
             map = L.map('map', { zoomControl: false }).setView([41.130, 16.870], 14);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
-            DB.monuments.forEach(m => {
-                L.marker(m.coords).addTo(map).on('click', () => openGuide(m));
+            DB.forEach(m => {
+                if(m.lat) L.marker([m.lat, m.lng], { icon: L.divIcon({className: 'bg-orange-400 w-3 h-3 rounded-full border-2 border-white'}) }).addTo(map);
             });
         }
 
-        function initMeteo() {
-            const h = new Date().getHours();
-            const brief = (h > 19 || h < 6) ? "🌙 Bari Notturna" : "☀️ Bari Soleggiata";
-            document.getElementById('meteo-brief').innerText = brief;
-        }
-
-        function applyTheme() {
-            const h = new Date().getHours();
-            if(h > 19 || h < 6) document.body.classList.add('dark-theme');
-        }
-
-        /* --- NAVIGATION --- */
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        function switchPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.remove('hidden');
-            if(id === 'radar-page') {
-                document.getElementById('btn-radar').classList.add('active');
-                setTimeout(() => map.invalidateSize(), 300);
-            } else {
-                document.getElementById('btn-profile').classList.add('active');
-                renderNotebook();
-            }
+            document.getElementById('page-'+id).classList.add('active');
+            document.getElementById('nav-'+id).classList.add('active');
+            if(id==='radar') setTimeout(() => map.invalidateSize(), 200);
         }
 
-        /* --- SCANNER & GAME LOGIC --- */
-        async function openScanner(item) {
-            currentTarget = item;
-            document.getElementById('scanner-layer').style.display = 'flex';
-            document.getElementById('scan-target-name').innerText = "ANALIZZANDO: " + item.name.toUpperCase();
+        function updateUI() {
+            const rList = document.getElementById('radar-list');
+            rList.innerHTML = DB.filter(m => m.cat === 'culture' && !state.visited.includes(m.id)).map(m => `
+                <div class="card flex justify-between items-center bg-white">
+                    <div><h4 class="font-black italic text-sm">${m.name}</h4><p class="text-[9px] font-black text-bee-sea">+${m.pt} XP • CULTURA</p></div>
+                    <button onclick="startScanner('${m.id}')" class="bg-bee-sun border-3 border-bee-dark px-4 py-2 rounded-xl text-[10px] font-black">CATTURA</button>
+                </div>
+            `).join('');
+
+            const nList = document.getElementById('notebook-list');
+            nList.innerHTML = DB.filter(m => m.hint && !state.visited.includes(m.id)).map(m => `
+                <div class="card bg-bee-sun/20 border-bee-dark">
+                    <p class="text-[8px] font-black opacity-60 uppercase mb-2">Caso Misterioso</p>
+                    <p class="text-xs font-bold italic leading-tight">"${m.hint}"</p>
+                    <div class="mt-4 flex gap-2">
+                        <button onclick="startScanner('${m.id}')" class="bg-bee-dark text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase">Risolvi</button>
+                        <button onclick="shareWA('${m.hint}')" class="bg-[#25D366] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase"><i class="fa-brands fa-whatsapp"></i> Chiedi Aiuto</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const bGrid = document.getElementById('badge-grid');
+            bGrid.innerHTML = state.badges.map(b => `
+                <div class="bg-white border-3 border-bee-dark rounded-2xl p-3 text-center">
+                    <div class="text-2xl mb-1">🏅</div>
+                    <p class="text-[8px] font-black uppercase leading-none">${b}</p>
+                </div>
+            `).join('');
+            
+            const cList = document.getElementById('coupon-list');
+            cList.innerHTML = state.coupons.map(c => `
+                <div class="card bg-bee-sea text-white flex justify-between items-center !border-white">
+                    <div><h4 class="font-black uppercase text-xs">${c.title}</h4><p class="text-[8px] font-bold">${c.partner}</p></div>
+                    <div class="bg-white text-bee-sea px-3 py-1 rounded-lg font-black text-[10px]">${c.code}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('global-xp').innerText = state.xp + " XP";
+            localStorage.setItem('beehunter_final', JSON.stringify(state));
+        }
+
+        /* --- SISTEMA CONDIVISIONE WHATSAPP --- */
+        function shareWA(text) {
+            const url = `https://wa.me/?text=Ehi detective! Sto giocando a BeeHunter Bari e sono bloccato su questo indizio: "${text}". Mi aiuti? 🐝🔎`;
+            window.open(url, '_blank');
+            notify("COLLABORAZIONE ATTIVA", "Hai inviato l'indizio! +5 XP per il Social Engagement!");
+            state.xp += 5;
+            updateUI();
+        }
+
+        /* --- SCANNER --- */
+        async function startScanner(id) {
+            currentTarget = DB.find(x => x.id === id);
+            document.getElementById('scanner-view').style.display = 'block';
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 document.getElementById('webcam').srcObject = stream;
-            } catch(e) { console.log("Cam simulata"); }
+            } catch(e) { notify("CAM ERROR", "Simulazione scanner attiva."); }
         }
 
-        function closeScanner() {
+        function stopScanner() {
             const s = document.getElementById('webcam').srcObject;
             if(s) s.getTracks().forEach(t => t.stop());
-            document.getElementById('scanner-layer').style.display = 'none';
+            document.getElementById('scanner-view').style.display = 'none';
         }
 
-        function processScan() {
-            if(state.visited.includes(currentTarget.id)) return alert("Già acquisito!");
-            
-            state.xp += currentTarget.xp;
+        function captureAction() {
+            state.xp += currentTarget.pt;
             state.visited.push(currentTarget.id);
+            if(currentTarget.badge && !state.badges.includes(currentTarget.badge)) state.badges.push(currentTarget.badge);
             
-            // Check per coupon (ogni 2 monumenti)
-            if(state.visited.length % 2 === 0) {
-                const c = { id: Date.now(), title: "Birra Omaggio", partner: "Mastro Ciccio", code: "BEE-26" };
-                state.coupons.push(c);
+            // Logica Coupon Premio
+            if(state.visited.length % 3 === 0) {
+                state.coupons.push({ title: "Omaggio Focaccia", partner: "Mastro Ciccio", code: "BEE-"+Math.floor(Math.random()*900) });
             }
 
-            save();
-            closeScanner();
-            closeGuide();
-            updateUI();
+            notify("OBIETTIVO SBLOCCATO!", `Hai ottenuto +${currentTarget.pt} XP!`);
             
-            // Text to Speech
+            // Audio Guida (TTS)
             if(currentTarget.bio) {
-                const speech = new SpeechSynthesisUtterance("Missione compiuta! Ecco la storia: " + currentTarget.bio);
+                const speech = new SpeechSynthesisUtterance(currentTarget.bio);
                 speech.lang = 'it-IT';
                 window.speechSynthesis.speak(speech);
             }
+
+            stopScanner();
+            updateUI();
         }
 
-        /* --- NOTEBOOK & HINTS --- */
-        function checkHints() {
-            // Simulazione: se sei entro X metri (qui attiviamo a caso per demo)
-            DB.secrets.forEach(s => {
-                if(!state.hintsFound.includes(s.id) && !state.visited.includes(s.id)) {
-                    setTimeout(() => triggerHint(s), 3000);
-                }
-            });
+        /* --- NOTIFICHE --- */
+        function notify(title, msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.add('show');
+            t.style.transform = "translateY(0)";
+            setTimeout(() => t.style.transform = "translateY(-200%)", 3500);
         }
 
-        function triggerHint(egg) {
-            state.hintsFound.push(egg.id);
-            save();
-            const note = document.getElementById('hint-note');
-            document.getElementById('hint-text').innerText = egg.hint;
-            note.style.transform = 'translateY(0)';
+        function toggleSheet(id) { document.getElementById(id).classList.toggle('open'); }
+
+        function checkProximity() {
+            setTimeout(() => notify("INDIZIO RILEVATO", "Qualcosa vibra nel tuo taccuino..."), 4000);
         }
-
-        function closeHint() { document.getElementById('hint-note').style.transform = 'translateY(-260px)'; }
-
-        function renderNotebook() {
-            const list = document.getElementById('notebook-list');
-            const openCases = DB.secrets.filter(s => state.hintsFound.includes(s.id) && !state.visited.includes(s.id));
-            
-            list.innerHTML = openCases.map(s => `
-                <div class="card border-l-8 border-yellow-400">
-                    <p class="text-[10px] font-black text-slate-400 mb-1 uppercase">Indizio Enigma</p>
-                    <p class="text-xs font-bold italic">"${s.hint}"</p>
-                    <div class="flex gap-2 mt-4">
-                        <button onclick="openScanner({id:'${s.id}', name:'${s.name}', xp:${s.xp}})" class="bg-yellow-400 text-[9px] font-black px-4 py-2 rounded-xl uppercase">Risolvi</button>
-                        <button onclick="shareCase('${s.id}')" class="bg-slate-100 text-[9px] font-black px-4 py-2 rounded-xl uppercase"><i class="fa-solid fa-share"></i></button>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('coupon-list').innerHTML = state.coupons.map(c => `
-                <div class="bg-yellow-400 p-4 rounded-3xl flex justify-between items-center border-2 border-dashed border-slate-900">
-                    <div><h4 class="font-black italic text-xs">${c.title}</h4><p class="text-[8px] font-bold">${c.partner}</p></div>
-                    <div class="bg-slate-900 text-white px-3 py-1 rounded-lg font-mono text-xs">${c.code}</div>
-                </div>
-            `).join('');
-        }
-
-        /* --- UI UTILS --- */
-        function openGuide(m) {
-            currentTarget = m;
-            document.getElementById('guide-body').innerHTML = `
-                <img src="${m.img}" class="w-full h-48 object-cover rounded-[35px] mb-6 shadow-lg">
-                <h2 class="text-3xl font-black italic uppercase">${m.name}</h2>
-                <p class="text-sm text-slate-500 mt-4 leading-relaxed">${m.bio}</p>
-                <div class="mt-8 p-6 bg-yellow-50 rounded-3xl border border-yellow-100">
-                    <p class="text-[9px] font-black text-yellow-600 uppercase">Ricompensa</p>
-                    <p class="text-xl font-black">+${m.xp} XP</p>
-                </div>
-                <button onclick="openScanner(currentTarget)" class="w-full mt-6 bg-yellow-400 py-5 rounded-3xl font-black text-lg shadow-xl">AVVIA SCANNER AR</button>
-            `;
-            document.getElementById('guide-sheet').classList.add('open');
-            document.getElementById('voice-rec-area').classList.remove('hidden');
-        }
-
-        function closeGuide() { document.getElementById('guide-sheet').classList.remove('open'); }
-
-        function updateUI() {
-            document.getElementById('u-name').innerText = state.name;
-            document.getElementById('u-xp').innerText = state.xp;
-            document.getElementById('u-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${state.name}`;
-            renderMonumentList();
-        }
-
-        function renderMonumentList() {
-            document.getElementById('monument-list').innerHTML = DB.monuments.map(m => `
-                <div class="card flex items-center gap-4 ${state.visited.includes(m.id) ? 'opacity-50' : ''}" onclick="openGuide(${JSON.stringify(m).replace(/"/g, '&quot;')})">
-                    <img src="${m.img}" class="w-16 h-16 rounded-2xl object-cover">
-                    <div class="flex-1">
-                        <h4 class="font-black italic text-sm">${m.name}</h4>
-                        <p class="text-[9px] font-black text-yellow-600">+${m.xp} XP</p>
-                    </div>
-                    ${state.visited.includes(m.id) ? '<i class="fa-solid fa-check-circle text-green-500"></i>' : '<i class="fa-solid fa-chevron-right opacity-20"></i>'}
-                </div>
-            `).join('');
-        }
-
-        function save() { localStorage.setItem('beehunter_v2026', JSON.stringify(state)); }
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
-        function toggleChat() { alert("Servizio BeeBot H24: \nAttualmente siamo molto impegnati nei vicoli. Riprova più tardi!"); }
-        function shareCase(id) { navigator.share({ title: 'Indizio BeeHunter', text: 'Aiutami a risolvere questo enigma a Bari!' }); }
-        function showSOS() { alert("EMERGENZA BARI:\n112 Numero Unico\n080 5543333 Taxi"); }
-        function resetApp() { if(confirm("Cancellare tutti i progressi?")) { localStorage.clear(); location.reload(); } }
 
         window.onload = init;
     </script>
