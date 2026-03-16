@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BeeHunter Bari | Ultimate Pro</title>
+    <title>BeeHunter | Ultimate Edition</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
@@ -17,311 +18,570 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap');
-        :root { --bee-yellow: #FFD200; --bari-blue: #0056b3; --tier-base: #94a3b8; --tier-mid: #3b82f6; --tier-adv: #a855f7; }
-        body { font-family: 'Outfit', sans-serif; background: #F8FAFC; color: #0F172A; overflow: hidden; height: 100vh; }
         
-        .page { display: none; height: 100vh; overflow-y: auto; padding: 100px 16px 120px; }
-        .page.active { display: block; animation: fadeInUp 0.4s ease; }
+        :root { 
+            --c-yellow: #FFD200; --c-blue: #0056b3; --c-dark: #0F172A; --c-bg: #F8FAFC;
+            --tier-base: #94A3B8; --tier-mid: #3B82F6; --tier-adv: #A855F7;
+        }
+
+        body { font-family: 'Outfit', sans-serif; background: var(--c-bg); color: var(--c-dark); overflow: hidden; height: 100vh; margin: 0; }
         
-        /* Custom UI */
-        .glass-header { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); position: fixed; top:0; width:100%; z-index: 1000; padding: env(safe-area-inset-top) 20px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        /* Core UI */
+        .glass-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); position: fixed; top:0; width:100%; z-index: 1000; padding: env(safe-area-inset-top) 20px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .bottom-nav { background: white; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; width: 100%; height: 85px; display: flex; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-weight: 800; }
-        .nav-item.active { color: var(--bari-blue); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-weight: 800; transition: 0.3s; }
+        .nav-item.active { color: var(--c-blue); transform: translateY(-3px); }
         
-        .card-point { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .badge-icon { width: 100%; aspect-ratio: 1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .page { display: none; height: 100vh; overflow-y: auto; padding: 90px 16px 120px; scroll-behavior: smooth; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* Map & Markers */
+        #map { height: 380px; width: 100%; border-radius: 28px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.08); z-index: 10; margin-bottom: 20px;}
+        .marker-icon-Cultura { background: #3B82F6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-size: 12px; }
+        .marker-icon-Natura { background: #22C55E; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-size: 12px; }
+        .marker-icon-Food { background: #EF4444; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-size: 12px; }
+        .marker-icon-Eventi { background: #A855F7; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-size: 12px; }
+
+        /* Cards & Badges */
+        .card-pro { background: white; border-radius: 24px; padding: 18px; margin-bottom: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s; }
+        .card-pro:active { transform: scale(0.98); }
+        .badge-base { border-bottom: 4px solid var(--tier-base); }
+        .badge-mid { border-bottom: 4px solid var(--tier-mid); }
+        .badge-adv { border-bottom: 4px solid var(--tier-adv); background: linear-gradient(145deg, #fff, #fef08a); }
+
+        /* AR Scanner Overlay */
+        #ar-scanner { display: none; position: fixed; inset: 0; background: black; z-index: 9999; }
+        .ar-frame { position: absolute; inset: 60px 40px; border: 2px dashed rgba(255,255,255,0.5); border-radius: 40px; box-shadow: 0 0 0 2000px rgba(0,0,0,0.8); }
+        .ar-laser { position: absolute; width: 100%; height: 4px; background: var(--c-yellow); box-shadow: 0 0 20px var(--c-yellow); animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
         
-        /* Marker Styles */
-        .custom-div-icon { background: var(--bee-yellow); border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
-        #toast { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); z-index: 9999; display: none; }
+        /* Leaderboard & History */
+        .leader-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f1f5f9; align-items: center; }
+        .history-item { border-left: 3px solid var(--c-blue); padding-left: 15px; margin-bottom: 15px; position: relative; }
+        .history-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 11px; height: 11px; border-radius: 50%; background: var(--c-blue); border: 2px solid white; }
+
+        /* Custom Toast */
+        #toast-box { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); z-index: 10000; display: none; width: 90%; max-width: 400px; }
+        .premium-btn { background: linear-gradient(90deg, #A855F7, #3B82F6); color: white; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div id="toast" class="animate__animated">
-        <div class="bg-black text-white px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-3">
-            <i class="fa-solid fa-star text-yellow-400"></i>
-            <span id="toast-msg"></span>
+    <div id="toast-box" class="animate__animated">
+        <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-4 border-l-4 border-yellow-400">
+            <i class="fa-solid fa-bell text-yellow-400 text-xl"></i>
+            <p id="toast-msg" class="text-sm font-bold w-full"></p>
         </div>
     </div>
 
     <header class="glass-header flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="bg-yellow-400 p-2 rounded-lg shadow-sm"><i class="fa-solid fa-bee"></i></div>
-            <h1 class="font-black text-xl tracking-tighter">BEEHUNTER</h1>
-        </div>
         <div class="flex items-center gap-3">
-            <div class="text-right">
-                <p class="text-[10px] font-black text-slate-400 uppercase leading-none" id="rank-name">Larva</p>
-                <p class="text-sm font-black text-blue-600" id="total-xp">0 XP</p>
+            <div class="bg-yellow-400 p-2.5 rounded-xl text-dark font-black"><i class="fa-solid fa-bee"></i></div>
+            <div>
+                <h1 class="font-black text-xl tracking-tighter leading-none">BEEHUNTER</h1>
+                <p id="h-rank" class="text-[10px] font-black uppercase text-slate-400 mt-1">Caricamento...</p>
             </div>
-            <button onclick="changeLang()" class="bg-slate-100 px-2 py-1 rounded-md text-[10px] font-bold" id="lang-btn">IT</button>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <span class="text-lg font-black text-blue-600" id="total-xp">0 XP</span>
+            </div>
+            <button onclick="toggleLang()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[10px] font-black" id="lang-toggle">IT</button>
         </div>
     </header>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="nav('home')"><i class="fa-solid fa-map-location-dot text-xl mb-1"></i><span data-it="RADAR" data-en="RADAR">RADAR</span></div>
-        <div class="nav-item" onclick="nav('tours')"><i class="fa-solid fa-route text-xl mb-1"></i><span data-it="TOUR" data-en="TOURS">TOUR</span></div>
-        <div class="nav-item" onclick="nav('shop')"><i class="fa-solid fa-bag-shopping text-xl mb-1"></i><span data-it="SHOP" data-en="SHOP">SHOP</span></div>
-        <div class="nav-item" onclick="nav('profile')"><i class="fa-solid fa-user-astronaut text-xl mb-1"></i><span data-it="IO" data-en="ME">IO</span></div>
+        <div class="nav-item active" onclick="nav('radar')"><i class="fa-solid fa-map-location-dot"></i><span class="t-radar">RADAR</span></div>
+        <div class="nav-item" onclick="nav('tours')"><i class="fa-solid fa-route"></i><span class="t-tours">TOURS</span></div>
+        <div class="nav-item" onclick="nav('shop')"><i class="fa-solid fa-store"></i><span class="t-shop">SHOP</span></div>
+        <div class="nav-item" onclick="nav('social')"><i class="fa-solid fa-trophy"></i><span class="t-social">SOCIAL</span></div>
+        <div class="nav-item" onclick="nav('profile')"><i class="fa-solid fa-user-astronaut"></i><span class="t-me">IO</span></div>
     </nav>
 
-    <main id="home" class="page active">
-        <div id="map" style="height: 350px; border-radius: 24px; margin-bottom: 20px;"></div>
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="font-black text-xl" data-it="Esplora Bari e Provincia" data-en="Explore Bari & Province">Esplora Bari</h2>
-            <select id="filter-type" class="text-xs font-bold bg-white border-none rounded-lg p-2 shadow-sm" onchange="renderPoints()">
-                <option value="all">Tutti</option>
-                <option value="Monumento">Monumenti</option>
-                <option value="Natura">Natura</option>
-                <option value="Food">Food</option>
+    <main id="radar" class="page active">
+        <div id="map"></div>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-black text-2xl uppercase italic t-explore">Esplora la Puglia</h2>
+            <select id="filter-cat" onchange="renderPoints()" class="bg-white border border-slate-200 text-xs font-bold p-2 rounded-lg outline-none">
+                <option value="all">Tutte le Categorie</option>
+                <option value="Cultura">Monumenti & Cultura</option>
+                <option value="Food">Food Experience</option>
+                <option value="Natura">Natura & Mare</option>
             </select>
         </div>
-        <div id="points-list"></div>
+        <div id="points-container"></div>
     </main>
 
     <main id="tours" class="page">
-        <h2 class="font-black text-2xl mb-2" data-it="Esperienze Premium" data-en="Premium Experiences">Esperienze Premium</h2>
-        <p class="text-slate-500 text-sm mb-6" data-it="Sblocca badge unici completando questi tour" data-en="Unlock unique badges by completing these tours">Sblocca badge unici</p>
-        <div id="tours-list" class="space-y-4"></div>
+        <h2 class="font-black text-3xl mb-1 t-tour-title">Esperienze</h2>
+        <p class="text-sm text-slate-500 mb-6 t-tour-sub">Sblocca badge unici e XP massivi.</p>
+        <div id="tours-container" class="space-y-4"></div>
     </main>
 
     <main id="shop" class="page">
-        <div class="bg-blue-600 p-6 rounded-[32px] text-white mb-6">
-            <h2 class="text-2xl font-black">Marketplace</h2>
-            <p class="opacity-80" data-it="Spendi i tuoi XP per premi reali" data-en="Spend your XP for real rewards">Usa i tuoi XP per premi reali</p>
+        <div class="bg-slate-900 p-6 rounded-[32px] text-white mb-8 relative overflow-hidden">
+            <i class="fa-solid fa-coins absolute -right-5 -bottom-5 text-8xl opacity-10"></i>
+            <h2 class="text-3xl font-black mb-1 t-market-title">Marketplace</h2>
+            <p class="opacity-80 text-sm t-market-sub">Spendi i tuoi XP per coupon reali.</p>
         </div>
-        <div id="coupons-list" class="space-y-4"></div>
-        <div class="mt-8 p-4 bg-yellow-50 rounded-2xl border border-yellow-200">
-            <h4 class="font-black text-yellow-800">XP Boosters</h4>
-            <p class="text-xs mb-3">Sblocca subito 1000 XP per scalare la classifica.</p>
-            <button class="w-full bg-yellow-400 p-3 rounded-xl font-black text-sm">BUY 1000 XP (€4.99)</button>
+        
+        <h3 class="font-black text-lg mb-4 t-coupons">Coupon Partner</h3>
+        <div id="coupons-container" class="space-y-4 mb-10"></div>
+
+        <h3 class="font-black text-lg mb-4 t-premium">Premium Store</h3>
+        <div class="card-pro premium-btn text-center">
+            <h4 class="font-black text-xl mb-1">XP BOOSTER PACK</h4>
+            <p class="text-xs opacity-90 mb-4 t-boost-desc">Ottieni subito 2000 XP e sblocca il livello Master.</p>
+            <button onclick="buyPremiumXP()" class="bg-white text-purple-600 w-full py-3 rounded-xl font-black text-sm">ACQUISTA - €4.99</button>
+        </div>
+    </main>
+
+    <main id="social" class="page">
+        <div class="flex gap-2 mb-6 bg-slate-100 p-1 rounded-xl">
+            <button onclick="switchSocialTab('board')" id="tab-board" class="flex-1 bg-white shadow-sm py-2 rounded-lg font-black text-xs t-leaderboard">CLASSIFICA</button>
+            <button onclick="switchSocialTab('history')" id="tab-history" class="flex-1 py-2 rounded-lg font-black text-xs text-slate-400 t-history">CRONOLOGIA</button>
+        </div>
+
+        <div id="view-board">
+            <h2 class="font-black text-2xl mb-4 text-blue-600"><i class="fa-solid fa-crown"></i> Hall of Fame</h2>
+            <div class="card-pro !p-0 overflow-hidden" id="leaderboard-container"></div>
+        </div>
+
+        <div id="view-history" class="hidden">
+            <h2 class="font-black text-2xl mb-6">Il tuo Diario</h2>
+            <div id="history-container" class="ml-2 border-l-2 border-slate-200"></div>
         </div>
     </main>
 
     <main id="profile" class="page">
-        <div class="flex items-center gap-4 mb-8">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-20 h-20 rounded-3xl bg-white shadow-lg">
-            <div>
-                <h2 class="font-black text-2xl">Pro Hunter</h2>
-                <div class="flex gap-2 mt-1">
-                    <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2 py-0.5 rounded">LEVEL 12</span>
-                    <span class="bg-purple-100 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded">PREMIUM</span>
-                </div>
+        <div class="card-pro !bg-slate-900 !text-white text-center py-8 relative overflow-hidden">
+            <div class="w-24 h-24 mx-auto bg-white rounded-[30px] p-1 mb-4 relative z-10">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=HunterBari" class="w-full h-full rounded-[26px]">
             </div>
+            <h2 class="text-3xl font-black relative z-10" id="u-name">Pro Hunter</h2>
+            <p class="text-yellow-400 font-black tracking-widest text-xs relative z-10 mt-1" id="u-tier">LARVA BARESE</p>
         </div>
-        <h3 class="font-black text-lg mb-4" data-it="Collezione Badge" data-en="Badge Collection">Badge Collection</h3>
-        <div id="badge-grid" class="grid grid-cols-3 gap-3"></div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="card-pro text-center !mb-0"><p class="text-[10px] font-black text-slate-400 uppercase t-places">Luoghi</p><p class="text-3xl font-black text-blue-600" id="stat-visited">0</p></div>
+            <div class="card-custom text-center !mb-0"><p class="text-[10px] font-black text-slate-400 uppercase t-badges-stat">Badge</p><p class="text-3xl font-black text-purple-600" id="stat-badges">0</p></div>
+        </div>
+
+        <h3 class="font-black text-xl mb-4 flex items-center gap-2 t-badge-coll"><i class="fa-solid fa-shield-halved text-yellow-500"></i> Collezione Badge</h3>
+        <div id="badge-container" class="grid grid-cols-3 gap-3"></div>
     </main>
 
+    <div id="ar-scanner">
+        <video id="ar-video" class="w-full h-full object-cover opacity-70"></video>
+        <div class="ar-frame"><div class="ar-laser"></div></div>
+        <div class="absolute top-16 w-full text-center">
+            <p class="text-white font-black tracking-widest bg-black/50 inline-block px-6 py-2 rounded-full t-scan-msg">INQUADRA IL MONUMENTO / QR</p>
+        </div>
+        <div class="absolute bottom-12 w-full flex justify-center gap-10 px-10">
+            <button onclick="closeScanner()" class="w-16 h-16 bg-white/20 rounded-full backdrop-blur-lg text-white border border-white/30"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <button onclick="validatePoint()" class="w-24 h-24 bg-yellow-400 rounded-full shadow-[0_0_40px_rgba(255,210,0,0.6)] flex items-center justify-center animate-pulse"><i class="fa-solid fa-camera text-4xl"></i></button>
+        </div>
+    </div>
+
     <script>
-        /* --- CORE DATABASE (Template per 200 punti) --- */
+        /* =========================================================================
+           DATABASE CENTRALE (I18N, Punti, Tour, Coupon, Badge)
+           ========================================================================= */
+        const I18N = {
+            it: {
+                't-radar': 'RADAR', 't-tours': 'TOUR', 't-shop': 'SHOP', 't-social': 'SOCIAL', 't-me': 'IO',
+                't-explore': 'Esplora la Puglia', 't-tour-title': 'Esperienze', 't-tour-sub': 'Sblocca badge unici e XP massivi.',
+                't-market-title': 'Marketplace', 't-market-sub': 'Spendi i tuoi XP per coupon reali.', 't-coupons': 'Coupon Partner',
+                't-premium': 'Premium Store', 't-boost-desc': 'Ottieni subito 2000 XP e sblocca il livello Master.',
+                't-leaderboard': 'CLASSIFICA', 't-history': 'CRONOLOGIA', 't-places': 'Luoghi', 't-badges-stat': 'Badge',
+                't-badge-coll': 'Collezione Badge', 't-scan-msg': 'INQUADRA IL MONUMENTO / QR', 'btn-book': 'PRENOTA ORA',
+                'btn-claim': 'CATTURA', 'btn-redeem': 'RISCATTA', 'msg-claimed': 'Punto convalidato! +', 'msg-badge': 'NUOVO BADGE:',
+                'msg-xp-low': 'Non hai abbastanza XP!', 'msg-redeemed': 'Coupon Riscattato!', 'msg-purchased': 'Acquisto Simulato: +2000 XP!'
+            },
+            en: {
+                't-radar': 'RADAR', 't-tours': 'TOURS', 't-shop': 'SHOP', 't-social': 'SOCIAL', 't-me': 'ME',
+                't-explore': 'Explore Apulia', 't-tour-title': 'Experiences', 't-tour-sub': 'Unlock unique badges and massive XP.',
+                't-market-title': 'Marketplace', 't-market-sub': 'Spend your XP for real coupons.', 't-coupons': 'Partner Coupons',
+                't-premium': 'Premium Store', 't-boost-desc': 'Get 2000 XP instantly and unlock Master level.',
+                't-leaderboard': 'LEADERBOARD', 't-history': 'HISTORY', 't-places': 'Places', 't-badges-stat': 'Badges',
+                't-badge-coll': 'Badge Collection', 't-scan-msg': 'SCAN MONUMENT / QR', 'btn-book': 'BOOK NOW',
+                'btn-claim': 'CLAIM', 'btn-redeem': 'REDEEM', 'msg-claimed': 'Point Validated! +', 'msg-badge': 'NEW BADGE:',
+                'msg-xp-low': 'Not enough XP!', 'msg-redeemed': 'Coupon Redeemed!', 'msg-purchased': 'Simulated Purchase: +2000 XP!'
+            }
+        };
+
+        // Livelli utente
+        const RANKS = [
+            { name: "Larva", xp: 0 }, { name: "Explorer", xp: 500 }, { name: "Pro Hunter", xp: 1500 }, 
+            { name: "Master", xp: 3000 }, { name: "Ultimate Legend", xp: 5000 }
+        ];
+
+        // Base Data: 15 Punti Reali + Funzione generatrice per i restanti fino a 200
+        const basePoints = [
+            { id: 1, type: "Cultura", lat: 41.1315, lng: 16.8722, xp: 150, img: "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=300", it: { name: "Basilica San Nicola", desc: "La perla del romanico pugliese." }, en: { name: "St. Nicholas Basilica", desc: "Romanesque jewel of Puglia." } },
+            { id: 2, type: "Cultura", lat: 41.1288, lng: 16.8644, xp: 200, img: "https://images.unsplash.com/photo-1590001158193-79013018e2df?w=300", it: { name: "Castello Svevo", desc: "Fortezza millenaria imperiale." }, en: { name: "Swabian Castle", desc: "Millenary imperial fortress." } },
+            { id: 3, type: "Cultura", lat: 41.1235, lng: 16.8732, xp: 180, img: "https://images.unsplash.com/photo-1518398046578-8cca57782e17?w=300", it: { name: "Teatro Petruzzelli", desc: "Tempio della musica barese." }, en: { name: "Petruzzelli Theatre", desc: "Temple of Bari music." } },
+            { id: 4, type: "Natura", lat: 41.1200, lng: 16.8680, xp: 100, img: "https://images.unsplash.com/photo-1505118380757-91f5f45d8de4?w=300", it: { name: "Lungomare Nazario Sauro", desc: "Passeggiata panoramica sul mare." }, en: { name: "Nazario Sauro Seafront", desc: "Scenic walk along the sea." } },
+            { id: 5, type: "Natura", lat: 40.9930, lng: 17.2280, xp: 130, img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=300", it: { name: "Lama Monachile (Polignano)", desc: "Spiaggia iconica e scogliera." }, en: { name: "Lama Monachile (Polignano)", desc: "Iconic beach and cliff." } },
+            { id: 6, type: "Cultura", lat: 40.7832, lng: 17.2354, xp: 180, img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=300", it: { name: "Trulli di Alberobello", desc: "Patrimonio UNESCO." }, en: { name: "Trulli of Alberobello", desc: "UNESCO World Heritage." } },
+            { id: 7, type: "Food", lat: 40.9450, lng: 17.2900, xp: 120, img: "https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=300", it: { name: "Porto Antico (Monopoli)", desc: "Mercato del pesce storico." }, en: { name: "Old Port (Monopoli)", desc: "Historic fish market." } },
+            { id: 8, type: "Food", lat: 41.1290, lng: 16.8710, xp: 150, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300", it: { name: "Forno Storico Fiore", desc: "La vera focaccia barese." }, en: { name: "Historic Bakery Fiore", desc: "The true Bari focaccia." } },
+            { id: 9, type: "Eventi", lat: 41.1380, lng: 16.8350, xp: 250, img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300", it: { name: "Fiera del Levante", desc: "Campione internazionale." }, en: { name: "Levant Fair", desc: "International exhibition." } },
+            { id: 10, type: "Natura", lat: 40.8750, lng: 17.1500, xp: 140, img: "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?w=300", it: { name: "Grotte di Castellana", desc: "Complesso speleologico." }, en: { name: "Castellana Caves", desc: "Speleological complex." } }
+        ];
+
+        // Generatore algoritmico per creare i restanti 190 punti per testare le performance del Cluster sulla provincia
+        let allPoints = [...basePoints];
+        const types = ["Cultura", "Natura", "Food", "Eventi"];
+        for(let i=11; i<=200; i++) {
+            let latOffset = (Math.random() - 0.5) * 0.8; // Sparse per la puglia
+            let lngOffset = (Math.random() - 0.5) * 0.8;
+            let t = types[Math.floor(Math.random()*types.length)];
+            allPoints.push({
+                id: i, type: t, lat: 41.1 + latOffset, lng: 16.8 + lngOffset, xp: Math.floor(Math.random()*100)+50,
+                img: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300",
+                it: { name: `Secret Spot #${i}`, desc: `Scoperta generata in provincia.` },
+                en: { name: `Secret Spot #${i}`, desc: `Generated discovery in province.` }
+            });
+        }
+
         const DB = {
-            points: [
-                { id: 1, name: "Basilica San Nicola", type: "Monumento", coords: [41.1315, 16.8722], xp: 150, img: "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=400", it: "Cuore di Bari Vecchia.", en: "Heart of Old Bari.", badge: "City Explorer" },
-                { id: 2, name: "Castello Svevo", type: "Monumento", coords: [41.1288, 16.8644], xp: 180, img: "https://images.unsplash.com/photo-1590001158193-79013018e2df?w=400", it: "Fortezza millenaria.", en: "Millenary fortress.", badge: "City Explorer" },
-                { id: 3, name: "Lama Monachile", type: "Natura", coords: [41.1230, 17.2080], xp: 200, img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400", it: "Spiaggia iconica a Polignano.", en: "Iconic beach in Polignano.", badge: "Sea Hunter" },
-                { id: 4, name: "Trullo Sovrano", type: "Cultura", coords: [40.7860, 17.2370], xp: 180, img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=400", it: "Il trullo più grande.", en: "The largest trullo.", badge: "Heritage Seeker" },
-                { id: 5, name: "Faro di Monopoli", type: "Natura", coords: [40.9520, 17.3050], xp: 120, img: "https://images.unsplash.com/photo-1505118380757-91f5f45d8de4?w=400", it: "Vista sul mare Adriatico.", en: "View of the Adriatic Sea.", badge: "Sea Hunter" },
-                // ... Qui si estende fino a 200 punti
-            ],
+            points: allPoints,
             tours: [
-                { id: 't1', name: "Street Food Mania", xp: 300, it: "Focaccia, panzerotti e segreti di Bari.", en: "Focaccia, panzerotti and Bari secrets.", badge: "Foodie Hunter", price: "Free" },
-                { id: 't2', name: "Coastal Adventure", xp: 500, it: "Da Polignano a Monopoli via mare.", en: "From Polignano to Monopoli by sea.", badge: "Sea Hunter", price: "€15.00" }
-            ],
-            coupons: [
-                { id: 'c1', partner: "Panificio Fiore", reward: "Focaccia Omaggio", cost: 400, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100" },
-                { id: 'c2', partner: "Speakeasy Bari", reward: "25% Sconto Cocktail", cost: 600, img: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=100" }
+                { id: 't1', xp: 150, img: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=200', it: { name: "Bari Express Tour", desc: "4 mete iconiche in città." }, en: { name: "Bari Express Tour", desc: "4 iconic city stops." }, badge: "City Explorer" },
+                { id: 't2', xp: 200, img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=200', it: { name: "Street Food Mania", desc: "Degustazione focaccia e panzerotti." }, en: { name: "Street Food Mania", desc: "Focaccia and panzerotti tasting." }, badge: "Foodie Hunter" },
+                { id: 't3', xp: 250, img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200', it: { name: "Nightlife Secret", desc: "Speakeasy e cocktail bar segreti." }, en: { name: "Nightlife Secret", desc: "Speakeasy and secret bars." }, badge: "Night Owl" },
+                { id: 't4', xp: 300, img: 'https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=200', it: { name: "Trulli & Valle d'Itria", desc: "Tour ad Alberobello con guida." }, en: { name: "Trulli & Itria Valley", desc: "Alberobello tour with guide." }, badge: "Heritage Seeker" },
+                { id: 't5', xp: 180, img: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=200', it: { name: "Coastal Adventure", desc: "Escursione a Polignano a mare." }, en: { name: "Coastal Adventure", desc: "Excursion to Polignano." }, badge: "Sea Hunter" }
             ],
             badges: [
-                { id: "City Explorer", tier: "base", icon: "🏙️", color: "bg-slate-100" },
-                { id: "Foodie Hunter", tier: "base", icon: "🍕", color: "bg-orange-100" },
-                { id: "Sea Hunter", tier: "mid", icon: "🌊", color: "bg-blue-100" },
-                { id: "Heritage Seeker", tier: "mid", icon: "🏛️", color: "bg-purple-100" },
-                { id: "Master Hunter", tier: "adv", icon: "👑", color: "bg-yellow-100" }
+                { id: "City Explorer", tier: "badge-base", icon: "🏙️" },
+                { id: "Foodie Hunter", tier: "badge-base", icon: "🍕" },
+                { id: "Night Owl", tier: "badge-base", icon: "🍸" },
+                { id: "Heritage Seeker", tier: "badge-mid", icon: "🏛️" },
+                { id: "Sea Hunter", tier: "badge-mid", icon: "🌊" },
+                { id: "Event Collector", tier: "badge-mid", icon: "🎟️" },
+                { id: "Master Hunter", tier: "badge-adv", icon: "👑" },
+                { id: "Ultimate Explorer", tier: "badge-adv", icon: "💎" }
+            ],
+            coupons: [
+                { id: 'c1', partner: "Panificio Fiore", cost: 400, duration: "24h", it: { offer: "Focaccia + Birra" }, en: { offer: "Focaccia + Beer" } },
+                { id: 'c2', partner: "Speakeasy Bari", cost: 650, duration: "24h", it: { offer: "25% Sconto Cocktail" }, en: { offer: "25% Off Cocktail" } },
+                { id: 'c3', partner: "Mastro Ciccio", cost: 350, duration: "24h", it: { offer: "Dolce Omaggio" }, en: { offer: "Free Dessert" } },
+                { id: 'c4', partner: "Trattoria Al Pescatore", cost: 500, duration: "24h", it: { offer: "Menu Mare Scontato" }, en: { offer: "Discounted Sea Menu" } },
+                { id: 'c5', partner: "Grotta Palazzese", cost: 800, duration: "48h", it: { offer: "Ingresso VIP" }, en: { offer: "VIP Entrance" } }
             ]
         };
 
         /* --- STATE MANAGEMENT --- */
-        let state = JSON.parse(localStorage.getItem('beehunter_v4')) || {
-            xp: 0, visited: [], badges: [], lang: 'it'
+        let state = JSON.parse(localStorage.getItem('beehunter_ultimate')) || {
+            lang: 'it', xp: 0, visited: [], badges: [], history: [], unlockedCoupons: []
         };
 
-        let map, clusters;
+        let map, clusters, currentScanId = null;
 
+        /* --- INIZIALIZZAZIONE --- */
         function init() {
             setupMap();
-            renderPoints();
-            renderTours();
-            renderShop();
-            renderProfile();
-            updateUI();
+            generateFakeLeaderboard();
+            applyTranslations();
+            renderAll();
         }
 
-        /* --- MAPPA CON CLUSTERING --- */
+        /* --- MAPPA & GEOLOCALIZZAZIONE --- */
         function setupMap() {
-            map = L.map('map', { zoomControl: false }).setView([41.125, 16.872], 12);
+            map = L.map('map', { zoomControl: false }).setView([41.125, 16.872], 10);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
-            
-            clusters = L.markerClusterGroup();
-            
+            clusters = L.markerClusterGroup({ disableClusteringAtZoom: 14 });
+
+            const icons = {
+                'Cultura': '<i class="fa-solid fa-landmark"></i>',
+                'Natura': '<i class="fa-solid fa-leaf"></i>',
+                'Food': '<i class="fa-solid fa-utensils"></i>',
+                'Eventi': '<i class="fa-solid fa-calendar-star"></i>'
+            };
+
             DB.points.forEach(p => {
-                const marker = L.marker(p.coords, {
-                    icon: L.divIcon({ className: 'custom-div-icon', iconSize: [12, 12] })
-                });
+                const iconHtml = `<div class="marker-icon-${p.type} w-8 h-8">${icons[p.type] || '<i class="fa-solid fa-location-dot"></i>'}</div>`;
+                const marker = L.marker([p.lat, p.lng], { icon: L.divIcon({ html: iconHtml, className: '' }) });
                 
-                const popupContent = `
-                    <div class="p-2" style="width:150px">
+                const langData = p[state.lang];
+                marker.bindPopup(`
+                    <div class="text-center w-36">
                         <img src="${p.img}" class="w-full h-20 object-cover rounded-lg mb-2">
-                        <h4 class="font-black text-xs">${p.name}</h4>
-                        <button onclick="collectPoint(${p.id})" class="mt-2 w-full bg-yellow-400 text-[10px] font-black py-1 rounded">CLAIM ${p.xp} XP</button>
+                        <h4 class="font-black text-xs leading-tight">${langData.name}</h4>
+                        <p class="text-[9px] text-slate-500 mb-2">${langData.desc}</p>
+                        <button onclick="openARScanner(${p.id})" class="w-full bg-yellow-400 text-black font-black text-[10px] py-1.5 rounded-lg shadow-md uppercase">${t('btn-claim')} ${p.xp} XP</button>
                     </div>
-                `;
-                marker.bindPopup(popupContent);
+                `);
                 clusters.addLayer(marker);
             });
-            
             map.addLayer(clusters);
         }
 
-        /* --- RENDER FUNCTIONS --- */
-        function renderPoints() {
-            const filter = document.getElementById('filter-type').value;
-            const container = document.getElementById('points-list');
-            const filtered = filter === 'all' ? DB.points : DB.points.filter(p => p.type === filter);
+        /* --- RENDER ENGINE --- */
+        function renderAll() {
+            updateHeader();
+            renderPointsList();
+            renderTours();
+            renderShop();
+            renderProfile();
+            renderHistory();
+        }
+
+        function updateHeader() {
+            document.getElementById('total-xp').innerText = `${state.xp} XP`;
+            const currentRank = [...RANKS].reverse().find(r => state.xp >= r.xp) || RANKS[0];
+            document.getElementById('h-rank').innerText = currentRank.name;
             
-            container.innerHTML = filtered.map(p => `
-                <div class="card-point flex items-center p-3 gap-4 ${state.visited.includes(p.id) ? 'opacity-40 grayscale' : ''}">
+            // Progress Bar Calculation
+            const nextRank = RANKS[RANKS.indexOf(currentRank) + 1] || currentRank;
+            let progress = 100;
+            if(currentRank !== nextRank) {
+                progress = ((state.xp - currentRank.xp) / (nextRank.xp - currentRank.xp)) * 100;
+            }
+            document.getElementById('xp-progress').style.width = `${progress}%`;
+        }
+
+        function renderPointsList() {
+            const filter = document.getElementById('filter-cat').value;
+            const list = filter === 'all' ? DB.points.slice(0, 15) : DB.points.filter(p => p.type === filter).slice(0,15); // Mostro max 15 nella lista per performance
+            
+            document.getElementById('points-container').innerHTML = list.map(p => {
+                const isVisited = state.visited.includes(p.id);
+                return `
+                <div class="card-pro flex items-center gap-4 ${isVisited ? 'opacity-50 grayscale' : ''}">
                     <img src="${p.img}" class="w-16 h-16 rounded-xl object-cover">
                     <div class="flex-1">
-                        <h4 class="font-black text-sm">${p.name}</h4>
-                        <p class="text-[10px] text-slate-400 font-bold">${state.lang === 'it' ? p.it : p.en}</p>
+                        <span class="text-[8px] font-black text-blue-500 bg-blue-50 px-2 py-0.5 rounded uppercase">${p.type}</span>
+                        <h4 class="font-black text-sm leading-tight mt-1">${p[state.lang].name}</h4>
                     </div>
                     <div class="text-right">
-                        <span class="text-blue-600 font-black text-xs">+${p.xp} XP</span>
-                        <br>
-                        <button onclick="collectPoint(${p.id})" class="text-[10px] font-black text-slate-400 border px-2 py-1 rounded-md mt-1">INFO</button>
+                        <p class="font-black text-blue-600 mb-1">+${p.xp} XP</p>
+                        ${!isVisited ? `<button onclick="openARScanner(${p.id})" class="bg-slate-900 text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase">${t('btn-claim')}</button>` : `<i class="fa-solid fa-circle-check text-green-500"></i>`}
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function renderTours() {
-            document.getElementById('tours-list').innerHTML = DB.tours.map(t => `
-                <div class="card-point p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg">${t.price}</span>
-                        <span class="text-blue-600 font-black">+${t.xp} XP</span>
+            document.getElementById('tours-container').innerHTML = DB.tours.map(tour => `
+                <div class="card-pro flex gap-4">
+                    <img src="${tour.img}" class="w-24 h-24 rounded-2xl object-cover">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-black text-lg leading-none mb-1">${tour[state.lang].name}</h3>
+                            <p class="text-[10px] text-slate-500 font-bold leading-tight">${tour[state.lang].desc}</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs font-black text-purple-600">+${tour.xp} XP</span>
+                            <button onclick="bookTour('${tour.id}')" class="bg-yellow-400 text-black text-[9px] font-black px-3 py-1.5 rounded-lg uppercase">${t('btn-book')}</button>
+                        </div>
                     </div>
-                    <h3 class="font-black text-lg">${t.name}</h3>
-                    <p class="text-sm text-slate-500 mb-4">${state.lang === 'it' ? t.it : t.en}</p>
-                    <button onclick="toast('Tour Prenotato!')" class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-sm">BOOK EXPERIENCE</button>
                 </div>
             `).join('');
         }
 
         function renderShop() {
-            document.getElementById('coupons-list').innerHTML = DB.coupons.map(c => `
-                <div class="card-point p-4 flex items-center gap-4 ${state.xp < c.cost ? 'opacity-50' : ''}">
-                    <img src="${c.img}" class="w-12 h-12 rounded-xl">
-                    <div class="flex-1">
+            document.getElementById('coupons-container').innerHTML = DB.coupons.map(c => `
+                <div class="card-pro flex justify-between items-center border-l-4 border-blue-500">
+                    <div>
                         <h4 class="font-black text-sm">${c.partner}</h4>
-                        <p class="text-xs text-blue-600 font-bold">${c.reward}</p>
+                        <p class="text-xs font-bold text-blue-600">${c[state.lang].offer}</p>
+                        <p class="text-[9px] text-slate-400 mt-1"><i class="fa-regular fa-clock"></i> Valido ${c.duration}</p>
                     </div>
-                    <button onclick="redeemCoupon(${c.cost}, '${c.reward}')" class="bg-slate-100 px-3 py-2 rounded-xl font-black text-[10px]">${c.cost} XP</button>
+                    ${state.unlockedCoupons.includes(c.id) ? 
+                        `<div class="bg-green-100 text-green-700 font-black text-[10px] px-3 py-2 rounded-xl text-center"><i class="fa-solid fa-qrcode text-lg block mb-1"></i>ATTIVO</div>` :
+                        `<button onclick="redeemCoupon('${c.id}', ${c.cost})" class="bg-slate-100 text-slate-700 font-black text-[10px] px-4 py-2 rounded-xl uppercase hover:bg-slate-200 transition">${c.cost} XP<br>${t('btn-redeem')}</button>`
+                    }
                 </div>
             `).join('');
         }
 
         function renderProfile() {
-            document.getElementById('badge-grid').innerHTML = DB.badges.map(b => {
-                const isLocked = !state.badges.includes(b.id);
+            document.getElementById('stat-visited').innerText = state.visited.length;
+            document.getElementById('stat-badges').innerText = state.badges.length;
+            
+            const currentRank = [...RANKS].reverse().find(r => state.xp >= r.xp) || RANKS[0];
+            document.getElementById('u-tier').innerText = currentRank.name;
+
+            document.getElementById('badge-container').innerHTML = DB.badges.map(b => {
+                const unlocked = state.badges.includes(b.id);
                 return `
-                    <div class="card-point p-3 text-center ${isLocked ? 'opacity-20 grayscale' : 'border-b-4 border-yellow-400'}">
-                        <div class="badge-icon ${b.color} mb-2">${b.icon}</div>
-                        <p class="text-[8px] font-black uppercase leading-tight">${b.id}</p>
-                    </div>
-                `;
+                <div class="card-pro !p-3 text-center ${unlocked ? b.tier : 'opacity-20 grayscale border-slate-200'}">
+                    <div class="text-3xl mb-1">${b.icon}</div>
+                    <p class="text-[8px] font-black uppercase leading-tight">${b.id}</p>
+                </div>`;
             }).join('');
         }
 
-        /* --- LOGICA DI GIOCO --- */
-        function collectPoint(id) {
-            if(state.visited.includes(id)) return;
-            const p = DB.points.find(x => x.id === id);
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            if(state.history.length === 0) {
+                container.innerHTML = '<p class="text-sm text-slate-400 italic">Nessun punto visitato.</p>';
+                return;
+            }
+            container.innerHTML = [...state.history].reverse().map(h => `
+                <div class="history-item">
+                    <p class="text-[10px] font-bold text-slate-400">${h.date}</p>
+                    <h4 class="font-black text-sm">${h.name}</h4>
+                    <p class="text-xs text-blue-600 font-bold">+${h.xp} XP</p>
+                </div>
+            `).join('');
+        }
+
+        /* --- LOGICA DI GIOCO (AR, Validation, Achievements) --- */
+        function openARScanner(id) {
+            currentScanId = id;
+            document.getElementById('ar-scanner').style.display = 'block';
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => { document.getElementById('ar-video').srcObject = stream; document.getElementById('ar-video').play(); })
+                .catch(() => alert("Simulazione Fotocamera AR"));
+        }
+
+        function closeScanner() {
+            const video = document.getElementById('ar-video');
+            if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+            document.getElementById('ar-scanner').style.display = 'none';
+        }
+
+        function validatePoint() {
+            if(!currentScanId || state.visited.includes(currentScanId)) return;
+            const p = DB.points.find(x => x.id === currentScanId);
+            
+            // Aggiorna Stato
             state.xp += p.xp;
-            state.visited.push(id);
-            
-            // Logica Badge
-            if(p.badge && !state.badges.includes(p.badge)) {
-                state.badges.push(p.badge);
-                toast(`BADGE SBLOCCATO: ${p.badge}!`);
-            }
-            
-            // Controllo Master Hunter
-            if(state.xp >= 5000 && !state.badges.includes("Master Hunter")) {
-                state.badges.push("Master Hunter");
-                toast("SEI UN MASTER HUNTER! 👑");
-            }
+            state.visited.push(p.id);
+            state.history.push({ id: p.id, name: p[state.lang].name, xp: p.xp, date: new Date().toLocaleString() });
 
-            save();
-            updateUI();
-            renderPoints();
-            renderProfile();
-            toast(`+${p.xp} XP!`);
+            // Check Advanced Badges
+            checkAchievements();
+            
+            saveState();
+            closeScanner();
+            renderAll();
+            showToast(`${t('msg-claimed')}${p.xp} XP`);
         }
 
-        function redeemCoupon(cost, name) {
-            if(state.xp < cost) return toast("XP insufficienti!");
+        function bookTour(tourId) {
+            const tour = DB.tours.find(t => t.id === tourId);
+            state.xp += tour.xp;
+            if(!state.badges.includes(tour.badge)) {
+                state.badges.push(tour.badge);
+                showToast(`${t('msg-badge')} ${tour.badge} 🏆`);
+            }
+            state.history.push({ id: tour.id, name: tour[state.lang].name, xp: tour.xp, date: new Date().toLocaleString() });
+            checkAchievements();
+            saveState();
+            renderAll();
+            showToast(`Tour Completato! +${tour.xp} XP`);
+        }
+
+        function redeemCoupon(id, cost) {
+            if(state.xp < cost) return showToast(t('msg-xp-low'));
             state.xp -= cost;
-            save();
-            updateUI();
-            renderShop();
-            toast(`RISCATTATO: ${name}`);
+            state.unlockedCoupons.push(id);
+            saveState();
+            renderAll();
+            showToast(t('msg-redeemed'));
         }
 
-        /* --- UTILS --- */
-        function changeLang() {
-            state.lang = state.lang === 'it' ? 'en' : 'it';
-            document.getElementById('lang-btn').innerText = state.lang.toUpperCase();
-            save();
-            renderPoints();
-            renderTours();
-            updateUI();
+        function buyPremiumXP() {
+            // Simulazione gateway pagamento
+            state.xp += 2000;
+            checkAchievements();
+            saveState();
+            renderAll();
+            showToast(t('msg-purchased'));
         }
 
-        function updateUI() {
-            document.getElementById('total-xp').innerText = `${state.xp} XP`;
-            const rank = state.xp > 2000 ? "Ape Regina" : state.xp > 500 ? "Esploratore" : "Larva";
-            document.getElementById('rank-name').innerText = rank;
+        function checkAchievements() {
+            // Logica Badge Avanzati Multiple Conditions
+            if(state.xp >= 5000 && !state.badges.includes("Master Hunter")) state.badges.push("Master Hunter");
+            if(state.visited.length >= 200 && !state.badges.includes("Ultimate Explorer")) state.badges.push("Ultimate Explorer");
             
+            // Check Completamento Categorie (es. 5 Food -> Foodie Hunter)
+            const foodVisits = state.visited.filter(vid => DB.points.find(p => p.id === vid && p.type === 'Food')).length;
+            if(foodVisits >= 5 && !state.badges.includes("Foodie Hunter")) state.badges.push("Foodie Hunter");
+            
+            const natureVisits = state.visited.filter(vid => DB.points.find(p => p.id === vid && p.type === 'Natura')).length;
+            if(natureVisits >= 5 && !state.badges.includes("Sea Hunter")) state.badges.push("Sea Hunter");
+        }
+
+        /* --- SOCIAL & LEADERBOARD (Simulata) --- */
+        function generateFakeLeaderboard() {
+            const names = ["Vittorio_BA", "SabinoKing", "LaBaresina", "Miki_UBiond", "AntoCrudo", "Ale_Hunter", "Fra_Puglia"];
+            let board = names.map(n => ({ name: n, xp: Math.floor(Math.random() * 6000) + 500 }));
+            board.push({ name: "Tu (Pro Hunter)", xp: state.xp, isMe: true });
+            board.sort((a, b) => b.xp - a.xp);
+
+            document.getElementById('leaderboard-container').innerHTML = board.map((user, i) => `
+                <div class="leader-row ${user.isMe ? 'bg-yellow-100 font-black' : ''}">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-black w-5 text-slate-400">${i+1}</span>
+                        <div class="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-xs">🐝</div>
+                        <span class="text-sm ${user.isMe ? 'text-blue-600' : 'font-bold'}">${user.name}</span>
+                    </div>
+                    <span class="text-xs font-black text-purple-600">${user.xp} XP</span>
+                </div>
+            `).join('');
+        }
+
+        function switchSocialTab(tab) {
+            document.getElementById('view-board').style.display = tab === 'board' ? 'block' : 'none';
+            document.getElementById('view-history').style.display = tab === 'history' ? 'block' : 'none';
+            
+            document.getElementById('tab-board').className = tab === 'board' ? 'flex-1 bg-white shadow-sm py-2 rounded-lg font-black text-xs' : 'flex-1 py-2 rounded-lg font-black text-xs text-slate-400';
+            document.getElementById('tab-history').className = tab === 'history' ? 'flex-1 bg-white shadow-sm py-2 rounded-lg font-black text-xs' : 'flex-1 py-2 rounded-lg font-black text-xs text-slate-400';
+            
+            if(tab === 'board') generateFakeLeaderboard(); // Aggiorna se l'utente ha fatto XP
+        }
+
+        /* --- UTILITY & MULTILINGUA --- */
+        function toggleLang() {
+            state.lang = state.lang === 'it' ? 'en' : 'it';
+            document.getElementById('lang-toggle').innerText = state.lang.toUpperCase();
+            saveState();
+            applyTranslations();
+            renderAll(); // Rirenderizza i dati (titoli tour, descrizioni punti)
+        }
+
+        function applyTranslations() {
+            const dict = I18N[state.lang];
+            for (let key in dict) {
+                document.querySelectorAll(`.${key}`).forEach(el => el.innerText = dict[key]);
+            }
+            // Mantiene i placeholder se ci sono input
             document.querySelectorAll('[data-it]').forEach(el => {
-                el.innerText = state.lang === 'it' ? el.getAttribute('data-it') : el.getAttribute('data-en');
+                el.innerText = el.getAttribute(`data-${state.lang}`);
             });
         }
 
-        function toast(msg) {
-            const t = document.getElementById('toast');
+        function t(key) { return I18N[state.lang][key] || key; }
+
+        function showToast(msg) {
+            const tBox = document.getElementById('toast-box');
             document.getElementById('toast-msg').innerText = msg;
-            t.style.display = 'block';
-            t.className = 'animate__animated animate__fadeInDown';
+            tBox.style.display = 'block';
+            tBox.className = 'animate__animated animate__fadeInDown';
             setTimeout(() => {
-                t.className = 'animate__animated animate__fadeOutUp';
-                setTimeout(() => t.style.display = 'none', 500);
-            }, 2500);
+                tBox.className = 'animate__animated animate__fadeOutUp';
+                setTimeout(() => tBox.style.display = 'none', 500);
+            }, 3000);
         }
 
-        function nav(pageId) {
+        function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
-            if(pageId === 'home') setTimeout(() => map.invalidateSize(), 200);
+            if(id === 'radar') setTimeout(() => map.invalidateSize(), 300);
+            if(id === 'social') generateFakeLeaderboard();
         }
 
-        function save() { localStorage.setItem('beehunter_v4', JSON.stringify(state)); }
+        function saveState() { localStorage.setItem('beehunter_ultimate', JSON.stringify(state)); }
 
         window.onload = init;
     </script>
