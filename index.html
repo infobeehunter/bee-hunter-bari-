@@ -3,218 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BEEHUNTER BARI | OFFICIAL APP 2026</title>
+    <title>BEEHUNTER PRO | BARI 2026</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;600;900&display=swap');
         
         :root { 
-            --bee-sun: #FFD700; 
-            --bee-orange: #FF8C00;
-            --bee-sea: #00BFFF;
-            --bee-dark: #1E293B; 
-            --bee-bg: #FFFDF0; 
+            --sun: #FFD700; --orange: #FF8C00; --sea: #00BFFF; 
+            --dark: #1E293B; --bg: #FFFDF0; --accent: #FF4757;
+            --xmas: #C41E3A; --san-nicola: #8B0000;
         }
 
-        body { font-family: 'Outfit', sans-serif; background: var(--bee-bg); color: var(--bee-dark); margin: 0; overflow: hidden; height: 100vh; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--dark); margin: 0; overflow: hidden; height: 100vh; }
         .font-black { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* HEADER ALLEGRO */
+        /* UI GENERALE - DESIGN AGGRESSIVO */
         header { 
-            position: fixed; top: 0; width: 100%; height: 100px; 
-            background: var(--bee-sun); 
-            z-index: 1000; display: flex; align-items: center; justify-content: space-between; 
-            padding: 20px; border-bottom: 4px solid var(--bee-dark);
-            box-shadow: 0 4px 0 var(--bee-orange);
+            position: fixed; top: 0; width: 100%; height: 110px; 
+            background: var(--sun); z-index: 1000; display: flex; align-items: center; 
+            justify-content: space-between; padding: 0 20px; 
+            border-bottom: 5px solid var(--dark); box-shadow: 0 4px 0 var(--orange);
         }
 
-        /* BOTTOM NAV STILE CARTOON */
         .bottom-nav { 
-            position: fixed; bottom: 20px; left: 15px; right: 15px; height: 80px; 
-            background: var(--bee-dark); border-radius: 30px; z-index: 1000; 
+            position: fixed; bottom: 15px; left: 15px; right: 15px; height: 85px; 
+            background: var(--dark); border-radius: 35px; z-index: 5000; 
             display: flex; align-items: center; justify-content: space-around;
-            border: 4px solid var(--bee-sun);
+            border: 4px solid var(--sun); box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
-        .nav-btn { color: white; flex-direction: column; display: flex; align-items: center; transition: 0.2s; }
-        .nav-btn.active { color: var(--bee-sun); transform: scale(1.2) translateY(-5px); }
-        .nav-btn span { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; margin-top: 4px; }
 
-        /* PAGINE */
-        .page { height: 100vh; overflow-y: auto; padding: 120px 20px 140px; display: none; scroll-behavior: smooth; }
-        .page.active { display: block; animation: fadeIn 0.4s; }
+        .nav-btn { color: white; flex-direction: column; display: flex; align-items: center; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-btn.active { color: var(--sun); transform: scale(1.15) translateY(-5px); }
+        .nav-btn span { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; margin-top: 5px; }
 
-        /* MAPPA & CARDS */
-        #map { height: 350px; width: 100%; border-radius: 40px; border: 5px solid var(--bee-dark); box-shadow: 8px 8px 0 var(--bee-orange); margin-bottom: 25px; }
+        /* PAGES */
+        .page { height: 100vh; overflow-y: auto; padding: 130px 20px 140px; display: none; }
+        .page.active { display: block; animation: fadeInUp 0.4s both; }
+
+        /* CARDS & SPECIAL EVENTS */
         .card { 
-            background: white; border-radius: 30px; padding: 20px; margin-bottom: 20px; 
-            border: 3px solid var(--bee-dark); box-shadow: 5px 5px 0 var(--bee-orange);
-            transition: 0.3s;
+            background: white; border-radius: 35px; padding: 22px; margin-bottom: 25px; 
+            border: 4px solid var(--dark); box-shadow: 6px 6px 0 var(--orange);
+            transition: all 0.2s; position: relative;
         }
-        .card:active { transform: translate(3px, 3px); box-shadow: 0 0 0; }
+        .card:active { transform: translate(4px, 4px); box-shadow: 0 0 0; }
 
-        /* BADGE & TAGS */
-        .badge-tag { background: var(--bee-sea); color: white; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
-        .xp-pill { background: var(--bee-dark); color: var(--bee-sun); padding: 5px 12px; border-radius: 15px; font-weight: 900; font-size: 12px; }
+        .event-card {
+            background: linear-gradient(135deg, var(--xmas), #8B0000);
+            color: white; border: 4px solid var(--dark);
+            box-shadow: 6px 6px 0 var(--dark);
+        }
+
+        /* COUNTDOWN BOX */
+        .timer-box {
+            display: flex; gap: 8px; justify-content: center; margin-top: 15px;
+        }
+        .timer-unit {
+            background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px;
+            min-width: 50px; text-align: center;
+        }
+        .timer-unit span { display: block; font-weight: 900; font-size: 1.2rem; }
+        .timer-unit label { font-size: 0.5rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
+
+        /* MAPPA */
+        #map { height: 350px; width: 100%; border-radius: 40px; border: 5px solid var(--dark); box-shadow: 10px 10px 0 var(--orange); margin-bottom: 30px; }
 
         /* SCANNER */
-        #scanner-view { position: fixed; inset: 0; background: black; z-index: 5000; display: none; }
-        .scan-frame { position: absolute; inset: 50px; border: 5px solid var(--bee-sun); border-radius: 40px; }
+        #scanner-view { position: fixed; inset: 0; background: black; z-index: 9999; display: none; }
+        .scan-target { position: absolute; inset: 60px; border: 4px solid var(--sun); border-radius: 50px; box-shadow: 0 0 0 2000px rgba(0,0,0,0.7); }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--sun); box-shadow: 0 0 20px var(--sun); animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
 
-        /* MODALI / SHEETS */
-        .sheet { position: fixed; bottom: -100%; left: 0; right: 0; height: 80%; background: white; z-index: 2000; border-radius: 40px 40px 0 0; border-top: 5px solid var(--bee-dark); transition: 0.5s; padding: 30px; overflow-y: auto; }
-        .sheet.open { bottom: 0; }
+        /* XP BAR */
+        .xp-pill { background: var(--dark); color: var(--sun); padding: 6px 15px; border-radius: 20px; font-weight: 900; font-size: 14px; border: 2px solid var(--orange); }
     </style>
 </head>
 <body>
 
-    <div id="toast" class="fixed top-28 left-4 right-4 bg-white border-4 border-bee-dark p-4 rounded-2xl z-[6000] transform -translate-y-[200%] transition-all shadow-[6px 6px 0 var(--bee-orange)]">
-        <div class="flex items-center gap-3">
-            <span class="text-3xl">🐝</span>
-            <div><p id="toast-title" class="font-black text-[10px] text-orange-500 uppercase">BeeHunter Alert</p><p id="toast-msg" class="text-sm font-bold"></p></div>
+    <div id="toast" class="fixed top-32 left-6 right-6 bg-white border-4 border-dark p-5 rounded-[30px] z-[10000] transform -translate-y-[250%] transition-all shadow-[8px_8px_0_var(--orange)]">
+        <div class="flex items-center gap-4">
+            <div id="toast-icon" class="text-4xl">🐝</div>
+            <div>
+                <p id="toast-title" class="font-black text-[10px] text-orange-500 uppercase">BeeHunter Alert</p>
+                <p id="toast-msg" class="text-sm font-bold"></p>
+            </div>
         </div>
     </div>
 
     <header>
-        <button onclick="toggleSheet('transport-sheet')" class="w-14 h-14 bg-white border-3 border-bee-dark rounded-2xl flex items-center justify-center text-xl shadow-[4px 4px 0 var(--bee-dark)]"><i class="fa-solid fa-bus"></i></button>
-        <div class="text-center">
-            <h1 class="font-black italic text-2xl tracking-tighter text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">BEEHUNTER!</h1>
-            <div class="flex items-center justify-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <p class="text-[9px] font-black uppercase text-bee-dark">Bari Live Experience</p>
+        <div>
+            <h1 class="font-black italic text-3xl text-white drop-shadow-[3px_3px_0_var(--dark)]">BEEHUNTER</h1>
+            <div class="flex items-center gap-2 bg-white/30 rounded-full px-3 py-1 mt-1">
+                <span id="meteo-icon">☀️</span>
+                <span id="meteo-text" class="text-[8px] font-black uppercase">Vento di Maestrale</span>
             </div>
         </div>
-        <div class="flex flex-col items-center">
-            <div class="xp-pill shadow-[3px 3px 0 var(--bee-orange)]" id="global-xp">0 XP</div>
-            <span class="text-[7px] font-black mt-1">RANK: NOVIZIO</span>
+        <div class="flex flex-col items-end">
+            <div class="xp-pill" id="total-xp">0 XP</div>
+            <p class="text-[7px] font-black mt-1 uppercase opacity-70">Detective Liv. 1</p>
         </div>
     </header>
 
     <nav class="bottom-nav">
-        <button onclick="switchPage('radar')" id="nav-radar" class="nav-btn active"><i class="fa-solid fa-rocket"></i><span>Radar</span></button>
-        <button onclick="switchPage('notebook')" id="nav-notebook" class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i><span>Casi</span></button>
-        <button onclick="switchPage('bike')" id="nav-bike" class="nav-btn"><i class="fa-solid fa-bicycle"></i><span>Tour</span></button>
-        <button onclick="switchPage('profile')" id="nav-profile" class="nav-btn"><i class="fa-solid fa-face-smile"></i><span>Tu</span></button>
+        <button onclick="switchPage('radar')" id="nav-radar" class="nav-btn active"><i class="fa-solid fa-map-marked-alt"></i><span>Radar</span></button>
+        <button onclick="switchPage('events')" id="nav-events" class="nav-btn"><i class="fa-solid fa-calendar-star"></i><span>Eventi</span></button>
+        <button onclick="switchPage('cases')" id="nav-cases" class="nav-btn"><i class="fa-solid fa-mask"></i><span>Casi</span></button>
+        <button onclick="switchPage('profile')" id="nav-profile" class="nav-btn"><i class="fa-solid fa-user-ninja"></i><span>Tu</span></button>
     </nav>
 
     <main id="page-radar" class="page active">
-        <div class="flex overflow-x-auto gap-3 mb-6 no-scrollbar pb-2">
-            <button class="badge-tag bg-bee-orange shadow-[2px_2px_0_#000]">Tutto</button>
-            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Cultura</button>
-            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Food</button>
-            <button class="badge-tag bg-white !text-bee-dark border-2 border-bee-dark">Eventi</button>
-        </div>
         <div id="map"></div>
-        <h3 class="font-black italic text-lg mb-4 text-orange-500">🔥 Obiettivi Vicini</h3>
-        <div id="radar-list"></div>
+        <h3 class="font-black italic text-xl uppercase mb-4 text-orange-500">🔥 Obiettivi Bari</h3>
+        <div id="radar-list" class="space-y-4"></div>
     </main>
 
-    <main id="page-notebook" class="page">
-        <div class="bg-bee-orange p-6 rounded-[40px] border-4 border-bee-dark mb-8 text-white shadow-[6px_6px_0_var(--bee-dark)]">
-            <h2 class="text-3xl font-black italic uppercase leading-none">Detective Taccuino</h2>
-            <p class="text-xs font-bold mt-2 opacity-90 italic">Trova i segreti nascosti di Bari!</p>
-        </div>
-        <div id="notebook-list" class="space-y-4"></div>
-    </main>
+    <main id="page-events" class="page">
+        <div class="event-card p-6 rounded-[40px] mb-8 relative overflow-hidden" id="main-event-box">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-2" id="event-tag">Speciale San Nicola</p>
+                <h2 class="text-3xl font-black italic uppercase leading-none" id="event-title">Caricamento...</h2>
+                
+                <div class="timer-box" id="countdown">
+                    <div class="timer-unit"><span id="days">00</span><label>Giorni</label></div>
+                    <div class="timer-unit"><span id="hours">00</span><label>Ore</label></div>
+                    <div class="timer-unit"><span id="mins">00</span><label>Min</label></div>
+                    <div class="timer-unit"><span id="secs">00</span><label>Sec</label></div>
+                </div>
 
-    <main id="page-bike" class="page text-center">
-        <img src="https://images.unsplash.com/photo-1485965123384-57aa0406e09a?w=800" class="w-full h-48 object-cover rounded-[40px] border-4 border-bee-dark shadow-[6px_6px_0_var(--bee-sea)]">
-        <h2 class="text-3xl font-black italic mt-6 uppercase">Bari in Bici</h2>
-        <p class="text-sm font-bold text-slate-500 px-4">Esplora la città su due ruote! Noleggia una bici partner per soli 3€ al giorno e sblocca itinerari esclusivi.</p>
-        <div class="grid grid-cols-2 gap-4 mt-8">
-            <div class="card bg-bee-sea text-white !border-white"><h4 class="font-black">TOUR LUNGOMARE</h4><p class="text-xs">3.5 KM • 15 PT</p></div>
-            <div class="card"><h4 class="font-black">TOUR MURAT</h4><p class="text-xs">2.0 KM • 10 PT</p></div>
-        </div>
-        <button class="w-full bg-bee-sun border-4 border-bee-dark py-5 rounded-3xl font-black text-xl mt-4 shadow-[6px_6px_0_#000]">PRENOTA ORA (3€)</button>
-    </main>
-
-    <main id="page-profile" class="page">
-        <div class="card text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-bee-sea"></div>
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=BariBee" class="w-24 h-24 mx-auto mb-4 border-4 border-bee-sun rounded-full">
-            <h2 class="text-2xl font-black italic" id="prof-name">HUNTER_01</h2>
-            <p class="text-[10px] font-black uppercase text-slate-400">Bari Food Master Level: 1</p>
-        </div>
-        <h3 class="font-black italic text-lg mb-4 text-bee-orange">🏆 Collezione Badge</h3>
-        <div id="badge-grid" class="grid grid-cols-3 gap-3"></div>
-        <h3 class="font-black italic text-lg mt-8 mb-4 text-bee-sea">🎟️ I tuoi Coupon</h3>
-        <div id="coupon-list" class="space-y-3"></div>
-    </main>
-
-    <div id="transport-sheet" class="sheet">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black italic">MUOVERSI A BARI</h2>
-            <button onclick="toggleSheet('transport-sheet')" class="text-2xl"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="space-y-4">
-            <div class="card flex items-center gap-4 bg-slate-50">
-                <i class="fa-solid fa-train text-2xl"></i>
-                <div><p class="font-black">Stazione Centrale</p><p class="text-xs">Treni per Polignano/Monopoli ogni 30'</p></div>
+                <div class="mt-6 flex gap-2">
+                    <button class="bg-white text-dark px-4 py-2 rounded-xl font-black text-[10px] uppercase">Vedi Challenge</button>
+                    <button onclick="shareWA('Sbrighiamoci! Mancano pochi giorni all\'evento di Bari!')" class="bg-dark/30 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase"><i class="fa-brands fa-whatsapp"></i> Invita</button>
+                </div>
             </div>
-            <div class="card flex items-center gap-4 bg-slate-50">
-                <i class="fa-solid fa-bus text-2xl"></i>
-                <div><p class="font-black">Linea 12/ (Lungomare)</p><p class="text-xs">In arrivo tra 4 minuti</p></div>
-            </div>
-            <input type="text" placeholder="Dove vuoi andare?" class="w-full p-5 border-4 border-bee-dark rounded-2xl font-bold shadow-[4px_4px_0_#000]">
-            <button class="w-full bg-bee-sea text-white py-4 rounded-2xl font-black shadow-[4px_4px_0_var(--bee-dark)]">CALCOLA PERCORSO MIGLIORE</button>
+            <i class="fa-solid fa-holly-berry absolute -bottom-4 -right-4 text-8xl opacity-10"></i>
         </div>
-    </div>
+
+        <h3 class="font-black italic text-lg mb-4 uppercase">Sfide Stagionali</h3>
+        <div id="event-challenges" class="space-y-4"></div>
+    </main>
+
+    <main id="page-cases" class="page">
+        <div class="card bg-dark text-white p-6 border-sun shadow-[6px_6px_0_var(--orange)]">
+            <h2 class="text-2xl font-black italic uppercase">Misteri dei Vicoli</h2>
+            <p class="text-[9px] font-bold opacity-60 uppercase tracking-widest mt-1">Raccogli 100 XP per il primo premio</p>
+        </div>
+        <div id="notebook-list" class="mt-6 space-y-4"></div>
+    </main>
+
+    <main id="page-profile" class="page text-center">
+        <div class="w-32 h-32 mx-auto bg-white border-4 border-dark rounded-[45px] shadow-[8px_8px_0_var(--orange)] overflow-hidden mb-6">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=BariHunter" class="w-full h-full">
+        </div>
+        <h2 class="text-3xl font-black italic uppercase">Bari Hunter #01</h2>
+        <div id="badge-collection" class="flex flex-wrap justify-center gap-3 mt-6"></div>
+        <div id="coupon-area" class="mt-10 text-left">
+            <h3 class="font-black italic text-xl uppercase mb-4 text-sea">I Tuoi Premi</h3>
+            <div id="coupon-list" class="space-y-3"></div>
+        </div>
+    </main>
 
     <div id="scanner-view">
-        <video id="webcam" class="w-full h-full object-cover" autoplay playsinline></video>
-        <div class="scan-frame"><div class="absolute top-0 left-0 w-full h-1 bg-bee-sun animate-bounce shadow-[0_0_15px_#FFD700]"></div></div>
-        <div class="absolute bottom-10 w-full flex justify-center gap-10 px-10">
-            <button onclick="stopScanner()" class="w-16 h-16 bg-white/20 rounded-full text-white"><i class="fa-solid fa-xmark"></i></button>
-            <button onclick="captureAction()" class="w-20 h-20 bg-bee-sun rounded-full text-bee-dark text-3xl shadow-2xl border-4 border-bee-dark"><i class="fa-solid fa-camera"></i></button>
+        <video id="camera" class="w-full h-full object-cover" autoplay playsinline></video>
+        <div class="scan-target"><div class="scan-line"></div></div>
+        <div class="absolute bottom-12 w-full flex justify-center gap-12 px-10">
+            <button onclick="stopScanner()" class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full text-white"><i class="fa-solid fa-x"></i></button>
+            <button onclick="capturePoint()" class="w-24 h-24 bg-sun rounded-full shadow-[0_0_40px_var(--sun)] border-4 border-dark flex items-center justify-center text-4xl"><i class="fa-solid fa-fingerprint"></i></button>
         </div>
     </div>
 
     <script>
-        /* --- DATABASE COMPLETO (Monumenti + Indizi) --- */
-        const DB = [
-            // Cultura & Monumenti (I 10 nuovi inseriti qui)
-            { id: 'm1', cat: 'culture', pt: 20, name: 'Basilica San Nicola', lat: 41.1315, lng: 16.8722, bio: 'Custodisce le reliquie di San Nicola. Architettura romanica pura.', badge: 'Culture Master' },
-            { id: 'm2', cat: 'culture', pt: 20, name: 'Castello Svevo', lat: 41.1288, lng: 16.8644, bio: 'Fortezza federiciana. Un tempo carcere, oggi cuore della cultura.' },
-            { id: 'm3', cat: 'culture', pt: 20, name: 'Teatro Petruzzelli', lat: 41.1250, lng: 16.8720, bio: 'Il quarto teatro più grande d’Italia. Simbolo del lusso barese.' },
-            { id: 'm4', cat: 'culture', pt: 20, name: 'Cattedrale San Sabino', lat: 41.1285, lng: 16.8690, bio: 'Celebre per il rosone che proietta la luce il 21 giugno.' },
-            { id: 'm5', cat: 'culture', pt: 20, name: 'Palazzo dell’Acquedotto', lat: 41.1220, lng: 16.8710, bio: 'Capolavoro di architettura celebrativa dell’acqua.' },
-            { id: 'm6', cat: 'culture', pt: 20, name: 'Teatro Margherita', lat: 41.1265, lng: 16.8730, bio: 'Unico teatro costruito su palafitte in mare.' },
-            { id: 'm7', cat: 'culture', pt: 20, name: 'Pinacoteca Corrado Giaquinto', lat: 41.1180, lng: 16.8850, bio: 'Tesori d’arte sul lungomare di Bari.' },
-            { id: 'm8', cat: 'culture', pt: 20, name: 'Colonna della Giustizia', lat: 41.1292, lng: 16.8732, bio: 'Piazza Mercantile: dove venivano legati i debitori.' },
-            { id: 'm9', cat: 'culture', pt: 20, name: 'Arco del Basso', lat: 41.1305, lng: 16.8700, bio: 'Uno dei passaggi più iconici e stretti di Bari Vecchia.' },
-            { id: 'm10', cat: 'culture', pt: 20, name: 'Faro di San Cataldo', lat: 41.1350, lng: 16.8400, bio: 'Uno dei fari più alti d’Italia sul porto Adriatico.' },
-            
-            // Food & Segreti
-            { id: 'f1', cat: 'food', pt: 20, name: 'Panificio Fiore', hint: 'Cerca la chiesa sconsacrata che profuma di focaccia...', bio: 'La focaccia barese più antica del mondo.' },
-            { id: 'f2', cat: 'food', pt: 10, name: 'Mercato Coperto Santa Scolastica', hint: 'Il regno del pesce crudo e dei frutti di mare.', badge: 'Fresh Catch' },
-            { id: 's1', cat: 'secret', pt: 50, name: 'Largo Albicocca', hint: 'Piazza degli innamorati: il cuore verde di Bari Vecchia.', badge: 'Explorer' }
-        ];
+        /* --- DATABASE ESTREMO --- */
+        const DB = {
+            points: [
+                { id: 'm1', name: 'Basilica San Nicola', lat: 41.1315, lng: 16.8722, pt: 20, bio: 'Cuore della cristianità e ponte tra oriente e occidente.', badge: 'Devoto Barese' },
+                { id: 'm2', name: 'Castello Svevo', lat: 41.1288, lng: 16.8644, pt: 20, bio: 'La fortezza di Federico II che domina il mare.' },
+                { id: 'm3', name: 'Teatro Petruzzelli', lat: 41.1250, lng: 16.8720, pt: 20, bio: 'Il tempio della lirica barese.' },
+                { id: 'm4', name: 'Cattedrale San Sabino', lat: 41.1285, lng: 16.8690, pt: 20, bio: 'Capolavoro del romanico pugliese.' },
+                { id: 'm5', name: 'Teatro Margherita', lat: 41.1265, lng: 16.8730, pt: 20, bio: 'L\'unico teatro al mondo costruito sull\'acqua.' },
+                { id: 'f1', name: 'Panificio Fiore', hint: 'Segui il profumo di focaccia vicino a San Nicola...', pt: 15, badge: 'Focaccia King' },
+                { id: 'f2', name: 'Largo Albicocca', hint: 'Il regno delle orecchiette e dell\'amore barese...', pt: 50, badge: 'Love in Bari' }
+            ],
+            events: [
+                { id: 'sn', name: 'Festa di San Nicola', date: 'May 7, 2026 00:00:00', color: 'var(--san-nicola)', tag: 'Religione & Tradizione' },
+                { id: 'xm', name: 'Mercatini di Natale', date: 'Dec 6, 2026 00:00:00', color: 'var(--xmas)', tag: 'Inverno a Bari' }
+            ]
+        };
 
-        /* --- STATE --- */
-        let state = JSON.parse(localStorage.getItem('beehunter_final')) || { xp: 0, visited: [], badges: ['Explorer'], coupons: [] };
+        let state = JSON.parse(localStorage.getItem('beehunter_pro_v1')) || { xp: 0, visited: [], badges: [], coupons: [] };
         let map, currentTarget = null;
 
-        /* --- CORE --- */
+        /* --- INITIALIZATION --- */
         function init() {
-            renderMap();
+            initMap();
             updateUI();
-            checkProximity();
-            document.getElementById('global-xp').innerText = state.xp + " XP";
+            startCountdown();
+            initMeteo();
         }
 
-        function renderMap() {
-            map = L.map('map', { zoomControl: false }).setView([41.130, 16.870], 14);
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([41.130, 16.870], 15);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
-            DB.forEach(m => {
-                if(m.lat) L.marker([m.lat, m.lng], { icon: L.divIcon({className: 'bg-orange-400 w-3 h-3 rounded-full border-2 border-white'}) }).addTo(map);
+            DB.points.forEach(p => {
+                if(p.lat) L.marker([p.lat, p.lng], { icon: L.divIcon({className: 'bg-orange-500 w-3 h-3 rounded-full border-2 border-white'}) }).addTo(map);
             });
         }
 
+        /* --- UI LOGIC --- */
         function switchPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -224,108 +225,148 @@
         }
 
         function updateUI() {
+            document.getElementById('total-xp').innerText = state.xp + " XP";
+            
+            // Radar List
             const rList = document.getElementById('radar-list');
-            rList.innerHTML = DB.filter(m => m.cat === 'culture' && !state.visited.includes(m.id)).map(m => `
-                <div class="card flex justify-between items-center bg-white">
-                    <div><h4 class="font-black italic text-sm">${m.name}</h4><p class="text-[9px] font-black text-bee-sea">+${m.pt} XP • CULTURA</p></div>
-                    <button onclick="startScanner('${m.id}')" class="bg-bee-sun border-3 border-bee-dark px-4 py-2 rounded-xl text-[10px] font-black">CATTURA</button>
+            rList.innerHTML = DB.points.filter(p => !p.hint && !state.visited.includes(p.id)).map(p => `
+                <div class="card flex justify-between items-center animate__animated animate__fadeInUp">
+                    <div><h4 class="font-black italic text-sm uppercase">${p.name}</h4><p class="text-[9px] font-black text-sea">+${p.pt} XP</p></div>
+                    <button onclick="startScanner('${p.id}')" class="bg-sun border-3 border-dark px-4 py-2 rounded-xl text-[10px] font-black uppercase">Cattura</button>
                 </div>
             `).join('');
 
+            // Notebook List
             const nList = document.getElementById('notebook-list');
-            nList.innerHTML = DB.filter(m => m.hint && !state.visited.includes(m.id)).map(m => `
-                <div class="card bg-bee-sun/20 border-bee-dark">
-                    <p class="text-[8px] font-black opacity-60 uppercase mb-2">Caso Misterioso</p>
-                    <p class="text-xs font-bold italic leading-tight">"${m.hint}"</p>
-                    <div class="mt-4 flex gap-2">
-                        <button onclick="startScanner('${m.id}')" class="bg-bee-dark text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase">Risolvi</button>
-                        <button onclick="shareWA('${m.hint}')" class="bg-[#25D366] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase"><i class="fa-brands fa-whatsapp"></i> Chiedi Aiuto</button>
+            nList.innerHTML = DB.points.filter(p => p.hint && !state.visited.includes(p.id)).map(p => `
+                <div class="card border-l-8 border-orange-500 bg-white">
+                    <p class="text-[9px] font-black opacity-40 uppercase mb-2">Mistero Barese</p>
+                    <p class="text-xs font-bold italic leading-tight">"${p.hint}"</p>
+                    <div class="mt-5 flex gap-2">
+                        <button onclick="startScanner('${p.id}')" class="bg-dark text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase">Risolvi</button>
+                        <button onclick="shareWA('${p.hint}')" class="bg-green-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase"><i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 </div>
             `).join('');
 
-            const bGrid = document.getElementById('badge-grid');
-            bGrid.innerHTML = state.badges.map(b => `
-                <div class="bg-white border-3 border-bee-dark rounded-2xl p-3 text-center">
+            // Badges
+            document.getElementById('badge-collection').innerHTML = state.badges.map(b => `
+                <div class="bg-white border-3 border-dark rounded-2xl p-3 text-center min-w-[80px]">
                     <div class="text-2xl mb-1">🏅</div>
-                    <p class="text-[8px] font-black uppercase leading-none">${b}</p>
+                    <p class="text-[8px] font-black uppercase">${b}</p>
                 </div>
             `).join('');
-            
-            const cList = document.getElementById('coupon-list');
-            cList.innerHTML = state.coupons.map(c => `
-                <div class="card bg-bee-sea text-white flex justify-between items-center !border-white">
-                    <div><h4 class="font-black uppercase text-xs">${c.title}</h4><p class="text-[8px] font-bold">${c.partner}</p></div>
-                    <div class="bg-white text-bee-sea px-3 py-1 rounded-lg font-black text-[10px]">${c.code}</div>
+
+            // Coupons
+            document.getElementById('coupon-list').innerHTML = state.coupons.map(c => `
+                <div class="card bg-sun flex justify-between items-center border-dashed">
+                    <div><h4 class="font-black text-xs uppercase">${c.name}</h4><p class="text-[8px] font-bold">Codice: ${c.code}</p></div>
+                    <i class="fa-solid fa-ticket text-2xl opacity-20"></i>
                 </div>
             `).join('');
+
+            localStorage.setItem('beehunter_pro_v1', JSON.stringify(state));
+        }
+
+        /* --- EVENT COUNTDOWN LOGIC --- */
+        function startCountdown() {
+            const now = new Date().getTime();
+            let activeEvent = DB.events[0]; // Default San Nicola
             
-            document.getElementById('global-xp').innerText = state.xp + " XP";
-            localStorage.setItem('beehunter_final', JSON.stringify(state));
+            // Se San Nicola è passato, passa a Natale
+            if (new Date(DB.events[0].date).getTime() < now) {
+                activeEvent = DB.events[1];
+            }
+
+            const eventBox = document.getElementById('main-event-box');
+            const eventTitle = document.getElementById('event-title');
+            const eventTag = document.getElementById('event-tag');
+            
+            eventBox.style.background = `linear-gradient(135deg, ${activeEvent.color}, #222)`;
+            eventTitle.innerText = activeEvent.name;
+            eventTag.innerText = activeEvent.tag;
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                const dist = new Date(activeEvent.date).getTime() - now;
+
+                document.getElementById('days').innerText = Math.floor(dist / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').innerText = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('mins').innerText = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('secs').innerText = Math.floor((dist % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }, 1000);
+
+            // Sfide stagionali
+            const challenges = [
+                { name: "Selfie col Santo", pt: 100, icon: "📸" },
+                { name: "Assaggia il Torrone", pt: 50, icon: "🍬" }
+            ];
+            document.getElementById('event-challenges').innerHTML = challenges.map(c => `
+                <div class="card flex items-center gap-4 bg-white/10 !border-white text-white">
+                    <div class="text-2xl">${c.icon}</div>
+                    <div class="flex-1 font-black text-xs uppercase">${c.name}</div>
+                    <div class="text-xs font-black">+${c.pt} XP</div>
+                </div>
+            `).join('');
         }
 
-        /* --- SISTEMA CONDIVISIONE WHATSAPP --- */
-        function shareWA(text) {
-            const url = `https://wa.me/?text=Ehi detective! Sto giocando a BeeHunter Bari e sono bloccato su questo indizio: "${text}". Mi aiuti? 🐝🔎`;
-            window.open(url, '_blank');
-            notify("COLLABORAZIONE ATTIVA", "Hai inviato l'indizio! +5 XP per il Social Engagement!");
-            state.xp += 5;
-            updateUI();
-        }
-
-        /* --- SCANNER --- */
+        /* --- SCANNER & GAMEPLAY --- */
         async function startScanner(id) {
-            currentTarget = DB.find(x => x.id === id);
+            currentTarget = DB.points.find(p => p.id === id);
             document.getElementById('scanner-view').style.display = 'block';
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('webcam').srcObject = stream;
-            } catch(e) { notify("CAM ERROR", "Simulazione scanner attiva."); }
+                document.getElementById('camera').srcObject = stream;
+            } catch(e) { notify("CAM ERROR", "Accesso fotocamera negato."); }
         }
 
         function stopScanner() {
-            const s = document.getElementById('webcam').srcObject;
+            const s = document.getElementById('camera').srcObject;
             if(s) s.getTracks().forEach(t => t.stop());
             document.getElementById('scanner-view').style.display = 'none';
         }
 
-        function captureAction() {
+        function capturePoint() {
             state.xp += currentTarget.pt;
             state.visited.push(currentTarget.id);
-            if(currentTarget.badge && !state.badges.includes(currentTarget.badge)) state.badges.push(currentTarget.badge);
+            if(currentTarget.badge) state.badges.push(currentTarget.badge);
             
-            // Logica Coupon Premio
-            if(state.visited.length % 3 === 0) {
-                state.coupons.push({ title: "Omaggio Focaccia", partner: "Mastro Ciccio", code: "BEE-"+Math.floor(Math.random()*900) });
+            // Premio ogni 100 XP
+            if(Math.floor(state.xp/100) > state.coupons.length) {
+                state.coupons.push({ name: "Sconto 20% Panino", code: "BH-"+Math.floor(Math.random()*9000) });
+                notify("PREMIO SBLOCCATO", "Controlla la sezione Premi!");
             }
 
-            notify("OBIETTIVO SBLOCCATO!", `Hai ottenuto +${currentTarget.pt} XP!`);
-            
-            // Audio Guida (TTS)
+            // Audio Bio
             if(currentTarget.bio) {
-                const speech = new SpeechSynthesisUtterance(currentTarget.bio);
-                speech.lang = 'it-IT';
-                window.speechSynthesis.speak(speech);
+                const msg = new SpeechSynthesisUtterance(currentTarget.bio);
+                msg.lang = 'it-IT';
+                window.speechSynthesis.speak(msg);
             }
 
+            notify("CATTURATO!", `+${currentTarget.pt} XP per ${currentTarget.name}`);
             stopScanner();
             updateUI();
         }
 
-        /* --- NOTIFICHE --- */
+        /* --- UTILS --- */
         function notify(title, msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-title').innerText = title;
             document.getElementById('toast-msg').innerText = msg;
-            t.classList.add('show');
             t.style.transform = "translateY(0)";
-            setTimeout(() => t.style.transform = "translateY(-200%)", 3500);
+            setTimeout(() => t.style.transform = "translateY(-250%)", 3500);
         }
 
-        function toggleSheet(id) { document.getElementById(id).classList.toggle('open'); }
+        function shareWA(txt) {
+            window.open(`https://wa.me/?text=Ehi! Guarda questa sfida su BeeHunter Bari: ${txt} 🐝`, '_blank');
+        }
 
-        function checkProximity() {
-            setTimeout(() => notify("INDIZIO RILEVATO", "Qualcosa vibra nel tuo taccuino..."), 4000);
+        function initMeteo() {
+            const winds = ["Maestrale", "Scirocco", "Tramontana", "Grecale"];
+            const randomWind = winds[Math.floor(Math.random()*winds.length)];
+            document.getElementById('meteo-text').innerText = "Vento di " + randomWind;
+            if(randomWind === "Scirocco") document.getElementById('meteo-icon').innerText = "🥵";
         }
 
         window.onload = init;
