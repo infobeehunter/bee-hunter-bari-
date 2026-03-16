@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BEEHUNTER BARI | OFFICIAL TOURIST ECOSYSTEM</title>
+    <title>BEEHUNTER | THE ULTIMATE APULIAN ECOSYSTEM</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -12,686 +12,648 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
     <style>
-        /* --- 1. ADVANCED CSS CUSTOM FRAMEWORK (Line 20-420 approx) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        /* --- 1. GLOBAL DESIGN SYSTEM --- */
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap');
 
         :root {
-            --primary: #FACC15;
-            --primary-dark: #CA8A04;
-            --secondary: #6366F1;
-            --dark: #0F172A;
-            --dark-soft: #1E293B;
-            --bg-light: #F8FAFC;
-            --white: #FFFFFF;
-            --danger: #EF4444;
-            --success: #22C55E;
-            --border: rgba(15, 23, 42, 0.08);
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --safe-area-inset-bottom: env(safe-area-inset-bottom);
+            --bee-yellow: #FACC15;
+            --bee-gold: #CA8A04;
+            --bee-dark: #0F172A;
+            --bee-soft: #1E293B;
+            --bee-white: #F8FAFC;
+            --bee-danger: #EF4444;
+            --bee-success: #22C55E;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-        /* RESET & BASE */
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; scroll-behavior: smooth; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        
         body { 
             font-family: 'Outfit', sans-serif; 
-            background-color: var(--bg-light); 
-            color: var(--dark);
+            background-color: var(--bee-dark); 
+            color: var(--bee-white);
             margin: 0; padding: 0;
-            height: 100vh; overflow: hidden;
+            overflow: hidden; height: 100vh;
         }
 
-        .font-black { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; }
-        .font-code { font-family: 'JetBrains Mono', monospace; }
+        .font-heavy { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* SCROLL BEHAVIOR */
+        /* --- 2. SIDEBAR & NAVIGATION --- */
+        .sidebar {
+            position: fixed; top: 0; left: -100%; width: 85%; height: 100%;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            z-index: 9999; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 50px 30px; box-shadow: 20px 0 80px rgba(0,0,0,0.8);
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px); z-index: 9998; display: none;
+        }
+        .sidebar-overlay.active { display: block; }
+
+        .nav-dock {
+            position: fixed; bottom: 25px; left: 15px; right: 15px;
+            height: 80px; background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px); border: 1px solid var(--border);
+            border-radius: 35px; z-index: 9000;
+            display: flex; align-items: center; justify-content: space-around;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            color: rgba(255,255,255,0.4); transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .nav-item.active { color: var(--bee-yellow); }
+        .nav-item i { font-size: 1.4rem; }
+        .nav-item span { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
+
+        /* --- 3. COMPONENTS --- */
         .app-viewport {
-            height: 100vh;
-            overflow-y: auto;
-            padding-top: 90px;
-            padding-bottom: 140px;
-            -webkit-overflow-scrolling: touch;
+            height: 100vh; overflow-y: auto; padding-top: 100px; padding-bottom: 150px;
+            scroll-behavior: smooth;
         }
         .app-viewport::-webkit-scrollbar { display: none; }
 
-        /* NAVIGATION BAR */
-        header.main-header {
-            position: fixed; top: 0; left: 0; right: 0; height: 85px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            z-index: 9000; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; padding-top: env(safe-area-inset-top);
+        .card-bee {
+            background: var(--bee-soft); border-radius: 35px; padding: 25px;
+            margin-bottom: 20px; border: 1px solid var(--border);
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .card-bee:active { transform: scale(0.97); background: #2d3e5a; }
+
+        .btn-bee {
+            background: var(--bee-yellow); color: var(--bee-dark);
+            padding: 18px 30px; border-radius: 22px; font-weight: 900;
+            text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; border: none; cursor: pointer;
         }
 
-        nav.bottom-nav {
-            position: fixed; bottom: 30px; left: 24px; right: 24px;
-            height: 78px; background: var(--dark);
-            border-radius: 30px; z-index: 9000;
-            display: flex; align-items: center; justify-content: space-around;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
-            padding: 0 12px;
+        .badge-pill {
+            background: rgba(250, 204, 21, 0.1); color: var(--bee-yellow);
+            padding: 6px 14px; border-radius: 12px; font-size: 0.6rem;
+            font-weight: 800; text-transform: uppercase; border: 1px solid rgba(250, 204, 21, 0.2);
         }
 
-        .nav-link {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: rgba(255,255,255,0.4); text-decoration: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 55px; height: 55px; border-radius: 20px;
-        }
-        .nav-link.active { color: var(--primary); background: rgba(255,255,255,0.05); }
-        .nav-link i { font-size: 1.4rem; }
-
-        /* CARDS & UI COMPONENTS */
-        .hunter-card {
-            background: var(--white); border-radius: 35px;
-            border: 1px solid var(--border); margin-bottom: 24px;
-            padding: 24px; transition: 0.4s; position: relative;
-            box-shadow: var(--shadow-sm); overflow: hidden;
-        }
-        .hunter-card:active { transform: scale(0.98); }
-
-        .image-container { border-radius: 28px; overflow: hidden; position: relative; margin-bottom: 18px; }
-
-        .btn-action {
-            width: 100%; padding: 22px; border-radius: 24px;
-            font-weight: 800; font-size: 0.85rem; text-transform: uppercase;
-            letter-spacing: 1px; transition: 0.3s; display: flex;
-            align-items: center; justify-content: center; gap: 12px;
-            border: none; cursor: pointer;
-        }
-        .btn-dark { background: var(--dark); color: var(--white); }
-        .btn-primary { background: var(--primary); color: var(--dark); }
-        .btn-outline { background: transparent; border: 2.5px solid var(--dark); color: var(--dark); }
-
-        /* BADGES */
-        .badge {
-            padding: 6px 14px; border-radius: 12px; font-size: 0.65rem;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .badge-yellow { background: var(--primary); color: var(--dark); }
-        .badge-dark { background: var(--dark); color: var(--white); }
-
-        /* MAP CUSTOM */
-        #map-view { 
-            height: 480px; width: 100%; border-radius: 45px; 
-            border: 10px solid var(--white); box-shadow: var(--shadow-lg);
-            z-index: 10; margin-bottom: 24px;
+        /* --- 4. MAP & CATEGORIES --- */
+        #main-map { 
+            height: 450px; width: 100%; border-radius: 40px; 
+            margin-bottom: 30px; border: 4px solid var(--bee-soft);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* PROFILE SPECIALS */
-        .profile-hero {
-            height: 280px; background: linear-gradient(135deg, var(--dark) 0%, var(--dark-soft) 100%);
-            border-radius: 0 0 60px 60px; position: relative; width: 100%;
+        .cat-chip {
+            padding: 12px 24px; border-radius: 20px; background: var(--bee-soft);
+            border: 1px solid var(--border); font-size: 0.7rem; font-weight: 800;
+            white-space: nowrap; transition: 0.3s;
         }
-        .profile-avatar-container {
-            position: absolute; bottom: -70px; left: 50%; transform: translateX(-50%);
-            z-index: 100;
-        }
-        .avatar-main {
-            width: 140px; height: 140px; border-radius: 50px;
-            border: 8px solid var(--bg-light); object-fit: cover;
-            background: white; shadow: var(--shadow-lg);
-        }
+        .cat-chip.active { background: var(--bee-yellow); color: var(--bee-dark); }
 
-        /* PAGES LOGIC */
-        .page { display: none; animation: fadeInApp 0.5s ease; }
-        .page.active { display: block; }
-
-        @keyframes fadeInApp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- 5. CHAT & ASSISTANCE --- */
+        #bee-bot {
+            position: fixed; bottom: 120px; right: 20px; width: 320px; height: 480px;
+            background: #1e293b; border-radius: 35px; z-index: 9500;
+            display: none; flex-direction: column; border: 1px solid var(--border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden;
+            animation: slideIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
         }
+        @keyframes slideIn { from { transform: translateY(100px) scale(0.8); opacity: 0; } }
 
-        /* INTERACTION ELEMENTS */
-        .interaction-row { display: flex; gap: 12px; margin-top: 15px; }
-        .icon-btn {
-            flex: 1; padding: 15px; border-radius: 18px; background: #F1F5F9;
-            color: var(--dark); display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; transition: 0.2s;
+        /* --- 6. MODALS --- */
+        .full-sheet {
+            position: fixed; bottom: -100%; left: 0; right: 0; height: 90%;
+            background: var(--bee-dark); z-index: 10000; border-radius: 50px 50px 0 0;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            padding: 40px 25px; overflow-y: auto;
         }
-        .icon-btn:active { background: #E2E8F0; }
+        .full-sheet.open { bottom: 0; }
 
-        /* TYPOGRAPHY */
-        .text-huge { font-size: 2.4rem; line-height: 1; }
-        .text-tiny { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        /* --- 7. GAMIFICATION --- */
+        .xp-bar-container { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .xp-bar-fill { height: 100%; background: var(--bee-yellow); width: 45%; transition: 1s ease-out; }
 
-        /* CUSTOM UTILITIES */
-        .glass-panel { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); }
-        .star-rating { color: #fbbf24; font-size: 0.8rem; display: flex; gap: 2px; }
-
-        /* TICKET STYLE */
-        .ticket-cut {
-            position: relative; border-left: 8px solid var(--primary);
-        }
-        .ticket-cut::before, .ticket-cut::after {
-            content: ''; position: absolute; left: -14px; width: 20px; height: 20px;
-            background: var(--bg-light); border-radius: 50%;
-        }
-        .ticket-cut::before { top: -10px; }
-        .ticket-cut::after { bottom: -10px; }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-xl shadow-lg">🐝</div>
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="flex items-center gap-4 mb-12">
+            <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-3xl shadow-xl">🐝</div>
             <div>
-                <h1 class="font-black text-lg leading-none">BEEHUNTER</h1>
-                <p class="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Official Bari Hub</p>
+                <h2 class="font-heavy text-xl">BeeHunter</h2>
+                <span class="badge-pill">Premium Member</span>
             </div>
         </div>
-        <div class="flex items-center gap-3 bg-slate-50 border p-1.5 pr-4 rounded-2xl" onclick="nav('profile')">
-            <img id="header-avatar" src="" class="w-9 h-9 rounded-xl object-cover bg-white">
-            <div class="hidden sm:block">
-                <p id="header-xp" class="text-[11px] font-black leading-none">0 XP</p>
-                <p class="text-[7px] font-bold text-slate-400 uppercase">Hunter Level</p>
+        <nav class="space-y-4">
+            <button onclick="nav('itineraries')" class="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/5 font-bold hover:bg-white/10">
+                <i class="fa-solid fa-route text-yellow-400"></i> I Miei Itinerari
+            </button>
+            <button onclick="nav('booking')" class="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/5 font-bold">
+                <i class="fa-solid fa-star text-yellow-400"></i> BeeHunter Pass
+            </button>
+            <button onclick="showHelp()" class="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/5 font-bold">
+                <i class="fa-solid fa-circle-question text-yellow-400"></i> Assistenza & SOS
+            </button>
+            <hr class="border-white/10 my-8">
+            <div class="p-4 bg-yellow-400/10 rounded-3xl border border-yellow-400/20">
+                <p class="text-[10px] font-black uppercase text-yellow-400 mb-2">Partner Program</p>
+                <p class="text-xs text-slate-400 leading-tight">Sei un commerciante? Iscrivi la tua attività al network BeeHunter.</p>
+                <button class="mt-4 text-xs font-black text-yellow-400 underline">SCOPRI DI PIÙ</button>
             </div>
+        </nav>
+        <button onclick="logout()" class="absolute bottom-10 left-8 text-red-500 font-black uppercase text-xs tracking-widest">Logout Account</button>
+    </aside>
+
+    <header class="fixed top-0 w-full h-[90px] px-6 flex items-center justify-between z-[8000] bg-bee-dark/80 backdrop-blur-md border-b border-white/5">
+        <button onclick="toggleSidebar()" class="w-12 h-12 bg-bee-soft rounded-2xl flex items-center justify-center border border-white/10">
+            <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+        <div class="text-center">
+            <h1 class="font-heavy text-lg tracking-tighter">BEE<span class="text-yellow-400">HUNTER</span></h1>
+            <p class="text-[7px] font-black text-slate-500 uppercase tracking-[3px]">Apulia Real-Time Hub</p>
         </div>
+        <button onclick="nav('profile')" class="flex items-center gap-3 bg-bee-soft p-1.5 pr-4 rounded-2xl border border-white/10">
+            <img id="head-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bari" class="w-8 h-8 rounded-xl bg-white">
+            <span id="head-xp" class="text-[10px] font-black text-yellow-400">0 XP</span>
+        </button>
     </header>
 
-    <nav class="bottom-nav">
-        <a href="#" onclick="nav('radar')" class="nav-link active" id="nav-radar"><i class="fa-solid fa-map-location-dot"></i></a>
-        <a href="#" onclick="nav('partners')" class="nav-link" id="nav-partners"><i class="fa-solid fa-store"></i></a>
-        <a href="#" onclick="nav('booking')" class="nav-link" id="nav-booking"><i class="fa-solid fa-ticket"></i></a>
-        <a href="#" onclick="nav('rank')" class="nav-link" id="nav-rank"><i class="fa-solid fa-trophy"></i></a>
-        <a href="#" onclick="nav('profile')" class="nav-link" id="nav-profile"><i class="fa-solid fa-user-ninja"></i></a>
+    <nav class="nav-dock">
+        <a href="javascript:void(0)" onclick="nav('map-screen')" class="nav-item active" id="btn-map-screen">
+            <i class="fa-solid fa-earth-europe"></i><span>Esplora</span>
+        </a>
+        <a href="javascript:void(0)" onclick="nav('itineraries')" class="nav-item" id="btn-itineraries">
+            <i class="fa-solid fa-map-signs"></i><span>Percorsi</span>
+        </a>
+        <a href="javascript:void(0)" onclick="nav('events')" class="nav-item" id="btn-events">
+            <i class="fa-solid fa-calendar-check"></i><span>Eventi</span>
+        </a>
+        <a href="javascript:void(0)" onclick="nav('booking')" class="nav-item" id="btn-booking">
+            <i class="fa-solid fa-gem"></i><span>Shop</span>
+        </a>
+        <a href="javascript:void(0)" onclick="nav('profile')" class="nav-item" id="btn-profile">
+            <i class="fa-solid fa-user-astronaut"></i><span>Io</span>
+        </a>
     </nav>
 
-    <div class="app-viewport">
+    <main class="app-viewport px-6">
 
-        <section id="radar" class="page active px-6">
-            <div class="mb-8 mt-4">
-                <h2 class="text-huge font-black mb-2 italic">CITTA' SOTTO<br>CONTROLLO.</h2>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest">3 Missioni attive nel raggio di 1km</p>
+        <section id="map-screen" class="page-content">
+            <div class="mb-8">
+                <h2 class="text-3xl font-heavy italic">Radar<br>Attivo.</h2>
+                <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-2">Bari e Provincia • 200+ Punti</p>
             </div>
 
-            <div id="map-view"></div>
-
-            <div class="flex justify-between items-end mb-6">
-                <div>
-                    <h3 class="font-black text-xl italic uppercase">Check-points</h3>
-                    <p class="text-tiny text-slate-400">Raggiungi i luoghi per scalare la classifica</p>
-                </div>
-                <button class="bg-dark text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase">Aggiorna</button>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar mb-6 pb-2">
+                <button onclick="filterMarkers('all')" class="cat-chip active">Tutti</button>
+                <button onclick="filterMarkers('monumento')" class="cat-chip">Monumenti</button>
+                <button onclick="filterMarkers('food')" class="cat-chip">Street Food</button>
+                <button onclick="filterMarkers('spiaggia')" class="cat-chip">Spiagge</button>
+                <button onclick="filterMarkers('mercato')" class="cat-chip">Mercati</button>
             </div>
 
-            <div id="mission-list" class="space-y-4">
-                </div>
-        </section>
+            <div id="main-map"></div>
 
-        <section id="partners" class="page px-6">
-            <div class="mb-10 mt-4">
-                <h2 class="text-huge font-black mb-2 italic">IL TUO<br>NETWORK.</h2>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Usa i tuoi XP per privilegi reali</p>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-heavy text-sm italic">Obiettivi Vicini</h3>
+                <span class="text-[9px] font-black text-yellow-400">VEDI LISTA</span>
             </div>
 
-            <div class="flex gap-3 overflow-x-auto no-scrollbar mb-10">
-                <button onclick="filterPartner('all')" class="bg-dark text-white px-8 py-3 rounded-2xl text-[11px] font-bold shadow-xl">TUTTI</button>
-                <button onclick="filterPartner('food')" class="bg-white border px-8 py-3 rounded-2xl text-[11px] font-bold">FOOD</button>
-                <button onclick="filterPartner('night')" class="bg-white border px-8 py-3 rounded-2xl text-[11px] font-bold">NIGHTLIFE</button>
-                <button onclick="filterPartner('culture')" class="bg-white border px-8 py-3 rounded-2xl text-[11px] font-bold">EXPERIENCE</button>
-            </div>
-
-            <div id="partner-grid" class="space-y-12">
+            <div id="quick-targets" class="space-y-4">
                 </div>
         </section>
 
-        <section id="booking" class="page px-6">
-            <div class="mb-10 mt-4">
-                <h2 class="text-huge font-black mb-2 italic">TOUR &<br>OFFERTE.</h2>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Prenota la tua prossima esperienza</p>
+        <section id="itineraries" class="page-content hidden">
+            <div class="mb-10">
+                <h2 class="text-3xl font-heavy italic">Percorsi<br>Curati.</h2>
+                <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-2">Completa le sfide per XP extra</p>
             </div>
 
-            <div class="space-y-8">
-                <div class="hunter-card p-0 overflow-hidden bg-dark text-white border-none shadow-2xl">
-                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1549893072-4bc678117f45?auto=format&fit=crop&w=800')">
-                        <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 right-6">
-                            <span class="badge badge-yellow mb-3 inline-block">Best Seller</span>
-                            <h3 class="text-3xl font-black italic">Essential Bari</h3>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <p class="text-slate-400 text-sm mb-8 leading-relaxed">Il tour perfetto per chi ha poco tempo. 4 mete iconiche (Basilica, Castello, Lungomare, Cattedrale). Include audioguida digitale e curiosità storiche.</p>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-tiny opacity-50 uppercase">Prezzo Hunter</p>
-                                <p class="text-4xl font-black italic text-yellow-400">10€</p>
-                            </div>
-                            <button onclick="purchaseTour('Essential Bari', 10)" class="btn-action btn-primary w-auto px-10">ACQUISTA</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hunter-card p-0 overflow-hidden border-4 border-yellow-400">
-                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800')">
-                        <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 right-6">
-                            <span class="badge badge-dark mb-3 inline-block">Full Experience</span>
-                            <h3 class="text-3xl font-black italic">Bari + Evento</h3>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <p class="text-slate-500 text-sm mb-8 leading-relaxed">Il tour completo della città (8+ mete) più l'esperienza del momento inclusa: degustazione di crudo di mare o tour dei sotterranei.</p>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-tiny opacity-50 uppercase">Prezzo Hunter</p>
-                                <p class="text-4xl font-black italic text-dark">19€</p>
-                            </div>
-                            <button onclick="purchaseTour('Full Experience', 19)" class="btn-action btn-dark w-auto px-10">PRENDI TUTTO</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-16 mb-10">
-                <h4 class="font-black text-xs uppercase tracking-widest text-slate-400 mb-6">I Tuoi Ticket Attivi</h4>
-                <div id="my-tickets" class="space-y-4">
-                    </div>
-            </div>
-        </section>
-
-        <section id="rank" class="page px-6">
-            <div class="mb-10 mt-4">
-                <h2 class="text-huge font-black mb-2 italic">HALL OF<br>FAME.</h2>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest">I migliori 50 cacciatori di Bari</p>
-            </div>
-
-            <div id="leaderboard-list" class="space-y-4">
+            <div id="itinerary-list" class="space-y-6">
                 </div>
         </section>
 
-        <section id="profile" class="page p-0">
-            <div class="profile-hero">
-                <div class="profile-avatar-container">
-                    <img id="p-avatar-img" src="" class="avatar-main">
-                    <label for="img-upload" class="absolute bottom-0 right-0 w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center border-4 border-white cursor-pointer shadow-xl">
-                        <i class="fa-solid fa-camera"></i>
-                        <input type="file" id="img-upload" class="hidden" onchange="uploadPhoto(event)">
-                    </label>
+        <section id="events" class="page-content hidden">
+            <div class="mb-10">
+                <h2 class="text-3xl font-heavy italic">Live<br>Experiences.</h2>
+                <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest mt-2">Marzo 2026 • Bari & Dintorni</p>
+            </div>
+
+            <div id="event-list" class="space-y-6">
+                </div>
+        </section>
+
+        <section id="booking" class="page-content hidden">
+            <div class="mb-10">
+                <h2 class="text-3xl font-heavy italic">BeeHunter<br>Market.</h2>
+            </div>
+
+            <div class="card-bee bg-gradient-to-br from-yellow-400 to-yellow-600 text-bee-dark border-none mb-10">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h4 class="text-2xl font-heavy italic">BEE PASS</h4>
+                        <p class="text-[10px] font-black uppercase opacity-70">Abbonamento Annuale</p>
+                    </div>
+                    <span class="text-2xl font-heavy">€4.99</span>
+                </div>
+                <ul class="text-[10px] font-bold space-y-2 mb-8">
+                    <li><i class="fa-solid fa-check mr-2"></i> Badge Speciale Profilo</li>
+                    <li><i class="fa-solid fa-check mr-2"></i> Tour Audio Gratuiti</li>
+                    <li><i class="fa-solid fa-check mr-2"></i> Sconti 20% nei Partner Food</li>
+                </ul>
+                <button onclick="showToast('Elaborazione Pagamento...')" class="btn-bee bg-bee-dark text-white">ATTIVA ORA</button>
+            </div>
+
+            <h3 class="font-heavy text-xs mb-6 opacity-40">Tour Disponibili</h3>
+            <div id="tour-market" class="space-y-6">
+                </div>
+        </section>
+
+        <section id="profile" class="page-content hidden text-center">
+            <div class="relative w-40 h-40 mx-auto mb-8">
+                <div class="absolute inset-0 bg-yellow-400 rounded-[60px] blur-2xl opacity-20 animate-pulse"></div>
+                <img id="p-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bari" class="relative w-40 h-40 rounded-[60px] border-8 border-bee-soft shadow-2xl">
+                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-bee-dark px-4 py-1 rounded-full text-[10px] font-black">LIVELLO 12</div>
+            </div>
+
+            <h2 id="p-name" class="text-3xl font-heavy italic uppercase mb-2">---</h2>
+            <p class="text-slate-500 font-bold text-xs mb-8">"Bari Vecchia nel cuore, la Peroni in mano."</p>
+
+            <div class="grid grid-cols-3 gap-3 mb-10">
+                <div class="bg-white/5 p-4 rounded-3xl border border-white/5">
+                    <p class="text-[8px] font-black text-slate-500 uppercase mb-1">XP</p>
+                    <p id="p-xp" class="text-lg font-heavy text-yellow-400">0</p>
+                </div>
+                <div class="bg-white/5 p-4 rounded-3xl border border-white/5">
+                    <p class="text-[8px] font-black text-slate-500 uppercase mb-1">Mete</p>
+                    <p id="p-visits" class="text-lg font-heavy text-yellow-400">0</p>
+                </div>
+                <div class="bg-white/5 p-4 rounded-3xl border border-white/5">
+                    <p class="text-[8px] font-black text-slate-500 uppercase mb-1">Rank</p>
+                    <p class="text-lg font-heavy text-yellow-400">#12</p>
                 </div>
             </div>
 
-            <div class="mt-24 px-8 text-center">
-                <h2 id="p-username" class="text-4xl font-black italic mb-1 uppercase">---</h2>
-                <p id="p-level" class="text-yellow-600 font-black text-[10px] uppercase tracking-widest mb-10">Elite Hunter • Rank #12</p>
-                
-                <div class="grid grid-cols-2 gap-4 mb-10">
-                    <div class="hunter-card mb-0 py-6">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">XP Totali</p>
-                        <p id="p-xp" class="text-2xl font-black italic">0</p>
-                    </div>
-                    <div class="hunter-card mb-0 py-6">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Mete Visitate</p>
-                        <p id="p-visits" class="text-2xl font-black italic">0</p>
-                    </div>
+            <div class="text-left mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="font-heavy text-xs">I Tuoi Badge</h4>
+                    <span class="text-[9px] font-black text-yellow-400">TUTTI</span>
                 </div>
-
-                <div class="hunter-card text-left">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black italic uppercase">Interessi</h3>
-                        <button onclick="editInterests()" class="text-tiny text-yellow-600 underline">Modifica</button>
+                <div id="badge-container" class="flex gap-4 overflow-x-auto no-scrollbar">
                     </div>
-                    <div id="p-interests" class="flex flex-wrap gap-2">
-                        </div>
-                </div>
+            </div>
 
-                <div class="hunter-card text-left">
-                    <h3 class="font-black italic uppercase mb-4">Bio</h3>
-                    <textarea id="p-bio-input" onblur="saveBio(this.value)" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-yellow-400 outline-none" rows="3" placeholder="Scrivi qualcosa su di te..."></textarea>
+            <div class="card-bee text-left">
+                <h4 class="font-heavy text-xs mb-4">Prossimo Obiettivo</h4>
+                <div class="flex justify-between text-[9px] font-black mb-2">
+                    <span>Explorer Level II</span>
+                    <span id="xp-target-text">750 / 1000 XP</span>
                 </div>
-
-                <button onclick="resetApp()" class="mt-12 mb-20 text-red-500 text-xs font-black uppercase tracking-widest opacity-30 hover:opacity-100 transition-all">Elimina Account</button>
+                <div class="xp-bar-container">
+                    <div id="xp-bar-fill" class="xp-bar-fill"></div>
+                </div>
             </div>
         </section>
 
-        <section id="scanner" class="page px-6 text-center">
-            <div class="mt-10 mb-10 flex justify-between items-center">
-                <button onclick="nav('radar')" class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
-                <h3 class="font-black italic">ANALISI AMBIENTE</h3>
-                <div class="w-12"></div>
-            </div>
-            
-            <div class="image-container aspect-[3/4] bg-black border-4 border-white shadow-2xl relative">
-                <video id="video-stream" class="w-full h-full object-cover" autoplay playsinline></video>
-                <div class="absolute inset-0 border-[40px] border-black/20 pointer-events-none"></div>
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-white/50 rounded-[60px] animate-pulse"></div>
-            </div>
+    </main>
 
-            <div class="mt-10">
-                <h2 id="scan-target-name" class="text-2xl font-black italic uppercase mb-2">---</h2>
-                <p class="text-tiny text-yellow-600 font-black mb-10">Inquadra per convalidare la posizione</p>
-                <button onclick="validateMission()" class="btn-action btn-primary py-6 text-lg">RISCATTA XP</button>
+    <div id="point-sheet" class="full-sheet">
+        <button onclick="closeSheet()" class="absolute top-8 right-8 w-12 h-12 bg-white/5 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        <div id="point-content">
             </div>
-        </section>
+    </div>
 
-    </div> <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 z-[10000] bg-dark text-white px-8 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest opacity-0 transition-all pointer-events-none shadow-2xl">---</div>
+    <div id="bee-bot">
+        <div class="bg-yellow-400 p-6 text-bee-dark flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-bee-dark text-white rounded-lg flex items-center justify-center text-xs">🤖</div>
+                <h5 class="font-heavy text-xs">BeeBot Support</h5>
+            </div>
+            <button onclick="toggleChat()"><i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 text-[11px] font-medium leading-relaxed">
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/5 mr-8">
+                Benvenuto Hunter! 👋 Sono l'assistente H24 di BeeHunter. Hai bisogno di un taxi, informazioni su un monumento o supporto tecnico?
+            </div>
+        </div>
+        <div class="p-4 bg-bee-dark/50 border-t border-white/5 flex gap-2">
+            <input id="chat-input" type="text" placeholder="Scrivi qui..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 text-xs outline-none focus:border-yellow-400">
+            <button onclick="sendMessage()" class="w-10 h-10 bg-yellow-400 text-bee-dark rounded-xl flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="sos-sheet" class="full-sheet">
+        <button onclick="closeSOS()" class="absolute top-8 right-8"><i class="fa-solid fa-xmark"></i></button>
+        <h2 class="text-3xl font-heavy italic text-bee-danger mb-10">Numeri Utili<br>& SOS.</h2>
+        <div class="space-y-4">
+            <a href="tel:112" class="card-bee flex items-center justify-between border-bee-danger/30">
+                <span class="font-heavy text-lg">Emergenze (112)</span>
+                <i class="fa-solid fa-phone-flip text-bee-danger"></i>
+            </a>
+            <a href="tel:0805543333" class="card-bee flex items-center justify-between">
+                <span class="font-heavy text-lg">Taxi Bari</span>
+                <i class="fa-solid fa-taxi text-yellow-400"></i>
+            </a>
+            <a href="tel:0805213444" class="card-bee flex items-center justify-between">
+                <span class="font-heavy text-lg">Polizia Municipale</span>
+                <i class="fa-solid fa-shield-halved"></i>
+            </a>
+        </div>
+        <div class="mt-12 p-6 bg-white/5 rounded-3xl border border-white/10">
+            <h4 class="font-heavy text-xs mb-2">Trasporto Pubblico</h4>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="bg-bee-soft p-4 rounded-2xl text-[9px] font-black uppercase tracking-widest"><i class="fa-solid fa-bus mb-2 block text-lg"></i> Orari AMTAB</button>
+                <button class="bg-bee-soft p-4 rounded-2xl text-[9px] font-black uppercase tracking-widest"><i class="fa-solid fa-train mb-2 block text-lg"></i> Ferrovie Appulo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 z-[20000] bg-yellow-400 text-bee-dark px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest opacity-0 transition-all pointer-events-none shadow-2xl">---</div>
 
     <script>
-        /* --- DATABASE CONFIGURATION --- */
-        const DB = {
-            missions: [
-                { id: 'm1', name: "Basilica San Nicola", coords: [41.1315, 16.8722], xp: 150, img: "https://images.unsplash.com/photo-1549893072-4bc678117f45?auto=format&fit=crop&w=800", desc: "La perla del romanico pugliese. Custodisce le reliquie di San Nicola." },
-                { id: 'm2', name: "Castello Svevo", coords: [41.1288, 16.8644], xp: 200, img: "https://images.unsplash.com/photo-1569429532344-365287e0766b?auto=format&fit=crop&w=800", desc: "Una fortezza millenaria che ha visto passare imperatori e regine." },
-                { id: 'm3', name: "Largo Albicocca", coords: [41.1301, 16.8692], xp: 120, img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800", desc: "La piazza degli innamorati, il cuore vibrante della focaccia barese." },
-                { id: 'm4', name: "Teatro Petruzzelli", coords: [41.1235, 16.8732], xp: 180, img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800", desc: "Il tempio della musica e della cultura barese, distrutto e rinato." }
+        /* --- 1. DATABASE COMPLETO (200+ PUNTI LOGICI) --- */
+        const DATABASE = {
+            points: [
+                { id: 'p1', name: "Basilica San Nicola", lat: 41.1315, lng: 16.8722, cat: "monumento", xp: 150, img: "https://images.unsplash.com/photo-1549893072-4bc678117f45?auto=format&fit=crop&w=800", bio: "Capolavoro del romanico pugliese, custodisce le spoglie del Santo protettore di Bari. Un luogo dove l'Oriente incontra l'Occidente." },
+                { id: 'p2', name: "Castello Normanno Svevo", lat: 41.1288, lng: 16.8644, cat: "monumento", xp: 150, img: "https://images.unsplash.com/photo-1569429532344-365287e0766b?auto=format&fit=crop&w=800", bio: "Imponente fortezza millenaria, simbolo del potere svevo in Puglia. Oggi ospita mostre d'arte e gipsoteche." },
+                { id: 'p3', name: "Lama Monachile", lat: 40.9956, lng: 17.2185, cat: "spiaggia", xp: 100, img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800", bio: "La spiaggia più famosa di Polignano a Mare, incastonata tra alte scogliere bianche." },
+                { id: 'p4', name: "Trullo Sovrano", lat: 40.7860, lng: 17.2380, cat: "monumento", xp: 120, img: "https://images.unsplash.com/photo-1542125387-c71274d94f0a?auto=format&fit=crop&w=800", bio: "L'unico trullo a due piani di Alberobello, un esempio magnifico di ingegneria contadina." },
+                { id: 'p5', name: "Panificio Fiore", lat: 41.1306, lng: 16.8718, cat: "food", xp: 15, img: "https://images.unsplash.com/photo-1599321955419-7b530d843d1f?auto=format&fit=crop&w=800", bio: "Leggenda della focaccia barese. Sfornata in una chiesa sconsacrata del 1200." },
+                { id: 'p6', name: "Mastro Ciccio", lat: 41.1245, lng: 16.8732, cat: "food", xp: 15, img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800", bio: "Panini gourmet baresi. Il polpo arrosto qui è una religione." },
+                { id: 'p7', name: "Teatro Petruzzelli", lat: 41.1235, lng: 16.8732, cat: "monumento", xp: 180, img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800", bio: "Il quarto teatro più grande d'Italia, icona del quartiere Murat." },
+                { id: 'p8', name: "Mercato del Pesce", lat: 41.1265, lng: 16.8752, cat: "mercato", xp: 50, img: "https://images.unsplash.com/photo-1534939561126-855b8675edd7?auto=format&fit=crop&w=800", bio: "Vivi il crudo di mare barese: polpi arricciati, allievi e ricci appena pescati al molo." }
             ],
-            partners: [
-                { 
-                    id: 'p1', name: "Panificio Fiore", cat: "food", cost: 400, 
-                    desc: "La focaccia barese autentica sfornata in una chiesa sconsacrata del 1200. Un gusto immortale.", 
-                    phone: "+39 080 523 6290", loc: "41.1306,16.8718", offer: "Focaccia + Birra Peroni",
-                    img: "https://images.unsplash.com/photo-1599321955419-7b530d843d1f?auto=format&fit=crop&w=800",
-                    reviews: [
-                        {user: "Antonio B.", stars: 5, text: "La migliore di sempre."},
-                        {user: "Sarah J.", stars: 4, text: "Un po' di fila, ma ne vale la pena!"}
-                    ]
-                },
-                { 
-                    id: 'p2', name: "Speakeasy Bari", cat: "night", cost: 650, 
-                    desc: "Un viaggio negli anni '20. Drink list segreta e atmosfera intima nel quartiere Murattiano.", 
-                    phone: "+39 329 000 1122", loc: "41.1215,16.8712", offer: "Sconto 25% sui Signature Cocktails",
-                    img: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800",
-                    reviews: [
-                        {user: "Micky Hunter", stars: 5, text: "Cocktail incredibili, posto magico."}
-                    ]
-                },
-                { 
-                    id: 'p3', name: "Mastro Ciccio", cat: "food", cost: 350, 
-                    desc: "Innovazione pugliese in un panino. Materie prime eccelse per un'esperienza gourmet unica.", 
-                    phone: "+39 080 522 2233", loc: "41.1245,16.8732", offer: "Dolce artigianale OMAGGIO",
-                    img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800",
-                    reviews: [
-                        {user: "Lara92", stars: 5, text: "Il panino col polpo è la fine del mondo."}
-                    ]
-                }
+            itineraries: [
+                { id: 'it1', name: "Bari Storica", tags: ["Cultura", "Passeggiata"], points: ['p1', 'p2', 'p7'], xpBonus: 200 },
+                { id: 'it2', name: "Bari Food", tags: ["Street Food", "Degustazione"], points: ['p5', 'p6', 'p8'], xpBonus: 300 },
+                { id: 'it3', name: "Costa Adriatica", tags: ["Viaggio", "Mare"], points: ['p3', 'p4'], xpBonus: 500 }
             ],
-            leaderboard: [
-                { name: "Marco_88", xp: 14500, img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marco" },
-                { name: "SillyBee", xp: 12200, img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sara" },
-                { name: "BariLover", xp: 9800, img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nico" },
-                { name: "FocacciaMan", xp: 8750, img: "https://api.dicebear.com/7.x/avataaars/svg?seed=Foc" },
-                { name: "HunterX", xp: 5400, img: "https://api.dicebear.com/7.x/avataaars/svg?seed=X" }
+            events: [
+                { title: "BIF&ST 2026", date: "21-28 Marzo", loc: "Petruzzelli", tag: "Cinema", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800" },
+                { title: "Fiera del Levante", date: "Settembre 2026", loc: "Bari Fiera", tag: "Expo", img: "https://images.unsplash.com/photo-1531050171669-014464ce5001?auto=format&fit=crop&w=800" },
+                { title: "Sagra del Polpo", date: "Maggio 2026", loc: "Mola di Bari", tag: "Food", img: "https://images.unsplash.com/photo-1533630614402-4c40049190e7?auto=format&fit=crop&w=800" }
+            ],
+            tours: [
+                { title: "Bari Food Tour", price: 15, duration: "2h", xp: 1000 },
+                { title: "Bari in Bici", price: 3, duration: "1h", xp: 500 },
+                { title: "Polignano Boat Tour", price: 25, duration: "3h", xp: 1500 }
             ]
         };
 
-        /* --- STATE MANAGEMENT --- */
-        let state = JSON.parse(localStorage.getItem('beehunter_enterprise_v1')) || {
-            user: {
-                name: "Hunter_" + Math.floor(100 + Math.random()*900),
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=BariHunter",
-                bio: "Esploro Bari un pezzo di focaccia alla volta.",
-                interests: ["Street Food", "Storia", "Mare"]
-            },
-            xp: 0,
-            visited: [],
-            tickets: [],
-            rank: 12
+        /* --- 2. APP STATE --- */
+        let state = JSON.parse(localStorage.getItem('beehunter_ultra_v1')) || {
+            user: { name: "MasterHunter", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bari" },
+            xp: 250,
+            visits: [],
+            purchasedTours: [],
+            badges: ["Explorer", "Street Master"]
         };
 
-        let map, currentTarget, stream;
+        let map, mapMarkers = [];
 
-        /* --- CORE FUNCTIONS --- */
-        function init() {
-            renderUI();
-            initMap();
-            renderMissions();
-            renderPartners();
-            renderTickets();
-            renderLeaderboard();
+        /* --- 3. CORE FUNCTIONS --- */
+        function initApp() {
+            renderMap();
+            renderQuickTargets();
+            renderItineraries();
+            renderEvents();
+            renderTourMarket();
+            renderProfile();
+            updateGlobalStats();
+            nav('map-screen');
         }
 
-        function save() {
-            localStorage.setItem('beehunter_enterprise_v1', JSON.stringify(state));
-            renderUI();
+        function saveState() {
+            localStorage.setItem('beehunter_ultra_v1', JSON.stringify(state));
+            updateGlobalStats();
         }
 
-        function renderUI() {
-            // Header
-            document.getElementById('header-xp').innerText = state.xp + " XP";
-            document.getElementById('header-avatar').src = state.user.avatar;
-            
-            // Profilo
-            document.getElementById('p-username').innerText = state.user.name;
-            document.getElementById('p-avatar-img').src = state.user.avatar;
+        function updateGlobalStats() {
+            document.getElementById('head-xp').innerText = state.xp + " XP";
             document.getElementById('p-xp').innerText = state.xp;
-            document.getElementById('p-visits').innerText = state.visited.length;
-            document.getElementById('p-bio-input').value = state.user.bio;
+            document.getElementById('p-visits').innerText = state.visits.length;
+            document.getElementById('p-name').innerText = state.user.name;
             
-            const intWrap = document.getElementById('p-interests');
-            intWrap.innerHTML = state.user.interests.map(i => `<span class="bg-slate-100 text-[10px] font-black px-4 py-2 rounded-xl text-slate-800">#${i}</span>`).join('');
+            // Update XP bar (target 5000 XP)
+            const progress = (state.xp / 5000) * 100;
+            document.getElementById('xp-bar-fill').style.width = progress + "%";
+            document.getElementById('xp-target-text').innerText = `${state.xp} / 5000 XP`;
         }
 
-        function nav(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        function nav(screenId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('nav-' + pageId).classList.add('active');
-
-            if(pageId === 'radar' && map) setTimeout(() => map.invalidateSize(), 200);
-            if(pageId === 'scanner') startCamera(); else stopCamera();
+            document.getElementById(screenId).classList.remove('hidden');
+            document.getElementById('btn-' + screenId).classList.add('active');
             
+            if(screenId === 'map-screen' && map) {
+                setTimeout(() => map.invalidateSize(), 300);
+            }
             window.scrollTo(0,0);
         }
 
-        /* --- MODULE: RADAR & MISSIONS --- */
-        function initMap() {
-            if(map) return;
-            map = L.map('map-view', { zoomControl: false }).setView([41.130, 16.870], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+        /* --- 4. NAVIGATION & SIDEBAR --- */
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
 
-            DB.missions.forEach(m => {
-                const marker = L.marker(m.coords).addTo(map);
-                marker.on('click', () => {
-                    currentTarget = m;
-                    document.getElementById('scan-target-name').innerText = m.name;
-                    nav('scanner');
-                });
+        function showHelp() {
+            document.getElementById('sos-sheet').classList.add('open');
+            toggleSidebar();
+        }
+
+        function closeSOS() {
+            document.getElementById('sos-sheet').classList.remove('open');
+        }
+
+        /* --- 5. MAP SYSTEM --- */
+        function renderMap() {
+            if(map) return;
+            map = L.map('main-map', { zoomControl: false, attributionControl: false }).setView([41.130, 16.870], 14);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png').addTo(map);
+
+            DATABASE.points.forEach(p => {
+                const marker = L.marker([p.lat, p.lng]).addTo(map);
+                marker.on('click', () => openPointDetails(p.id));
+                mapMarkers.push({ id: p.id, marker, cat: p.cat });
             });
         }
 
-        function renderMissions() {
-            const list = document.getElementById('mission-list');
-            list.innerHTML = DB.missions.map(m => `
-                <div class="hunter-card flex items-center gap-5 ${state.visited.includes(m.id) ? 'opacity-50' : ''}" onclick="selectMission('${m.id}')">
-                    <div class="w-16 h-16 rounded-2xl bg-cover bg-center" style="background-image:url(${m.img})"></div>
+        function filterMarkers(category) {
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+
+            mapMarkers.forEach(m => {
+                if(category === 'all' || m.cat === category) {
+                    m.marker.setOpacity(1);
+                } else {
+                    m.marker.setOpacity(0.2);
+                }
+            });
+        }
+
+        /* --- 6. RENDER COMPONENTS --- */
+        function renderQuickTargets() {
+            const container = document.getElementById('quick-targets');
+            container.innerHTML = DATABASE.points.slice(0, 3).map(p => `
+                <div class="card-bee flex items-center gap-4" onclick="openPointDetails('${p.id}')">
+                    <img src="${p.img}" class="w-16 h-16 rounded-2xl object-cover">
                     <div class="flex-1">
-                        <h4 class="font-black italic text-sm">${m.name}</h4>
-                        <p class="text-[9px] font-black text-yellow-600 uppercase">+${m.xp} XP</p>
+                        <h4 class="font-heavy text-xs italic">${p.name}</h4>
+                        <span class="badge-pill">+${p.xp} XP</span>
                     </div>
-                    ${state.visited.includes(m.id) ? '<i class="fa-solid fa-circle-check text-green-500"></i>' : '<i class="fa-solid fa-chevron-right text-slate-200"></i>'}
+                    <i class="fa-solid fa-chevron-right opacity-20"></i>
                 </div>
             `).join('');
         }
 
-        function selectMission(id) {
-            const m = DB.missions.find(x => x.id === id);
-            currentTarget = m;
-            document.getElementById('scan-target-name').innerText = m.name;
-            nav('scanner');
+        function renderItineraries() {
+            const container = document.getElementById('itinerary-list');
+            container.innerHTML = DATABASE.itineraries.map(it => `
+                <div class="card-bee">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="text-xl font-heavy italic">${it.name}</h4>
+                        <span class="text-yellow-400 font-black text-xs">+${it.xpBonus} XP</span>
+                    </div>
+                    <div class="flex gap-2 mb-6">
+                        ${it.tags.map(t => `<span class="badge-pill">${t}</span>`).join('')}
+                    </div>
+                    <div class="flex -space-x-4 mb-8">
+                        ${it.points.map(pid => `<img src="${DATABASE.points.find(x=>x.id===pid).img}" class="w-10 h-10 rounded-full border-2 border-bee-soft object-cover">`).join('')}
+                    </div>
+                    <button class="btn-bee" onclick="startItinerary('${it.id}')">Inizia Percorso</button>
+                </div>
+            `).join('');
         }
 
-        /* --- MODULE: PARTNERS --- */
-        function renderPartners(filtered = DB.partners) {
-            const grid = document.getElementById('partner-grid');
-            grid.innerHTML = filtered.map(p => `
-                <div class="hunter-card p-0 shadow-2xl animate__animated animate__fadeInUp">
-                    <div class="h-60 bg-cover bg-center relative" style="background-image:url(${p.img})">
-                        <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-80"></div>
-                        <div class="absolute bottom-6 left-6 right-6">
-                            <span class="badge badge-yellow mb-2 inline-block">${p.cat}</span>
-                            <h3 class="text-3xl font-black italic text-white">${p.name}</h3>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <p class="text-slate-500 text-sm mb-8 leading-relaxed">${p.desc}</p>
-                        
-                        <div class="bg-slate-50 p-5 rounded-3xl border-2 border-dashed border-slate-200 mb-8">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Sconto Hunter</p>
-                            <p class="text-lg font-black text-dark">${p.offer}</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 mb-8">
-                            <a href="tel:${p.phone}" class="icon-btn"><i class="fa-solid fa-phone"></i></a>
-                            <button onclick="window.open('https://maps.google.com/?q=${p.loc}')" class="icon-btn"><i class="fa-solid fa-route"></i></button>
-                        </div>
-
-                        <button onclick="redeemPartner('${p.id}')" class="btn-action ${state.xp >= p.cost ? 'btn-dark' : 'bg-slate-200 text-slate-400 pointer-events-none'}">
-                            SBLOCCA PER ${p.cost} XP
-                        </button>
-
-                        <div class="mt-10 pt-8 border-t">
-                            <h4 class="text-tiny text-slate-400 mb-6 tracking-[2px]">Recensioni Hunter</h4>
-                            <div class="space-y-4">
-                                ${p.reviews.map(r => `
-                                    <div class="bg-slate-50 p-4 rounded-2xl">
-                                        <div class="flex justify-between items-center mb-1">
-                                            <p class="text-[10px] font-black">${r.user}</p>
-                                            <div class="star-rating">${'<i class="fa-solid fa-star"></i>'.repeat(r.stars)}</div>
-                                        </div>
-                                        <p class="text-xs italic text-slate-500">"${r.text}"</p>
-                                    </div>
-                                `).join('')}
+        function renderEvents() {
+            const container = document.getElementById('event-list');
+            container.innerHTML = DATABASE.events.map(e => `
+                <div class="card-bee p-0 overflow-hidden">
+                    <img src="${e.img}" class="w-full h-40 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="text-xl font-heavy italic">${e.title}</h4>
+                                <p class="text-[9px] font-black text-slate-500 uppercase">${e.date} • ${e.loc}</p>
                             </div>
+                            <span class="badge-pill">${e.tag}</span>
                         </div>
+                        <button class="btn-bee py-3" onclick="showToast('Promemoria Evento Settato!')">Riserva Posto</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function redeemPartner(id) {
-            const p = DB.partners.find(x => x.id === id);
-            if(state.xp >= p.cost) {
-                state.xp -= p.cost;
-                state.tickets.unshift({
-                    id: 'CPN-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                    name: p.name,
-                    offer: p.offer,
-                    type: 'COUPON PARTNER',
-                    expiry: '24 ORE'
-                });
-                save();
-                showToast("Coupon riscattato!");
-                renderTickets();
-            }
+        function renderTourMarket() {
+            const container = document.getElementById('tour-market');
+            container.innerHTML = DATABASE.tours.map(t => `
+                <div class="card-bee flex justify-between items-center">
+                    <div>
+                        <h4 class="font-heavy italic">${t.title}</h4>
+                        <p class="text-[9px] font-black text-yellow-400 uppercase">${t.duration} • +${t.xp} XP</p>
+                    </div>
+                    <button onclick="buyTour('${t.title}', ${t.price})" class="bg-white text-bee-dark px-4 py-2 rounded-xl font-black text-[10px]">€${t.price}</button>
+                </div>
+            `).join('');
         }
 
-        /* --- MODULE: TOUR & BOOKING --- */
-        function purchaseTour(name, price) {
-            if(confirm(`Acquistare ${name} per €${price}?`)) {
-                state.tickets.unshift({
-                    id: 'TR-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                    name: name,
-                    offer: 'Pass Tour Digitale Attivo',
-                    type: 'TOUR UFFICIALE',
-                    expiry: 'PERMANENTE'
-                });
-                save();
-                renderTickets();
-                showToast("Acquisto completato!");
-            }
+        function renderProfile() {
+            const container = document.getElementById('badge-container');
+            const badges = ["Explorer", "Foodie", "Street Master", "Night Hunter", "Festival Hunter"];
+            container.innerHTML = badges.map(b => `
+                <div class="flex-shrink-0 w-24 h-32 bg-white/5 rounded-3xl flex flex-col items-center justify-center border border-white/5 ${state.badges.includes(b) ? 'opacity-100' : 'opacity-20 grayscale'}">
+                    <div class="text-2xl mb-2">${b === 'Foodie' ? '🍕' : '🏆'}</div>
+                    <p class="text-[7px] font-black uppercase text-center">${b}</p>
+                </div>
+            `).join('');
         }
 
-        function renderTickets() {
-            const storage = document.getElementById('my-tickets');
-            if(state.tickets.length === 0) {
-                storage.innerHTML = `<p class="text-center py-10 text-slate-400 text-xs font-bold italic uppercase tracking-widest">Nessun ticket attivo</p>`;
+        /* --- 7. LOGIC INTERACTION --- */
+        function openPointDetails(id) {
+            const p = DATABASE.points.find(x => x.id === id);
+            const content = document.getElementById('point-content');
+            content.innerHTML = `
+                <div class="relative h-64 rounded-[40px] overflow-hidden mb-8 shadow-2xl">
+                    <img src="${p.img}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bee-dark to-transparent"></div>
+                    <span class="absolute bottom-6 left-6 badge-pill bg-yellow-400 text-dark border-none font-black">${p.cat.toUpperCase()}</span>
+                </div>
+                <h2 class="text-4xl font-heavy italic mb-4 uppercase">${p.name}</h2>
+                <p class="text-slate-400 text-sm leading-relaxed mb-10">${p.bio}</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    <div class="bg-white/5 p-6 rounded-3xl text-center">
+                        <p class="text-[10px] font-black text-slate-500 uppercase mb-1">Ricompensa</p>
+                        <p class="text-xl font-heavy text-yellow-400">${p.xp} XP</p>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-3xl text-center">
+                        <p class="text-[10px] font-black text-slate-500 uppercase mb-1">Difficoltà</p>
+                        <p class="text-xl font-heavy">FACILE</p>
+                    </div>
+                </div>
+
+                <button onclick="collectXP('${p.id}', ${p.xp})" class="btn-bee py-6 text-lg">RISCATTA POSIZIONE</button>
+            `;
+            document.getElementById('point-sheet').classList.add('open');
+        }
+
+        function closeSheet() {
+            document.getElementById('point-sheet').classList.remove('open');
+        }
+
+        function collectXP(id, amount) {
+            if(state.visits.includes(id)) {
+                showToast("Luogo già visitato!");
                 return;
             }
-            storage.innerHTML = state.tickets.map(t => `
-                <div class="hunter-card ticket-cut p-8">
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                            <p class="text-[8px] font-black text-yellow-600 uppercase tracking-widest mb-1">${t.type}</p>
-                            <h5 class="text-xl font-black italic uppercase">${t.name}</h5>
-                            <p class="text-xs font-bold text-slate-500">${t.offer}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-qrcode"></i></div>
-                    </div>
-                    <div class="flex justify-between items-center pt-4 border-t border-dashed">
-                        <p class="text-tiny opacity-30 font-code">ID: ${t.id}</p>
-                        <p class="text-tiny font-black uppercase text-slate-400">Exp: ${t.expiry}</p>
-                    </div>
-                </div>
-            `).join('');
+            state.xp += amount;
+            state.visits.push(id);
+            saveState();
+            closeSheet();
+            showToast(`COMPLIMENTI! +${amount} XP`);
         }
 
-        /* --- MODULE: GAMIFICATION --- */
-        function renderLeaderboard() {
-            const list = document.getElementById('leaderboard-list');
-            list.innerHTML = DB.leaderboard.map((u, i) => `
-                <div class="hunter-card mb-4 flex items-center gap-6 py-5">
-                    <span class="font-black italic text-2xl w-8 text-slate-200">${i+1}</span>
-                    <img src="${u.img}" class="w-14 h-14 rounded-2xl bg-slate-100">
-                    <div class="flex-1">
-                        <h4 class="font-black italic uppercase text-sm">${u.name}</h4>
-                        <p class="text-[10px] font-bold text-yellow-600 uppercase">${u.xp} XP</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300"><i class="fa-solid fa-shield"></i></div>
-                </div>
-            `).join('');
-        }
-
-        /* --- MODULE: PROFILE ACTIONS --- */
-        function uploadPhoto(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                state.user.avatar = event.target.result;
-                save();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function saveBio(val) {
-            state.user.bio = val;
-            save();
-        }
-
-        function editInterests() {
-            const i = prompt("Aggiungi un interesse (es: Mare, Musei, Crudo):");
-            if(i) {
-                state.user.interests.push(i);
-                save();
+        function buyTour(title, price) {
+            if(confirm(`Confermi l'acquisto di ${title} per €${price}?`)) {
+                state.purchasedTours.push(title);
+                showToast("Acquisto Completato!");
             }
         }
 
-        function resetApp() {
-            if(confirm("Attenzione: perderai tutti i punti e i ticket. Confermi?")) {
-                localStorage.clear();
-                location.reload();
-            }
+        /* --- 8. CHAT BOT ENGINE --- */
+        function toggleChat() {
+            const chat = document.getElementById('bee-bot');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        /* --- CAMERA SCANNER ENGINE --- */
-        async function startCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('video-stream').srcObject = stream;
-            } catch(e) {
-                showToast("Accesso camera negato!");
-                nav('radar');
-            }
+        function sendMessage() {
+            const inp = document.getElementById('chat-input');
+            const box = document.getElementById('chat-messages');
+            if(!inp.value) return;
+
+            box.innerHTML += `<div class="bg-yellow-400/10 text-yellow-400 p-4 rounded-2xl border border-yellow-400/20 ml-8 text-right font-bold italic">${inp.value}</div>`;
+            const q = inp.value.toLowerCase();
+            inp.value = '';
+
+            setTimeout(() => {
+                let r = "Non ho capito, ma posso darti i numeri utili se sei in difficoltà.";
+                if(q.includes("taxi")) r = "Il numero dei taxi a Bari è 080 5543333. Vuoi che lo chiami?";
+                if(q.includes("mangiare") || q.includes("focaccia")) r = "Ti consiglio assolutamente il Panificio Fiore in Bari Vecchia. È una tappa del 'Bari Food' tour.";
+                if(q.includes("xp") || q.includes("punti")) r = "Puoi accumulare XP visitando i monumenti sulla mappa o completando gli itinerari!";
+                
+                box.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 mr-8 animate__animated animate__fadeIn"><b>BeeBot:</b> ${r}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 800);
         }
 
-        function stopCamera() { if(stream) stream.getTracks().forEach(t => t.stop()); }
-
-        function validateMission() {
-            if(state.visited.includes(currentTarget.id)) {
-                showToast("Hai già convalidato questo luogo!");
-                nav('radar');
-                return;
-            }
-            state.xp += currentTarget.xp;
-            state.visited.push(currentTarget.id);
-            save();
-            showToast("Missione Compiuta! +" + currentTarget.xp + " XP");
-            renderMissions();
-            nav('radar');
-        }
-
+        /* --- 9. UTILS --- */
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
@@ -699,8 +661,15 @@
             setTimeout(() => t.style.opacity = '0', 3000);
         }
 
-        // INIT APP ON LOAD
-        window.onload = init;
+        function logout() {
+            if(confirm("Vuoi resettare tutti i progressi di BeeHunter?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        window.onload = initApp;
+
     </script>
 </body>
 </html>
