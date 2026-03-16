@@ -3,455 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BeeHunter Bari | Pro Experience</title>
+    <title>BeeHunter Bari | Ultimate Pro</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap');
+        :root { --bee-yellow: #FFD200; --bari-blue: #0056b3; --tier-base: #94a3b8; --tier-mid: #3b82f6; --tier-adv: #a855f7; }
+        body { font-family: 'Outfit', sans-serif; background: #F8FAFC; color: #0F172A; overflow: hidden; height: 100vh; }
         
-        :root { 
-            --bee-yellow: #FFD200; 
-            --bari-blue: #0056b3; 
-            --soft-bg: #F8FAFC; 
-            --dark-slate: #0F172A;
-            --accent-purple: #7C3AED;
-        }
-
-        /* Base Reset */
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background: var(--soft-bg); 
-            color: var(--dark-slate); 
-            overflow: hidden; 
-            height: 100vh; 
-            margin: 0;
-        }
-
-        /* UI Components */
-        .glass-header { 
-            background: rgba(255,255,255,0.85); 
-            backdrop-filter: blur(12px); 
-            border-bottom: 1px solid rgba(0,0,0,0.05); 
-            position: fixed; top:0; width:100%; z-index: 1000; 
-            padding: env(safe-area-inset-top) 20px 15px; 
-        }
-
-        .bottom-nav { 
-            background: white; 
-            border-top: 1px solid #e2e8f0; 
-            position: fixed; bottom: 0; width: 100%; 
-            height: 85px; display: flex; 
-            justify-content: space-around; align-items: center; 
-            z-index: 1000; padding-bottom: env(safe-area-inset-bottom); 
-        }
-
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; 
-            font-size: 10px; font-weight: 800; color: #94a3b8; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            flex: 1;
-        }
+        .page { display: none; height: 100vh; overflow-y: auto; padding: 100px 16px 120px; }
+        .page.active { display: block; animation: fadeInUp 0.4s ease; }
         
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
-        .nav-item.active { color: var(--bari-blue); transform: translateY(-5px); }
-
-        /* Pages */
-        .page { 
-            display: none; height: 100vh; overflow-y: auto; 
-            padding: 100px 20px 120px; scroll-behavior: smooth; 
-        }
-        .page.active { display: block; animation: slideUp 0.4s ease-out; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Map Styling */
-        #map { 
-            height: 350px; width: 100%; border-radius: 32px; 
-            border: 6px solid white; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); 
-            z-index: 10;
-        }
-
-        /* Cards */
-        .card-custom {
-            background: white; border-radius: 24px; padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.02);
-            margin-bottom: 16px;
-            transition: transform 0.2s;
-        }
-        .card-custom:active { transform: scale(0.98); }
-
-        /* Notification Toast */
-        #notification-toast {
-            position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
-            z-index: 10000; display: none; width: 90%;
-        }
-
-        /* Progress Bar */
-        .xp-bar-bg { background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden; }
-        .xp-bar-fill { background: var(--bee-yellow); height: 100%; transition: width 0.5s ease; }
-
+        /* Custom UI */
+        .glass-header { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); position: fixed; top:0; width:100%; z-index: 1000; padding: env(safe-area-inset-top) 20px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .bottom-nav { background: white; border-top: 1px solid #e2e8f0; position: fixed; bottom: 0; width: 100%; height: 85px; display: flex; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-weight: 800; }
+        .nav-item.active { color: var(--bari-blue); }
+        
+        .card-point { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .badge-icon { width: 100%; aspect-ratio: 1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        
+        /* Marker Styles */
+        .custom-div-icon { background: var(--bee-yellow); border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        #toast { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); z-index: 9999; display: none; }
     </style>
 </head>
 <body>
 
-    <div id="notification-toast" class="animate__animated">
-        <div class="bg-dark-slate text-white p-4 rounded-2xl shadow-2xl flex items-center gap-4 border-l-4 border-yellow-400">
+    <div id="toast" class="animate__animated">
+        <div class="bg-black text-white px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-3">
             <i class="fa-solid fa-star text-yellow-400"></i>
-            <p id="toast-message" class="text-sm font-bold"></p>
+            <span id="toast-msg"></span>
         </div>
     </div>
 
     <header class="glass-header flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="bg-yellow-400 p-2.5 rounded-2xl text-white shadow-lg shadow-yellow-200">
-                <i class="fa-solid fa-bee text-xl"></i>
-            </div>
-            <div>
-                <h1 class="font-black text-xl tracking-tighter leading-none">BEEHUNTER</h1>
-                <p id="u-rank-display" class="text-[10px] font-black uppercase text-slate-400">Ricerca in corso...</p>
-            </div>
+        <div class="flex items-center gap-2">
+            <div class="bg-yellow-400 p-2 rounded-lg shadow-sm"><i class="fa-solid fa-bee"></i></div>
+            <h1 class="font-black text-xl tracking-tighter">BEEHUNTER</h1>
         </div>
-        <div class="flex flex-col items-end">
-            <span class="text-lg font-black italic text-blue-600" id="total-xp">0 XP</span>
-            <div class="xp-bar-bg w-20 mt-1">
-                <div id="xp-progress" class="xp-bar-fill" style="width: 0%"></div>
+        <div class="flex items-center gap-3">
+            <div class="text-right">
+                <p class="text-[10px] font-black text-slate-400 uppercase leading-none" id="rank-name">Larva</p>
+                <p class="text-sm font-black text-blue-600" id="total-xp">0 XP</p>
             </div>
+            <button onclick="changeLang()" class="bg-slate-100 px-2 py-1 rounded-md text-[10px] font-bold" id="lang-btn">IT</button>
         </div>
     </header>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="nav('home')"><i class="fa-solid fa-compass"></i><span>EXPLORE</span></div>
-        <div class="nav-item" onclick="nav('partners')"><i class="fa-solid fa-shop"></i><span>SHOP</span></div>
-        <div class="nav-item" onclick="nav('passes')"><i class="fa-solid fa-receipt"></i><span>COUPONS</span></div>
-        <div class="nav-item" onclick="nav('profile')"><i class="fa-solid fa-bolt"></i><span>PROGRESSI</span></div>
+        <div class="nav-item active" onclick="nav('home')"><i class="fa-solid fa-map-location-dot text-xl mb-1"></i><span data-it="RADAR" data-en="RADAR">RADAR</span></div>
+        <div class="nav-item" onclick="nav('tours')"><i class="fa-solid fa-route text-xl mb-1"></i><span data-it="TOUR" data-en="TOURS">TOUR</span></div>
+        <div class="nav-item" onclick="nav('shop')"><i class="fa-solid fa-bag-shopping text-xl mb-1"></i><span data-it="SHOP" data-en="SHOP">SHOP</span></div>
+        <div class="nav-item" onclick="nav('profile')"><i class="fa-solid fa-user-astronaut text-xl mb-1"></i><span data-it="IO" data-en="ME">IO</span></div>
     </nav>
 
     <main id="home" class="page active">
-        <div id="map" class="mb-8"></div>
-        <div class="flex justify-between items-end mb-4">
-            <h3 class="font-black text-2xl uppercase italic">Missioni Attive</h3>
-            <span class="text-xs font-bold text-slate-400">VICINO A TE</span>
+        <div id="map" style="height: 350px; border-radius: 24px; margin-bottom: 20px;"></div>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-black text-xl" data-it="Esplora Bari e Provincia" data-en="Explore Bari & Province">Esplora Bari</h2>
+            <select id="filter-type" class="text-xs font-bold bg-white border-none rounded-lg p-2 shadow-sm" onchange="renderPoints()">
+                <option value="all">Tutti</option>
+                <option value="Monumento">Monumenti</option>
+                <option value="Natura">Natura</option>
+                <option value="Food">Food</option>
+            </select>
         </div>
-        <div id="quests-container" class="pb-10"></div>
+        <div id="points-list"></div>
     </main>
 
-    <main id="partners" class="page">
-        <div class="mb-6">
-            <h2 class="font-black text-3xl mb-1">Eco-Partner</h2>
-            <p class="text-slate-500 font-medium">Sostieni le attività locali di Bari.</p>
-        </div>
-        <div id="partners-list" class="space-y-4"></div>
+    <main id="tours" class="page">
+        <h2 class="font-black text-2xl mb-2" data-it="Esperienze Premium" data-en="Premium Experiences">Esperienze Premium</h2>
+        <p class="text-slate-500 text-sm mb-6" data-it="Sblocca badge unici completando questi tour" data-en="Unlock unique badges by completing these tours">Sblocca badge unici</p>
+        <div id="tours-list" class="space-y-4"></div>
     </main>
 
-    <main id="passes" class="page">
-        <div class="bg-blue-600 p-6 rounded-[32px] text-white mb-8 shadow-xl shadow-blue-100">
-            <h2 class="font-black text-2xl mb-1">I Tuoi Premi</h2>
-            <p class="opacity-80 text-sm">Mostra il codice QR in cassa.</p>
+    <main id="shop" class="page">
+        <div class="bg-blue-600 p-6 rounded-[32px] text-white mb-6">
+            <h2 class="text-2xl font-black">Marketplace</h2>
+            <p class="opacity-80" data-it="Spendi i tuoi XP per premi reali" data-en="Spend your XP for real rewards">Usa i tuoi XP per premi reali</p>
         </div>
-        <div id="active-passes" class="space-y-4"></div>
+        <div id="coupons-list" class="space-y-4"></div>
+        <div class="mt-8 p-4 bg-yellow-50 rounded-2xl border border-yellow-200">
+            <h4 class="font-black text-yellow-800">XP Boosters</h4>
+            <p class="text-xs mb-3">Sblocca subito 1000 XP per scalare la classifica.</p>
+            <button class="w-full bg-yellow-400 p-3 rounded-xl font-black text-sm">BUY 1000 XP (€4.99)</button>
+        </div>
     </main>
 
     <main id="profile" class="page">
-        <div id="auth-section" class="py-10">
-            <div class="bg-white p-10 rounded-[45px] text-center shadow-2xl border-b-8 border-yellow-400">
-                <div class="w-20 h-20 bg-slate-100 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl">👋</div>
-                <h2 class="font-black text-3xl mb-2">Benvenuto!</h2>
-                <p class="text-slate-400 mb-8 font-medium">Diventa un protettore di Bari.</p>
-                <input type="text" id="reg-nome" placeholder="Inserisci il tuo Nome" class="w-full p-5 bg-slate-100 rounded-2xl border-none outline-none mb-4 font-bold text-center focus:ring-4 ring-yellow-200 transition-all">
-                <button onclick="register()" class="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all">INIZIA LA SFIDA</button>
+        <div class="flex items-center gap-4 mb-8">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-20 h-20 rounded-3xl bg-white shadow-lg">
+            <div>
+                <h2 class="font-black text-2xl">Pro Hunter</h2>
+                <div class="flex gap-2 mt-1">
+                    <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2 py-0.5 rounded">LEVEL 12</span>
+                    <span class="bg-purple-100 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded">PREMIUM</span>
+                </div>
             </div>
         </div>
-
-        <div id="user-dashboard" class="hidden">
-            <div class="card-custom flex items-center gap-6 !bg-slate-900 !text-white">
-                <div class="relative">
-                    <img id="user-img" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Bari" class="w-20 h-20 rounded-2xl bg-white p-1">
-                    <span class="absolute -bottom-2 -right-2 bg-yellow-400 text-black text-[10px] font-black px-2 py-1 rounded-lg shadow-lg">PRO</span>
-                </div>
-                <div>
-                    <h2 class="font-black text-2xl" id="u-name-display">---</h2>
-                    <p class="text-yellow-400 font-bold text-xs uppercase tracking-widest" id="u-rank-text">---</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div class="card-custom text-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase">Missioni</p>
-                    <p class="text-2xl font-black" id="stat-missions">0</p>
-                </div>
-                <div class="card-custom text-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase">Badge</p>
-                    <p class="text-2xl font-black" id="stat-badges">0</p>
-                </div>
-            </div>
-
-            <h3 class="font-black text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-award text-yellow-500"></i> Collezione Badge</h3>
-            <div id="badge-container" class="grid grid-cols-3 gap-3 mb-10"></div>
-        </div>
+        <h3 class="font-black text-lg mb-4" data-it="Collezione Badge" data-en="Badge Collection">Badge Collection</h3>
+        <div id="badge-grid" class="grid grid-cols-3 gap-3"></div>
     </main>
 
-    <div id="scanner-modal" class="fixed inset-0 bg-black z-[9999] hidden">
-        <video id="video-preview" class="w-full h-full object-cover opacity-60"></video>
-        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div class="w-64 h-64 border-2 border-white/30 rounded-[40px] relative">
-                <div class="absolute inset-0 border-4 border-yellow-400 rounded-[40px] animate-pulse"></div>
-            </div>
-            <p class="text-white font-black mt-8 tracking-widest animate-bounce">SCANSIONA L'OBIETTIVO</p>
-        </div>
-        <div class="absolute bottom-12 w-full flex justify-center gap-8 px-10">
-            <button onclick="closeScanner()" class="bg-white/10 p-6 rounded-full backdrop-blur-md text-white border border-white/20"><i class="fa-solid fa-xmark text-2xl"></i></button>
-            <button onclick="takeSnapshot()" class="bg-yellow-400 p-10 rounded-full shadow-[0_0_50px_rgba(255,210,0,0.5)] active:scale-90 transition-transform"><i class="fa-solid fa-camera text-4xl"></i></button>
-        </div>
-    </div>
-
     <script>
-        /* --- DATABASE ESTESO --- */
+        /* --- CORE DATABASE (Template per 200 punti) --- */
         const DB = {
-            ranks: [
-                { name: "Larva Barese", minXp: 0, color: "#94A3B8" },
-                { name: "Esploratore", minXp: 50, color: "#22C55E" },
-                { name: "Ape Operaia", minXp: 150, color: "#EAB308" },
-                { name: "Guardiano del Porto", minXp: 300, color: "#3B82F6" },
-                { name: "Cavaliere di San Nicola", minXp: 600, color: "#EF4444" },
-                { name: "Ape Regina di Bari", minXp: 1000, color: "#7C3AED" }
+            points: [
+                { id: 1, name: "Basilica San Nicola", type: "Monumento", coords: [41.1315, 16.8722], xp: 150, img: "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=400", it: "Cuore di Bari Vecchia.", en: "Heart of Old Bari.", badge: "City Explorer" },
+                { id: 2, name: "Castello Svevo", type: "Monumento", coords: [41.1288, 16.8644], xp: 180, img: "https://images.unsplash.com/photo-1590001158193-79013018e2df?w=400", it: "Fortezza millenaria.", en: "Millenary fortress.", badge: "City Explorer" },
+                { id: 3, name: "Lama Monachile", type: "Natura", coords: [41.1230, 17.2080], xp: 200, img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400", it: "Spiaggia iconica a Polignano.", en: "Iconic beach in Polignano.", badge: "Sea Hunter" },
+                { id: 4, name: "Trullo Sovrano", type: "Cultura", coords: [40.7860, 17.2370], xp: 180, img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=400", it: "Il trullo più grande.", en: "The largest trullo.", badge: "Heritage Seeker" },
+                { id: 5, name: "Faro di Monopoli", type: "Natura", coords: [40.9520, 17.3050], xp: 120, img: "https://images.unsplash.com/photo-1505118380757-91f5f45d8de4?w=400", it: "Vista sul mare Adriatico.", en: "View of the Adriatic Sea.", badge: "Sea Hunter" },
+                // ... Qui si estende fino a 200 punti
             ],
-            quests: [
-                { id: 1, title: 'Basilica San Nicola', points: 30, lat: 41.1315, lng: 16.8722, type: 'Cultura', badge: 'Santo', color: '#2563EB', desc: 'Trova l\'icona d\'oro' },
-                { id: 2, title: 'Arco Basso', points: 25, lat: 41.1302, lng: 16.8700, type: 'Tradizione', badge: 'Pasta', color: '#E11D48', desc: 'Foto con le orecchiette' },
-                { id: 3, title: 'Faro Borbonico', points: 40, lat: 41.1290, lng: 16.8580, type: 'Storia', badge: 'Mare', color: '#0EA5E9', desc: 'Cattura il tramonto' },
-                { id: 4, title: 'Castello Svevo', points: 35, lat: 41.1285, lng: 16.8660, type: 'Cultura', badge: 'Fortezza', color: '#475569', desc: 'Trova il fossato' },
-                { id: 5, title: 'Teatro Petruzzelli', points: 45, lat: 41.1215, lng: 16.8725, type: 'Arte', badge: 'Opera', color: '#DC2626', desc: 'La facciata rossa' }
+            tours: [
+                { id: 't1', name: "Street Food Mania", xp: 300, it: "Focaccia, panzerotti e segreti di Bari.", en: "Focaccia, panzerotti and Bari secrets.", badge: "Foodie Hunter", price: "Free" },
+                { id: 't2', name: "Coastal Adventure", xp: 500, it: "Da Polignano a Monopoli via mare.", en: "From Polignano to Monopoli by sea.", badge: "Sea Hunter", price: "€15.00" }
             ],
-            partners: [
-                { name: "Panificio Fiore", category: "Forno Storico", address: "Strada Palazzo di Città, 38", xpReq: 0, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200" },
-                { name: "Mastro Ciccio", category: "Street Food", address: "Corso Vittorio Emanuele, 15", xpReq: 100, img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=200" },
-                { name: "Gelateria Gentile", category: "Dolci", address: "Piazza Federico II", xpReq: 50, img: "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=200" }
+            coupons: [
+                { id: 'c1', partner: "Panificio Fiore", reward: "Focaccia Omaggio", cost: 400, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100" },
+                { id: 'c2', partner: "Speakeasy Bari", reward: "25% Sconto Cocktail", cost: 600, img: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=100" }
             ],
-            rewards: [
-                { id: 'r1', threshold: 50, title: "Focaccia Omaggio", desc: "Valido da Panificio Fiore", code: "BEE-FIORE-50" },
-                { id: 'r2', threshold: 200, title: "Birra Peroni 0.33", desc: "In omaggio con un panino", code: "BEE-MASTRO-XP" },
-                { id: 'r3', threshold: 500, title: "Sconto 50% Tour", desc: "Sconto su Bari Sotterranea", code: "BEE-HISTORY" }
+            badges: [
+                { id: "City Explorer", tier: "base", icon: "🏙️", color: "bg-slate-100" },
+                { id: "Foodie Hunter", tier: "base", icon: "🍕", color: "bg-orange-100" },
+                { id: "Sea Hunter", tier: "mid", icon: "🌊", color: "bg-blue-100" },
+                { id: "Heritage Seeker", tier: "mid", icon: "🏛️", color: "bg-purple-100" },
+                { id: "Master Hunter", tier: "adv", icon: "👑", color: "bg-yellow-100" }
             ]
         };
 
         /* --- STATE MANAGEMENT --- */
-        let state = JSON.parse(localStorage.getItem('beehunter_pro_v2')) || {
-            registered: false,
-            name: '',
-            xp: 0,
-            visitedIds: [],
-            badges: [],
-            coupons: [],
-            lastLogin: Date.now()
+        let state = JSON.parse(localStorage.getItem('beehunter_v4')) || {
+            xp: 0, visited: [], badges: [], lang: 'it'
         };
 
-        let map, currentQuestId = null;
+        let map, clusters;
 
-        /* --- ENGINE FUNCTIONS --- */
         function init() {
             setupMap();
+            renderPoints();
+            renderTours();
+            renderShop();
+            renderProfile();
             updateUI();
-            renderPartners();
-            if(state.registered) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('user-dashboard').classList.remove('hidden');
-            }
-            showToast("Benvenuto a Bari, Hunter!");
         }
 
+        /* --- MAPPA CON CLUSTERING --- */
         function setupMap() {
-            map = L.map('map', { zoomControl: false, attributionControl: false }).setView([41.125, 16.872], 14);
+            map = L.map('map', { zoomControl: false }).setView([41.125, 16.872], 12);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
             
-            DB.quests.forEach(q => {
-                const marker = L.circleMarker([q.lat, q.lng], {
-                    radius: 12,
-                    color: q.color,
-                    fillOpacity: 0.9,
-                    weight: 3
-                }).addTo(map);
-                marker.bindPopup(`<b>${q.title}</b><br>${q.points} XP`);
+            clusters = L.markerClusterGroup();
+            
+            DB.points.forEach(p => {
+                const marker = L.marker(p.coords, {
+                    icon: L.divIcon({ className: 'custom-div-icon', iconSize: [12, 12] })
+                });
+                
+                const popupContent = `
+                    <div class="p-2" style="width:150px">
+                        <img src="${p.img}" class="w-full h-20 object-cover rounded-lg mb-2">
+                        <h4 class="font-black text-xs">${p.name}</h4>
+                        <button onclick="collectPoint(${p.id})" class="mt-2 w-full bg-yellow-400 text-[10px] font-black py-1 rounded">CLAIM ${p.xp} XP</button>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                clusters.addLayer(marker);
             });
+            
+            map.addLayer(clusters);
         }
 
-        function updateUI() {
-            const rank = [...DB.ranks].reverse().find(r => state.xp >= r.minXp) || DB.ranks[0];
+        /* --- RENDER FUNCTIONS --- */
+        function renderPoints() {
+            const filter = document.getElementById('filter-type').value;
+            const container = document.getElementById('points-list');
+            const filtered = filter === 'all' ? DB.points : DB.points.filter(p => p.type === filter);
             
-            // Header
-            document.getElementById('total-xp').innerText = `${state.xp} XP`;
-            document.getElementById('u-rank-display').innerText = rank.name;
-            document.getElementById('u-rank-display').style.color = rank.color;
-            
-            // Progress Bar
-            const nextRank = DB.ranks[DB.ranks.indexOf(rank) + 1] || rank;
-            const progress = (state.xp / nextRank.minXp) * 100;
-            document.getElementById('xp-progress').style.width = `${Math.min(progress, 100)}%`;
-
-            if(state.registered) {
-                document.getElementById('u-name-display').innerText = state.name;
-                document.getElementById('u-rank-text').innerText = rank.name;
-                document.getElementById('stat-missions').innerText = state.visitedIds.length;
-                document.getElementById('stat-badges').innerText = state.badges.length;
-            }
-
-            renderQuests();
-            renderCoupons();
-            renderBadges();
+            container.innerHTML = filtered.map(p => `
+                <div class="card-point flex items-center p-3 gap-4 ${state.visited.includes(p.id) ? 'opacity-40 grayscale' : ''}">
+                    <img src="${p.img}" class="w-16 h-16 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm">${p.name}</h4>
+                        <p class="text-[10px] text-slate-400 font-bold">${state.lang === 'it' ? p.it : p.en}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-blue-600 font-black text-xs">+${p.xp} XP</span>
+                        <br>
+                        <button onclick="collectPoint(${p.id})" class="text-[10px] font-black text-slate-400 border px-2 py-1 rounded-md mt-1">INFO</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function renderQuests() {
-            const container = document.getElementById('quests-container');
-            container.innerHTML = DB.quests.map(q => {
-                const isDone = state.visitedIds.includes(q.id);
+        function renderTours() {
+            document.getElementById('tours-list').innerHTML = DB.tours.map(t => `
+                <div class="card-point p-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg">${t.price}</span>
+                        <span class="text-blue-600 font-black">+${t.xp} XP</span>
+                    </div>
+                    <h3 class="font-black text-lg">${t.name}</h3>
+                    <p class="text-sm text-slate-500 mb-4">${state.lang === 'it' ? t.it : t.en}</p>
+                    <button onclick="toast('Tour Prenotato!')" class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-sm">BOOK EXPERIENCE</button>
+                </div>
+            `).join('');
+        }
+
+        function renderShop() {
+            document.getElementById('coupons-list').innerHTML = DB.coupons.map(c => `
+                <div class="card-point p-4 flex items-center gap-4 ${state.xp < c.cost ? 'opacity-50' : ''}">
+                    <img src="${c.img}" class="w-12 h-12 rounded-xl">
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm">${c.partner}</h4>
+                        <p class="text-xs text-blue-600 font-bold">${c.reward}</p>
+                    </div>
+                    <button onclick="redeemCoupon(${c.cost}, '${c.reward}')" class="bg-slate-100 px-3 py-2 rounded-xl font-black text-[10px]">${c.cost} XP</button>
+                </div>
+            `).join('');
+        }
+
+        function renderProfile() {
+            document.getElementById('badge-grid').innerHTML = DB.badges.map(b => {
+                const isLocked = !state.badges.includes(b.id);
                 return `
-                    <div class="card-custom flex justify-between items-center ${isDone ? 'opacity-50 grayscale' : ''}">
-                        <div>
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase">${q.type}</span>
-                            <h4 class="font-black text-lg">${q.title}</h4>
-                            <p class="text-xs text-slate-400 font-medium">${q.desc}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-black text-blue-600 mb-2">+${q.points} XP</p>
-                            ${!isDone ? 
-                                `<button onclick="startQuest(${q.id})" class="bg-yellow-400 text-black text-[10px] font-black px-4 py-2 rounded-xl shadow-md">CATTURA</button>` : 
-                                `<i class="fa-solid fa-circle-check text-green-500 text-xl"></i>`
-                            }
-                        </div>
+                    <div class="card-point p-3 text-center ${isLocked ? 'opacity-20 grayscale' : 'border-b-4 border-yellow-400'}">
+                        <div class="badge-icon ${b.color} mb-2">${b.icon}</div>
+                        <p class="text-[8px] font-black uppercase leading-tight">${b.id}</p>
                     </div>
                 `;
             }).join('');
         }
 
-        function startQuest(id) {
-            currentQuestId = id;
-            const modal = document.getElementById('scanner-modal');
-            modal.classList.remove('hidden');
+        /* --- LOGICA DI GIOCO --- */
+        function collectPoint(id) {
+            if(state.visited.includes(id)) return;
+            const p = DB.points.find(x => x.id === id);
+            state.xp += p.xp;
+            state.visited.push(id);
             
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(stream => {
-                    const video = document.getElementById('video-preview');
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(() => {
-                    showToast("Errore Camera: Permesso negato");
-                    closeScanner();
-                });
-        }
+            // Logica Badge
+            if(p.badge && !state.badges.includes(p.badge)) {
+                state.badges.push(p.badge);
+                toast(`BADGE SBLOCCATO: ${p.badge}!`);
+            }
+            
+            // Controllo Master Hunter
+            if(state.xp >= 5000 && !state.badges.includes("Master Hunter")) {
+                state.badges.push("Master Hunter");
+                toast("SEI UN MASTER HUNTER! 👑");
+            }
 
-        function takeSnapshot() {
-            const quest = DB.quests.find(q => q.id === currentQuestId);
-            state.xp += quest.points;
-            state.visitedIds.push(quest.id);
-            if(!state.badges.includes(quest.badge)) state.badges.push(quest.badge);
-            
-            checkNewRewards();
             save();
-            closeScanner();
             updateUI();
-            showToast(`+${quest.points} XP! Ottimo lavoro Hunter.`);
+            renderPoints();
+            renderProfile();
+            toast(`+${p.xp} XP!`);
         }
 
-        function checkNewRewards() {
-            DB.rewards.forEach(reward => {
-                if(state.xp >= reward.threshold && !state.coupons.find(c => c.id === reward.id)) {
-                    state.coupons.push(reward);
-                    showToast(`SBLOCCATO: ${reward.title}!`);
-                }
-            });
+        function redeemCoupon(cost, name) {
+            if(state.xp < cost) return toast("XP insufficienti!");
+            state.xp -= cost;
+            save();
+            updateUI();
+            renderShop();
+            toast(`RISCATTATO: ${name}`);
         }
 
         /* --- UTILS --- */
+        function changeLang() {
+            state.lang = state.lang === 'it' ? 'en' : 'it';
+            document.getElementById('lang-btn').innerText = state.lang.toUpperCase();
+            save();
+            renderPoints();
+            renderTours();
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('total-xp').innerText = `${state.xp} XP`;
+            const rank = state.xp > 2000 ? "Ape Regina" : state.xp > 500 ? "Esploratore" : "Larva";
+            document.getElementById('rank-name').innerText = rank;
+            
+            document.querySelectorAll('[data-it]').forEach(el => {
+                el.innerText = state.lang === 'it' ? el.getAttribute('data-it') : el.getAttribute('data-en');
+            });
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.style.display = 'block';
+            t.className = 'animate__animated animate__fadeInDown';
+            setTimeout(() => {
+                t.className = 'animate__animated animate__fadeOutUp';
+                setTimeout(() => t.style.display = 'none', 500);
+            }, 2500);
+        }
+
         function nav(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             event.currentTarget.classList.add('active');
-            if(pageId === 'home' && map) setTimeout(() => map.invalidateSize(), 300);
+            if(pageId === 'home') setTimeout(() => map.invalidateSize(), 200);
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('notification-toast');
-            document.getElementById('toast-message').innerText = msg;
-            toast.style.display = 'block';
-            toast.className = 'animate__animated animate__fadeInDown';
-            setTimeout(() => {
-                toast.className = 'animate__animated animate__fadeOutUp';
-                setTimeout(() => toast.style.display = 'none', 500);
-            }, 3000);
-        }
-
-        function register() {
-            const name = document.getElementById('reg-nome').value;
-            if(name.length < 2) return showToast("Inserisci un nome valido!");
-            state.registered = true;
-            state.name = name;
-            save();
-            location.reload();
-        }
-
-        function save() { localStorage.setItem('beehunter_pro_v2', JSON.stringify(state)); }
-
-        function closeScanner() {
-            const video = document.getElementById('video-preview');
-            if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
-            document.getElementById('scanner-modal').classList.add('hidden');
-        }
-
-        // Render functions per le altre liste
-        function renderPartners() {
-            document.getElementById('partners-list').innerHTML = DB.partners.map(p => `
-                <div class="card-custom flex items-center gap-4">
-                    <img src="${p.img}" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1">
-                        <h4 class="font-black">${p.name}</h4>
-                        <p class="text-[10px] text-blue-500 font-bold uppercase tracking-tighter">${p.category}</p>
-                        <p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderCoupons() {
-            const container = document.getElementById('active-passes');
-            if(state.coupons.length === 0) {
-                container.innerHTML = `<div class="py-20 text-center text-slate-400 font-bold">Guadagna XP per sbloccare coupon!</div>`;
-                return;
-            }
-            container.innerHTML = state.coupons.map(c => `
-                <div class="card-custom border-2 border-dashed border-blue-200 !bg-blue-50">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-black text-blue-700 text-lg">${c.title}</h4>
-                            <p class="text-xs text-blue-500 font-medium">${c.desc}</p>
-                        </div>
-                        <i class="fa-solid fa-qrcode text-3xl text-blue-700"></i>
-                    </div>
-                    <div class="mt-4 bg-white p-3 rounded-xl text-center font-mono font-black text-sm tracking-widest text-slate-700 border border-blue-100">
-                        ${c.code}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderBadges() {
-            document.getElementById('badge-container').innerHTML = state.badges.map(b => `
-                <div class="card-custom !p-4 text-center border-b-4 border-yellow-400">
-                    <div class="text-3xl mb-2">🏆</div>
-                    <p class="text-[8px] font-black uppercase tracking-tighter">${b}</p>
-                </div>
-            `).join('');
-        }
+        function save() { localStorage.setItem('beehunter_v4', JSON.stringify(state)); }
 
         window.onload = init;
     </script>
